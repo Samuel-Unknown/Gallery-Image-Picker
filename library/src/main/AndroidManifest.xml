@@ -10,6 +10,7 @@
 
         <activity
             android:name=".presentation.ui.screen.gallery.GalleryActivity"
+            android:theme="@style/GalleryImagePickerTheme.Transparent"
             android:exported="true"
             />
 
