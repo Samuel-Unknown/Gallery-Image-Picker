@@ -1,16 +1,26 @@
 package com.samuelunknown.sample
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import com.samuelunknown.library.domain.GetImagesUseCase
-import com.samuelunknown.library.domain.GetImagesUseCaseImpl
-import androidx.lifecycle.lifecycleScope
+import androidx.appcompat.app.AppCompatActivity
+import com.samuelunknown.library.presentation.model.GalleryConfigurationDto
+import com.samuelunknown.library.presentation.model.ImagesResultDto
+import com.samuelunknown.library.presentation.ui.screen.gallery.ImagesResultContract
 import com.samuelunknown.sample.databinding.ActivityMainBinding
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+
+    private val getImagesLauncher = registerForActivityResult(ImagesResultContract()) { result: ImagesResultDto? ->
+        when (result) {
+            is ImagesResultDto.Success -> {
+                Log.d(TAG, "images: ${result.images}")
+            }
+            is ImagesResultDto.Error -> {
+                Log.d(TAG, "error: ${result.message}")
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,15 +31,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initButton() {
-        val useCase: GetImagesUseCase = GetImagesUseCaseImpl(
-            contentResolver = contentResolver
-        )
-
         binding.getImages.setOnClickListener {
-            lifecycleScope.launch {
-                val images = useCase.execute()
-                Log.d(TAG, "images: $images")
-            }
+            getImagesLauncher.launch(
+                GalleryConfigurationDto()
+            )
         }
     }
 
