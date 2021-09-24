@@ -1,6 +1,7 @@
 plugins {
     id(ANDROID_LIBRARY_PLUGIN)
     id(KOTLIN_ANDROID_PLUGIN)
+    id(KOTLIN_PARCELIZE_PLUGIN)
 }
 
 android {
@@ -23,6 +24,10 @@ android {
 }
 
 dependencies {
+    // Kotlin
+    implementation(Libraries.Kotlin.stdLib)
+    implementation(Libraries.Kotlin.coroutines)
+
     // Android X
     implementation(Libraries.AndroidX.appcompat)
     implementation(Libraries.AndroidX.coreKtx)

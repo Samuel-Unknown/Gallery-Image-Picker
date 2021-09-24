@@ -42,10 +42,20 @@ android {
 }
 
 dependencies {
+    // Gallery Image Picker
+    implementation(project(ProjectModules.library))
+
+    // Kotlin
+    implementation(Libraries.Kotlin.stdLib)
+    implementation(Libraries.Kotlin.coroutines)
+
     // Android X
     implementation(Libraries.AndroidX.appcompat)
     implementation(Libraries.AndroidX.coreKtx)
     implementation(Libraries.AndroidX.constraintLayout)
+
+    // Lifecycle
+    implementation(Libraries.AndroidX.Lifecycle.runtimeKtx)
 
     // Material
     implementation(Libraries.Google.Android.material)
