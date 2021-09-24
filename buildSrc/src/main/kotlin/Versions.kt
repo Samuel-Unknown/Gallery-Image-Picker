@@ -18,6 +18,7 @@ object Versions {
 
     object Kotlin {
         val stdLib = "1.5.30"
+        val coroutines = "1.5.1"
     }
 
     object Google {
@@ -34,5 +35,6 @@ object Versions {
         val appcompat = "1.3.0"
         val coreKtx = "1.5.0"
         val constraintLayout = "2.1.0"
+        val lifecycle = "2.4.0-alpha03"
     }
 }
