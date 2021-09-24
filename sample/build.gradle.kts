@@ -53,8 +53,6 @@ dependencies {
     implementation(Libraries.AndroidX.appcompat)
     implementation(Libraries.AndroidX.coreKtx)
     implementation(Libraries.AndroidX.constraintLayout)
-
-    // Lifecycle
     implementation(Libraries.AndroidX.Lifecycle.runtimeKtx)
 
     // Material

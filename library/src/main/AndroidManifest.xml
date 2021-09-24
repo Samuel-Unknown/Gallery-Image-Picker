@@ -4,6 +4,15 @@
     package="com.samuelunknown.library"
     >
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <application>
+
+        <activity
+            android:name=".presentation.ui.screen.gallery.GalleryActivity"
+            android:exported="true"
+            />
+
+    </application>
 
 </manifest>
