@@ -1,0 +1,38 @@
+@file:Suppress("MayBeConstant")
+
+object Versions {
+    object Sdk {
+        val compileSdk = 31
+        val targetSdk = 31
+        val minSdk = 21
+    }
+
+    object Library {
+        private val major = 1 // change when you make incompatible API changes
+        private val minor = 0 // change when you add functionality in a backwards-compatible manner
+        private val build = 0 // change when you make backwards-compatible bug fixes
+
+        val versionCode = major * 10000 + minor * 100 + build
+        val versionName = "${major}.${minor}.${build}"
+    }
+
+    object Kotlin {
+        val stdLib = "1.5.30"
+    }
+
+    object Google {
+        object Android {
+            val material = "1.4.0"
+        }
+    }
+
+    object AndroidTools {
+        val gradle = "7.0.2" // Attention! Version also must be changed in buildSrd/build.gradle
+    }
+
+    object AndroidX {
+        val appcompat = "1.3.0"
+        val coreKtx = "1.5.0"
+        val constraintLayout = "2.1.0"
+    }
+}
