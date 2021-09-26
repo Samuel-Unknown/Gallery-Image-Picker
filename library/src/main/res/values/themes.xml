@@ -12,5 +12,10 @@
         <item name="android:windowIsFloating">false</item>
         <item name="android:statusBarColor">#00000000</item>
         <item name="android:navigationBarColor">#00000000</item>
+        <item name="bottomSheetDialogTheme">@style/GalleryImagePickerTheme.BottomSheetDialog</item>
+    </style>
+
+    <style name="GalleryImagePickerTheme.BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/GalleryBottomSheetWidget.BottomSheetDialog</item>
     </style>
 </resources>
