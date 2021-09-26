@@ -20,6 +20,7 @@ object Libraries {
         val appcompat = "androidx.appcompat:appcompat:${Versions.AndroidX.appcompat}"
         val coreKtx = "androidx.core:core-ktx:${Versions.AndroidX.coreKtx}"
         val constraintLayout = "androidx.constraintlayout:constraintlayout:${Versions.AndroidX.constraintLayout}"
+        val fragmentKtx = "androidx.fragment:fragment-ktx:${Versions.AndroidX.fragment}"
 
         object Lifecycle {
             val runtimeKtx = "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.AndroidX.lifecycle}"
