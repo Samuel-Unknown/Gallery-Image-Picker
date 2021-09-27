@@ -1,4 +1,4 @@
-package com.samuelunknown.library.presentation.model
+package com.samuelunknown.library.domain.model
 
 import android.net.Uri
 import android.os.Parcelable

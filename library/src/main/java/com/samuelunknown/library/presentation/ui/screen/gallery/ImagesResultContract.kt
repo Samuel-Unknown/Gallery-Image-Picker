@@ -6,8 +6,8 @@ import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContract
 import com.samuelunknown.library.extensions.getImagesResultDto
 import com.samuelunknown.library.extensions.putGalleryConfigurationDto
-import com.samuelunknown.library.presentation.model.GalleryConfigurationDto
-import com.samuelunknown.library.presentation.model.ImagesResultDto
+import com.samuelunknown.library.domain.model.GalleryConfigurationDto
+import com.samuelunknown.library.domain.model.ImagesResultDto
 
 class ImagesResultContract : ActivityResultContract<GalleryConfigurationDto, ImagesResultDto>() {
     override fun createIntent(context: Context, galleryConfigurationDto: GalleryConfigurationDto) =

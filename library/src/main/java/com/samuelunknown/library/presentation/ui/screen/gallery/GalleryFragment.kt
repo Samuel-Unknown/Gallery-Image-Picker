@@ -1,18 +1,25 @@
 package com.samuelunknown.library.presentation.ui.screen.gallery
 
-import android.app.Dialog
 import android.content.DialogInterface
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.samuelunknown.library.databinding.FragmentGalleryBinding
 import com.samuelunknown.library.domain.GetImagesUseCaseImpl
-import com.samuelunknown.library.presentation.model.ImagesResultDto
+import com.samuelunknown.library.domain.model.ImagesResultDto
 import com.samuelunknown.library.presentation.ui.savedStateViewModel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class GalleryFragment private constructor(
     private val onAcceptAction: (ImagesResultDto) -> Unit,
@@ -29,25 +36,36 @@ class GalleryFragment private constructor(
 
     private val peekHeight: Int by lazy { screenHeight / 3 }
 
-    private lateinit var bottomSheet: BottomSheetDialog
-    private lateinit var bottomSheetBehavior: BottomSheetBehavior<*>
+    private val bottomSheet: BottomSheetDialog
+        get() = requireDialog() as BottomSheetDialog
 
     private val vm: GalleryFragmentVm by savedStateViewModel {
         GalleryFragmentVmFactory(GetImagesUseCaseImpl(requireContext().contentResolver))
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        _binding = FragmentGalleryBinding.inflate(LayoutInflater.from(context))
-        bottomSheet = (super.onCreateDialog(savedInstanceState) as BottomSheetDialog)
-
-        initBottomSheetDialog()
-        initRootViewSizes()
-
-        return bottomSheet
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentGalleryBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    private fun initBottomSheetDialog(){
-        bottomSheet.setContentView(binding.root)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initBottomSheetDialog()
+        initRootViewSizes()
+        initSubscriptions()
+    }
+
+    private fun initSubscriptions() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                vm.stateFlow.collect { state ->
+                    Log.d(TAG, "State: $state")
+                }
+            }
+        }
+    }
+
+    private fun initBottomSheetDialog() {
         bottomSheet.behavior.apply {
             peekHeight = this@GalleryFragment.peekHeight
             state = BottomSheetBehavior.STATE_COLLAPSED
@@ -71,6 +89,8 @@ class GalleryFragment private constructor(
     }
 
     companion object {
+        private val TAG = GalleryFragment::class.java.simpleName
+
         fun init(
             onAcceptAction: (ImagesResultDto) -> Unit = {},
             onCancelAction: () -> Unit = {}

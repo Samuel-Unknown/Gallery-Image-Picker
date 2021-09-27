@@ -3,8 +3,8 @@ package com.samuelunknown.sample
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.samuelunknown.library.presentation.model.GalleryConfigurationDto
-import com.samuelunknown.library.presentation.model.ImagesResultDto
+import com.samuelunknown.library.domain.model.GalleryConfigurationDto
+import com.samuelunknown.library.domain.model.ImagesResultDto
 import com.samuelunknown.library.presentation.ui.screen.gallery.ImagesResultContract
 import com.samuelunknown.sample.databinding.ActivityMainBinding
 

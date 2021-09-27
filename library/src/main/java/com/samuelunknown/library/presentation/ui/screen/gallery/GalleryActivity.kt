@@ -5,8 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.samuelunknown.library.R
+import com.samuelunknown.library.domain.model.ImagesResultDto
 import com.samuelunknown.library.extensions.putImagesResultDto
-import com.samuelunknown.library.presentation.model.ImagesResultDto
 
 class GalleryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
