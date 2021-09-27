@@ -11,12 +11,14 @@ import android.widget.FrameLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.samuelunknown.library.databinding.FragmentGalleryBinding
 import com.samuelunknown.library.domain.GetImagesUseCaseImpl
 import com.samuelunknown.library.domain.model.ImagesResultDto
+import com.samuelunknown.library.presentation.model.GalleryState
 import com.samuelunknown.library.presentation.ui.savedStateViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -43,6 +45,8 @@ class GalleryFragment private constructor(
         GalleryFragmentVmFactory(GetImagesUseCaseImpl(requireContext().contentResolver))
     }
 
+    private val galleryAdapter = GalleryAdapter()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentGalleryBinding.inflate(inflater, container, false)
         return binding.root
@@ -52,17 +56,8 @@ class GalleryFragment private constructor(
         super.onViewCreated(view, savedInstanceState)
         initBottomSheetDialog()
         initRootViewSizes()
+        initRecyclerView()
         initSubscriptions()
-    }
-
-    private fun initSubscriptions() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                vm.stateFlow.collect { state ->
-                    Log.d(TAG, "State: $state")
-                }
-            }
-        }
     }
 
     private fun initBottomSheetDialog() {
@@ -78,8 +73,35 @@ class GalleryFragment private constructor(
         binding.root.layoutParams = params
     }
 
+
+    private fun initRecyclerView() {
+        binding.recycler.apply {
+            adapter = galleryAdapter
+            (layoutManager as GridLayoutManager).spanCount = 3
+        }
+    }
+
+    private fun initSubscriptions() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                vm.stateFlow.collect { state ->
+                    Log.d(TAG, "State: $state")
+                    when (state) {
+                        is GalleryState.Init -> {
+                            // todo
+                        }
+                        is GalleryState.Loaded -> {
+                            galleryAdapter.updateItems(state.items)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.recycler.adapter = null
         _binding = null
     }
 

@@ -36,7 +36,6 @@ class GalleryFragmentVm(private val getImagesUseCase: GetImagesUseCase) : ViewMo
 
     private fun getImages() {
         viewModelScope.launch {
-            delay(3000)
             try {
                 val images = getImagesUseCase.execute()
                 _stateFlow.emit(GalleryState.Loaded(items = images.map { it.toGalleryItemImage() }))
