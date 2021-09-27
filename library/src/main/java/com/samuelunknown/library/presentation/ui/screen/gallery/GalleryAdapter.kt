@@ -5,9 +5,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
 import com.samuelunknown.library.databinding.ItemImageGalleryBinding
+import com.samuelunknown.library.presentation.imageLoader.ImageLoader
+import com.samuelunknown.library.presentation.imageLoader.ImageLoaderFactory
 import com.samuelunknown.library.presentation.model.GalleryItem
 
-class GalleryAdapter : RecyclerView.Adapter<GalleryAdapter.GalleryItemViewHolder>() {
+class GalleryAdapter(
+    private val imageLoaderFactory: ImageLoaderFactory
+) : RecyclerView.Adapter<GalleryAdapter.GalleryItemViewHolder>() {
 
     private val asyncListDiffer: AsyncListDiffer<GalleryItem> = AsyncListDiffer(
         this,
@@ -46,10 +50,11 @@ class GalleryAdapter : RecyclerView.Adapter<GalleryAdapter.GalleryItemViewHolder
     inner class GalleryItemViewHolder(
         private val binding: ItemImageGalleryBinding
     ) : RecyclerView.ViewHolder(binding.root) {
+        private val imageLoader: ImageLoader = imageLoaderFactory.create()
+
         fun bind(imageItem: GalleryItem.Image) {
             with(binding) {
-                // todo set image with url from imageItem
-
+                imageLoader.load(imageView = image, uri = imageItem.uri)
                 root.setOnClickListener {
                     val clickedItem = items[layoutPosition] as GalleryItem.Image
                 }
@@ -57,7 +62,10 @@ class GalleryAdapter : RecyclerView.Adapter<GalleryAdapter.GalleryItemViewHolder
         }
 
         fun clear() {
-            binding.root.setOnClickListener(null)
+            with(binding) {
+                imageLoader.cancel(image)
+                root.setOnClickListener(null)
+            }
         }
     }
 }

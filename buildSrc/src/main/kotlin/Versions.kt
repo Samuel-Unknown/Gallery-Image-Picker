@@ -1,6 +1,8 @@
 @file:Suppress("MayBeConstant")
 
 object Versions {
+    val glide = "4.12.0"
+
     object Sdk {
         val compileSdk = 31
         val targetSdk = 31

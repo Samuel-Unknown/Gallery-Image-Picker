@@ -1,6 +1,11 @@
 @file:Suppress("MayBeConstant")
 
 object Libraries {
+    object Glide {
+        val glide = "com.github.bumptech.glide:glide:${Versions.glide}"
+        val compiler = "com.github.bumptech.glide:compiler:${Versions.glide}"
+    }
+
     object Kotlin {
         val stdLib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.Kotlin.stdLib}"
         val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.Kotlin.coroutines}"

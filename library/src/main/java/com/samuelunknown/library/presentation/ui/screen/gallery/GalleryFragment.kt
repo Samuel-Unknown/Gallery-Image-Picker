@@ -18,6 +18,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.samuelunknown.library.databinding.FragmentGalleryBinding
 import com.samuelunknown.library.domain.GetImagesUseCaseImpl
 import com.samuelunknown.library.domain.model.ImagesResultDto
+import com.samuelunknown.library.presentation.imageLoader.ImageLoaderFactoryHolder
 import com.samuelunknown.library.presentation.model.GalleryState
 import com.samuelunknown.library.presentation.ui.savedStateViewModel
 import kotlinx.coroutines.flow.collect
@@ -45,7 +46,9 @@ class GalleryFragment private constructor(
         GalleryFragmentVmFactory(GetImagesUseCaseImpl(requireContext().contentResolver))
     }
 
-    private val galleryAdapter = GalleryAdapter()
+    private val galleryAdapter = GalleryAdapter(
+        ImageLoaderFactoryHolder.imageLoaderFactory
+    )
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentGalleryBinding.inflate(inflater, container, false)
