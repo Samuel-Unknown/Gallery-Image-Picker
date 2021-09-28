@@ -8,18 +8,25 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.samuelunknown.library.presentation.imageLoader.ImageLoader
 import com.samuelunknown.library.presentation.imageLoader.ImageLoaderFactory
+import kotlin.math.roundToInt
 
 class ImageLoaderFactoryGlideImpl : ImageLoaderFactory {
     override fun create(): ImageLoader = object : ImageLoader {
         override fun load(imageView: ImageView, uri: Uri) {
+
+            val radius = imageView.context.resources
+                .getDimension(R.dimen.image_corner_radius)
+                .roundToInt()
+
             Glide.with(imageView)
                 .load(uri)
                 .transform(
                     MultiTransformation(
                         CenterCrop(),
-                        RoundedCorners(20)
+                        RoundedCorners(radius)
                     )
                 )
+                .placeholder(R.drawable.bg_placeholder)
                 .into(imageView)
         }
 
