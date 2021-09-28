@@ -13,7 +13,11 @@
         <item name="bottomSheetDialogTheme">@style/GalleryImagePickerTheme.BottomSheetDialog</item>
     </style>
 
-    <style name="GalleryImagePickerTheme.BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+    <style name="GalleryImagePickerTheme.BottomSheetDialog" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/GalleryBottomSheetWidget.BottomSheetDialog</item>
+        <!--<item name="android:windowIsFloating">false</item>--> <!-- This is important -->
+        <!--<item name="android:navigationBarColor">#FFFFFF</item>-->
+        <!--<item name="android:statusBarColor">#00000000</item>--> <!-- And then this will be needed -->
+        <!--<item name="android:colorBackground">#FF0000</item>-->
     </style>
 </resources>

@@ -46,9 +46,7 @@ class GalleryFragment private constructor(
         GalleryFragmentVmFactory(GetImagesUseCaseImpl(requireContext().contentResolver))
     }
 
-    private val galleryAdapter = GalleryAdapter(
-        ImageLoaderFactoryHolder.imageLoaderFactory
-    )
+    private val galleryAdapter = GalleryAdapter(ImageLoaderFactoryHolder.imageLoaderFactory)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentGalleryBinding.inflate(inflater, container, false)
@@ -58,9 +56,20 @@ class GalleryFragment private constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initBottomSheetDialog()
-        initRootViewSizes()
+        initRootView()
         initRecyclerView()
         initSubscriptions()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.recycler.adapter = null
+        _binding = null
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        onCancelAction()
+        super.onDismiss(dialog)
     }
 
     private fun initBottomSheetDialog() {
@@ -70,12 +79,11 @@ class GalleryFragment private constructor(
         }
     }
 
-    private fun initRootViewSizes() {
+    private fun initRootView() {
         val params = binding.root.layoutParams as FrameLayout.LayoutParams
         params.height = screenHeight
         binding.root.layoutParams = params
     }
-
 
     private fun initRecyclerView() {
         binding.recycler.apply {
@@ -100,17 +108,6 @@ class GalleryFragment private constructor(
                 }
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding.recycler.adapter = null
-        _binding = null
-    }
-
-    override fun onDismiss(dialog: DialogInterface) {
-        onCancelAction()
-        super.onDismiss(dialog)
     }
 
     companion object {
