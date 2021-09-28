@@ -1,6 +1,7 @@
 plugins {
     id(ANDROID_APPLICATION_PLUGIN)
     id(KOTLIN_ANDROID_PLUGIN)
+    id(KOTLIN_KAPT_PLUGIN)
 }
 
 android {
@@ -57,4 +58,8 @@ dependencies {
 
     // Material
     implementation(Libraries.Google.Android.material)
+
+    // Glide
+    implementation(Libraries.Glide.glide)
+    kapt(Libraries.Glide.compiler)
 }

@@ -1,8 +1,8 @@
 package com.samuelunknown.library.extensions
 
 import android.content.Intent
-import com.samuelunknown.library.presentation.model.GalleryConfigurationDto
-import com.samuelunknown.library.presentation.model.ImagesResultDto
+import com.samuelunknown.library.domain.model.GalleryConfigurationDto
+import com.samuelunknown.library.domain.model.ImagesResultDto
 import java.lang.Exception
 
 private const val EXTRA_IMAGES_RESULT_DTO = "EXTRA_IMAGES_RESULT_DTO"

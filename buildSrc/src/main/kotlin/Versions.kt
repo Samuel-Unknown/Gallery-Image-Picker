@@ -1,6 +1,8 @@
 @file:Suppress("MayBeConstant")
 
 object Versions {
+    val glide = "4.12.0"
+
     object Sdk {
         val compileSdk = 31
         val targetSdk = 31
@@ -36,5 +38,6 @@ object Versions {
         val coreKtx = "1.5.0"
         val constraintLayout = "2.1.0"
         val lifecycle = "2.4.0-alpha03"
+        val fragment = "1.3.6"
     }
 }

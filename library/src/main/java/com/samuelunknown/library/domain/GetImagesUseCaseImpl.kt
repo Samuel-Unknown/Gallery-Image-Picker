@@ -3,7 +3,7 @@ package com.samuelunknown.library.domain
 import android.content.ContentResolver
 import android.net.Uri
 import android.provider.MediaStore
-import com.samuelunknown.library.presentation.model.ImageDto
+import com.samuelunknown.library.domain.model.ImageDto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
