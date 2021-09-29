@@ -15,14 +15,20 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.samuelunknown.library.R
 import com.samuelunknown.library.databinding.FragmentGalleryBinding
 import com.samuelunknown.library.domain.GetImagesUseCaseImpl
 import com.samuelunknown.library.domain.model.ImagesResultDto
 import com.samuelunknown.library.presentation.imageLoader.ImageLoaderFactoryHolder
+import com.samuelunknown.library.presentation.model.GalleryAction
 import com.samuelunknown.library.presentation.model.GalleryState
 import com.samuelunknown.library.presentation.ui.savedStateViewModel
+import com.samuelunknown.library.presentation.ui.screen.gallery.recycler.GalleryAdapter
+import com.samuelunknown.library.presentation.ui.screen.gallery.recycler.GalleryItemAnimator
+import com.samuelunknown.library.presentation.ui.screen.gallery.recycler.GridSpacingItemDecoration
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 class GalleryFragment private constructor(
     private val onAcceptAction: (ImagesResultDto) -> Unit,
@@ -46,7 +52,14 @@ class GalleryFragment private constructor(
         GalleryFragmentVmFactory(GetImagesUseCaseImpl(requireContext().contentResolver))
     }
 
-    private val galleryAdapter = GalleryAdapter(ImageLoaderFactoryHolder.imageLoaderFactory)
+    private val galleryAdapter = GalleryAdapter(
+        imageLoaderFactory = ImageLoaderFactoryHolder.imageLoaderFactory,
+        changeSelectionAction = { item ->
+            lifecycleScope.launch {
+                vm.actionFlow.emit(GalleryAction.ChangeSelectionAction(item))
+            }
+        }
+    )
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentGalleryBinding.inflate(inflater, container, false)
@@ -88,7 +101,14 @@ class GalleryFragment private constructor(
     private fun initRecyclerView() {
         binding.recycler.apply {
             adapter = galleryAdapter
-            (layoutManager as GridLayoutManager).spanCount = 3
+            itemAnimator = GalleryItemAnimator()
+            addItemDecoration(
+                GridSpacingItemDecoration(
+                    spanCount = SPAN_COUNT,
+                    spacing = resources.getDimension(R.dimen.gallery_image_picker__grid_spacing).roundToInt()
+                )
+            )
+            (layoutManager as GridLayoutManager).spanCount = SPAN_COUNT
         }
     }
 
@@ -112,7 +132,8 @@ class GalleryFragment private constructor(
 
     companion object {
         private val TAG = GalleryFragment::class.java.simpleName
-
+        private const val SPAN_COUNT = 3
+        
         fun init(
             onAcceptAction: (ImagesResultDto) -> Unit = {},
             onCancelAction: () -> Unit = {}

@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.constraintlayout.motion.widget.MotionLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_image_gallery"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp"
+    app:layoutDescription="@xml/item_image_gallery_scene"
+    tools:layout_width="wrap_content"
+    tools:padding="8dp"
     >
 
     <ImageView
@@ -20,6 +22,36 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:background="#C8C8C8"
         tools:ignore="ContentDescription"
+        tools:layout_height="120dp"
+        tools:layout_width="120dp"
         />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <ImageView
+        android:id="@+id/picker"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:src="@drawable/bg_unselected_picker"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.2"
+        tools:ignore="ContentDescription"
+        />
+
+    <TextView
+        android:id="@+id/counter"
+        style="@style/GalleryImagePickerTextAppearance.SelectedPicker"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.2"
+        tools:text="100"
+        />
+
+</androidx.constraintlayout.motion.widget.MotionLayout>
