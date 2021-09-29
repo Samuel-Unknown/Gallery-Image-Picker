@@ -15,14 +15,20 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.samuelunknown.library.R
 import com.samuelunknown.library.databinding.FragmentGalleryBinding
 import com.samuelunknown.library.domain.GetImagesUseCaseImpl
 import com.samuelunknown.library.domain.model.ImagesResultDto
 import com.samuelunknown.library.presentation.imageLoader.ImageLoaderFactoryHolder
+import com.samuelunknown.library.presentation.model.GalleryAction
 import com.samuelunknown.library.presentation.model.GalleryState
 import com.samuelunknown.library.presentation.ui.savedStateViewModel
+import com.samuelunknown.library.presentation.ui.screen.gallery.recycler.GalleryAdapter
+import com.samuelunknown.library.presentation.ui.screen.gallery.recycler.GalleryItemAnimator
+import com.samuelunknown.library.presentation.ui.screen.gallery.recycler.GridSpacingItemDecoration
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 class GalleryFragment private constructor(
     private val onAcceptAction: (ImagesResultDto) -> Unit,
@@ -47,7 +53,12 @@ class GalleryFragment private constructor(
     }
 
     private val galleryAdapter = GalleryAdapter(
-        ImageLoaderFactoryHolder.imageLoaderFactory
+        imageLoaderFactory = ImageLoaderFactoryHolder.imageLoaderFactory,
+        changeSelectionAction = { item ->
+            lifecycleScope.launch {
+                vm.actionFlow.emit(GalleryAction.ChangeSelectionAction(item))
+            }
+        }
     )
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -58,9 +69,20 @@ class GalleryFragment private constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initBottomSheetDialog()
-        initRootViewSizes()
+        initRootView()
         initRecyclerView()
         initSubscriptions()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.recycler.adapter = null
+        _binding = null
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        onCancelAction()
+        super.onDismiss(dialog)
     }
 
     private fun initBottomSheetDialog() {
@@ -70,17 +92,23 @@ class GalleryFragment private constructor(
         }
     }
 
-    private fun initRootViewSizes() {
+    private fun initRootView() {
         val params = binding.root.layoutParams as FrameLayout.LayoutParams
         params.height = screenHeight
         binding.root.layoutParams = params
     }
 
-
     private fun initRecyclerView() {
         binding.recycler.apply {
             adapter = galleryAdapter
-            (layoutManager as GridLayoutManager).spanCount = 3
+            itemAnimator = GalleryItemAnimator()
+            addItemDecoration(
+                GridSpacingItemDecoration(
+                    spanCount = SPAN_COUNT,
+                    spacing = resources.getDimension(R.dimen.gallery_image_picker__grid_spacing).roundToInt()
+                )
+            )
+            (layoutManager as GridLayoutManager).spanCount = SPAN_COUNT
         }
     }
 
@@ -102,20 +130,10 @@ class GalleryFragment private constructor(
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding.recycler.adapter = null
-        _binding = null
-    }
-
-    override fun onDismiss(dialog: DialogInterface) {
-        onCancelAction()
-        super.onDismiss(dialog)
-    }
-
     companion object {
         private val TAG = GalleryFragment::class.java.simpleName
-
+        private const val SPAN_COUNT = 3
+        
         fun init(
             onAcceptAction: (ImagesResultDto) -> Unit = {},
             onCancelAction: () -> Unit = {}
