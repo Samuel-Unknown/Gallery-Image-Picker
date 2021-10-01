@@ -16,7 +16,7 @@ class ImagesResultContract : ActivityResultContract<GalleryConfigurationDto, Ima
 
     override fun parseResult(resultCode: Int, intent: Intent?): ImagesResultDto {
         if (resultCode != Activity.RESULT_OK) {
-            return ImagesResultDto.Error.Canceled
+            return ImagesResultDto.Error.Unknown()
         }
 
         return intent?.getImagesResultDto() ?: ImagesResultDto.Error.Unknown()
