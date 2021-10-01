@@ -5,7 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragment_gallery"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:theme="@style/GalleryImagePicker.ThemeOverlay.BottomSheetDialog"
+    >
 
     <androidx.constraintlayout.motion.widget.MotionLayout
         android:id="@+id/motion_layout"
@@ -18,7 +20,7 @@
             android:id="@+id/app_bar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:theme="@style/GalleryImagePickerTheme.Overlay.AppBar"
+            android:theme="@style/GalleryImagePicker.ThemeOverlay.AppBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -26,7 +28,7 @@
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
-                style="@style/GalleryImagePickerWidget.Toolbar"
+                style="@style/GalleryImagePicker.Widget.Toolbar"
                 tools:layout_height="50dp"
                 />
 
@@ -53,7 +55,6 @@
             android:layout_height="0dp"
             android:clipToPadding="false"
             android:orientation="vertical"
-            android:paddingBottom="48dp"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -67,13 +68,10 @@
     </androidx.constraintlayout.motion.widget.MotionLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/pick_button"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp"
-        android:layout_gravity="bottom"
+        android:id="@+id/pickup_button"
+        style="@style/GalleryImagePicker.Widget.PickupButton"
+        android:visibility="gone"
+        tools:visibility="visible"
         />
 
 </FrameLayout>

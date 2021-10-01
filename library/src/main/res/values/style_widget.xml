@@ -1,24 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="GalleryImagePickerWidget" />
+    <style name="GalleryImagePicker.Widget" />
 
-    <style name="GalleryImagePickerWidget.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
+    <style name="GalleryImagePicker.ShapeAppearance" />
+
+    <style name="GalleryImagePicker.Widget.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">?attr/actionBarSize</item>
-        <item name="popupTheme">@style/GalleryImagePickerTheme.Overlay.Popup</item>
+        <item name="popupTheme">@style/GalleryImagePicker.ThemeOverlay.Popup</item>
         <item name="navigationIconTint">@color/gallery_image_picker__color_toolbar_icon</item>
         <item name="titleTextColor">@color/gallery_image_picker__color_toolbar_text</item>
     </style>
 
-    <style name="GalleryImagePickerWidget.BottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet.Modal">
-        <item name="shapeAppearanceOverlay">@style/GalleryImagePickerWidget.BottomSheetDialog.ShapeAppearance</item>
+    <style name="GalleryImagePicker.Widget.BottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="shapeAppearanceOverlay">@style/GalleryImagePicker.ShapeAppearance.BottomSheetDialog</item>
+        <item name="android:backgroundTint">@color/gallery_image_picker__color_background</item>
     </style>
 
-    <style name="GalleryImagePickerWidget.BottomSheetDialog.ShapeAppearance">
+    <style name="GalleryImagePicker.ShapeAppearance.BottomSheetDialog">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSizeTopRight">16dp</item>
         <item name="cornerSizeTopLeft">16dp</item>
         <item name="cornerSizeBottomRight">0dp</item>
         <item name="cornerSizeBottomLeft">0dp</item>
+    </style>
+
+    <style name="GalleryImagePicker.Widget.PickupButton" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">bottom|center</item>
+        <item name="android:backgroundTint">@color/gallery_image_picker__color_pickup_button</item>
+        <item name="android:paddingLeft">48dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingRight">48dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:text">Accept</item>
+        <item name="android:textAppearance">@style/GalleryImagePicker.TextAppearance.Button</item>
+        <item name="android:textColor">@color/gallery_image_picker__color_pickup_button_text</item>
+        <item name="cornerRadius">80dp</item>
+    </style>
+
+    <style name="GalleryImagePicker.TextAppearance.Button" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/gallery_image_picker__color_pickup_button_text</item>
     </style>
 </resources>

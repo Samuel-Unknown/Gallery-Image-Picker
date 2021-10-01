@@ -6,9 +6,6 @@ import kotlinx.parcelize.Parcelize
 sealed class ImagesResultDto : Parcelable {
     sealed class Error(open val message: String) : ImagesResultDto() {
         @Parcelize
-        object Canceled : Error("Pick up images canceled")
-
-        @Parcelize
         object PermissionError : Error("Permission error")
 
         @Parcelize
@@ -16,5 +13,5 @@ sealed class ImagesResultDto : Parcelable {
     }
 
     @Parcelize
-    data class Success(val images: List<ImageDto>) : ImagesResultDto()
+    data class Success(val images: List<ImageDto> = listOf()) : ImagesResultDto()
 }

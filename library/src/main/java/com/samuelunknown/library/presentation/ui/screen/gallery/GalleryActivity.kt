@@ -22,8 +22,7 @@ class GalleryActivity : AppCompatActivity() {
 
     private fun showGalleryFragment() {
         val galleryFragment = GalleryFragment.init(
-            onAcceptAction = { imagesResultDto -> finishWithResult(imagesResultDto) },
-            onCancelAction = { finishWithResult(ImagesResultDto.Error.Canceled) }
+            onResultAction = { imagesResultDto -> finishWithResult(imagesResultDto) },
         )
 
         // In order to determine the screen height correctly inside the Gallery Fragment

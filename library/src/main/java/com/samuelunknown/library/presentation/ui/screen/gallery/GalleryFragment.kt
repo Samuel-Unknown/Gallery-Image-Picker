@@ -6,7 +6,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.doOnLayout
+import androidx.core.view.isVisible
 import androidx.core.view.marginBottom
+import androidx.core.view.updatePadding
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -36,8 +39,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 class GalleryFragment private constructor(
-    private val onAcceptAction: (ImagesResultDto) -> Unit,
-    private val onCancelAction: () -> Unit,
+    private val onResultAction: (ImagesResultDto) -> Unit
 ) : BottomSheetDialogFragment() {
 
     // region Properties
@@ -48,7 +50,7 @@ class GalleryFragment private constructor(
 
     private val peekHeight: Int by lazy { (screenHeight * PEEK_HEIGHT_PERCENTAGE).roundToInt() }
 
-    private val pickButtonDefaultBottomMargin: Int by lazy { binding.pickButton.marginBottom }
+    private val pickButtonDefaultBottomMargin: Int by lazy { binding.pickupButton.marginBottom }
 
     private val bottomSheet: BottomSheetDialog
         get() = requireDialog() as BottomSheetDialog
@@ -79,6 +81,7 @@ class GalleryFragment private constructor(
         initBottomSheetDialog()
         initToolbar()
         initRecycler()
+        initPickupButton()
         initSubscriptions()
     }
 
@@ -89,7 +92,7 @@ class GalleryFragment private constructor(
     }
 
     override fun onDismiss(dialog: DialogInterface) {
-        onCancelAction()
+        onResultAction(ImagesResultDto.Success())
         super.onDismiss(dialog)
     }
     // endregion Lifecycle
@@ -157,6 +160,14 @@ class GalleryFragment private constructor(
         }
     }
 
+    private fun initPickupButton() {
+        binding.pickupButton.setOnClickListener {
+            lifecycleScope.launch {
+                vm.actionFlow.emit(GalleryAction.Pickup)
+            }
+        }
+    }
+
     private fun initSubscriptions() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -164,10 +175,15 @@ class GalleryFragment private constructor(
                     Log.d(TAG, "State: $state")
                     when (state) {
                         is GalleryState.Init -> {
-                            // todo
+                            binding.pickupButton.isVisible = false
                         }
                         is GalleryState.Loaded -> {
+                            binding.pickupButton.isVisible = true
                             galleryAdapter.updateItems(state.items)
+                        }
+                        is GalleryState.Picked -> {
+                            onResultAction(state.result)
+                            dismiss()
                         }
                     }
                 }
@@ -183,7 +199,16 @@ class GalleryFragment private constructor(
             offset
         ).toInt()
 
-        binding.pickButton.updateMargins(bottomMargin = bottomMargin)
+        binding.pickupButton.updateMargins(bottomMargin = bottomMargin)
+
+        // since pickupButton position changed we need update Recycler bottom padding
+        updateRecyclerBottomPadding()
+    }
+
+    private fun updateRecyclerBottomPadding() {
+        binding.pickupButton.doOnLayout {
+            binding.recycler.updatePadding(bottom = screenHeight - it.top)
+        }
     }
 
     companion object {
@@ -193,11 +218,9 @@ class GalleryFragment private constructor(
         private const val IS_BOTTOM_SHEET_USED = true
 
         fun init(
-            onAcceptAction: (ImagesResultDto) -> Unit = {},
-            onCancelAction: () -> Unit = {}
+            onResultAction: (ImagesResultDto) -> Unit = {}
         ) = GalleryFragment(
-            onAcceptAction = onAcceptAction,
-            onCancelAction = onCancelAction
+            onResultAction = onResultAction
         )
     }
 }

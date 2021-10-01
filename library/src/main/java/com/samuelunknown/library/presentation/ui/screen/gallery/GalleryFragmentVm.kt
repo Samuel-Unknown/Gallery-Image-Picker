@@ -4,10 +4,12 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.samuelunknown.library.domain.GetImagesUseCase
+import com.samuelunknown.library.domain.model.ImagesResultDto
 import com.samuelunknown.library.presentation.model.GalleryAction
 import com.samuelunknown.library.presentation.model.GalleryItem
 import com.samuelunknown.library.presentation.model.GalleryState
 import com.samuelunknown.library.presentation.model.toGalleryItemImage
+import com.samuelunknown.library.presentation.model.toImageDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,28 +28,28 @@ class GalleryFragmentVm(private val getImagesUseCase: GetImagesUseCase) : ViewMo
         getImages()
     }
 
+    private fun getImages() {
+        viewModelScope.launch {
+            try {
+                val images = getImagesUseCase.execute().subList(0, 100)
+                _stateFlow.emit(GalleryState.Loaded(items = images.map { it.toGalleryItemImage() }))
+            } catch (ex: Exception) {
+//                onAcceptAction(ImagesResultDto.Error.Unknown(ex.localizedMessage))
+            }
+        }
+    }
+
     private fun initSubscriptions() {
         viewModelScope.launch {
             actionFlow.collect { action ->
                 Log.d(TAG, "Action: $action")
                 when (action) {
                     is GalleryAction.ChangeSelectionAction -> handleChangeSelectionAction(action)
+                    is GalleryAction.Pickup -> handlePickupAction()
                     else -> {
                         // TODO
                     }
                 }
-            }
-        }
-    }
-
-    private fun getImages() {
-        viewModelScope.launch {
-            try {
-                val images = getImagesUseCase.execute()
-                _stateFlow.emit(GalleryState.Loaded(items = images.map { it.toGalleryItemImage() }))
-//                onAcceptAction(ImagesResultDto.Success(images.subList(0, 10)))
-            } catch (ex: Exception) {
-//                onAcceptAction(ImagesResultDto.Error.Unknown(ex.localizedMessage))
             }
         }
     }
@@ -78,6 +80,24 @@ class GalleryFragmentVm(private val getImagesUseCase: GetImagesUseCase) : ViewMo
 
             viewModelScope.launch {
                 _stateFlow.emit(GalleryState.Loaded(newItems))
+            }
+        }
+    }
+
+    private fun handlePickupAction() {
+        _stateFlow.value.let { state ->
+            check(state is GalleryState.Loaded)
+
+            val selectedSortedImages = state.items
+                .filterIsInstance<GalleryItem.Image>()
+                .filter(GalleryItem.Image::isSelected)
+                .sortedBy { it.counter }
+                .map { it.toImageDto() }
+
+            val result = ImagesResultDto.Success(selectedSortedImages)
+
+            viewModelScope.launch {
+                _stateFlow.emit(GalleryState.Picked(result))
             }
         }
     }
