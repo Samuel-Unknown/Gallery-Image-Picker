@@ -67,6 +67,17 @@
 
     </androidx.constraintlayout.motion.widget.MotionLayout>
 
+    <View
+        android:id="@+id/pickup_background"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="bottom"
+        android:background="@color/gallery_image_picker__color_pickup_background"
+        android:focusable="true"
+        android:clickable="true"
+        android:visibility="visible"
+        />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/pickup_button"
         style="@style/GalleryImagePicker.Widget.PickupButton"

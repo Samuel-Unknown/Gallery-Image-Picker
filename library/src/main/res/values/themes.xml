@@ -19,7 +19,6 @@
         <item name="bottomSheetStyle">@style/GalleryImagePicker.Widget.BottomSheetDialog</item>
         <item name="android:windowIsFloating">false</item> <!-- This is important -->
         <item name="android:navigationBarColor">#FFFFFF</item>
-        <item name="color">#FF0000</item>
         <!--<item name="android:statusBarColor">#00000000</item>--> <!-- And then this will be needed -->
     </style>
 

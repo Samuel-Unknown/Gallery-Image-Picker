@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
 import androidx.core.view.marginBottom
+import androidx.core.view.marginTop
 import androidx.core.view.updatePadding
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -206,8 +207,12 @@ class GalleryFragment private constructor(
     }
 
     private fun updateRecyclerBottomPadding() {
-        binding.pickupButton.doOnLayout {
-            binding.recycler.updatePadding(bottom = screenHeight - it.top)
+        with(binding) {
+            pickupButton.doOnLayout {
+                val padding = screenHeight - it.top + it.marginTop
+                recycler.updatePadding(bottom = padding)
+                pickupBackground.updateHeight(padding)
+            }
         }
     }
 
