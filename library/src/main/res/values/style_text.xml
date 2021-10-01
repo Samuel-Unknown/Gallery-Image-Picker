@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="GalleryImagePickerTextAppearance.SelectedPicker" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textColor">@color/gallery_image_picker__color_counter_text</item>
         <item name="android:gravity">center</item>
         <item name="android:includeFontPadding">false</item>
         <item name="android:padding">4dp</item>

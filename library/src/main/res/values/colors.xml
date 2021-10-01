@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="gallery_image_picker__color_toolbar">#FFFFFF</color>
+    <color name="gallery_image_picker__color_toolbar_text">#1C1C1C</color>
+    <color name="gallery_image_picker__color_toolbar_icon">#1C1C1C</color>
+    <color name="gallery_image_picker__color_toolbar_icon_highlight">#BDBDBD</color>
+    <color name="gallery_image_picker__color_toolbar_line">#BDBDBD</color>
+    <color name="gallery_image_picker__color_background">#FFFFFF</color>
+    <color name="gallery_image_picker__color_picker">#FFFFFF</color>
+    <color name="gallery_image_picker__color_counter">#7E57C2</color>
+    <color name="gallery_image_picker__color_counter_text">#FFFFFF</color>
+    <color name="gallery_image_picker__color_pick_button">#7E57C2</color>
+</resources>

@@ -1,13 +1,12 @@
 package com.samuelunknown.library.presentation.ui.screen.gallery
 
 import android.content.DialogInterface
-import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
+import androidx.core.view.marginBottom
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -15,10 +14,16 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.math.MathUtils
 import com.samuelunknown.library.R
 import com.samuelunknown.library.databinding.FragmentGalleryBinding
 import com.samuelunknown.library.domain.GetImagesUseCaseImpl
 import com.samuelunknown.library.domain.model.ImagesResultDto
+import com.samuelunknown.library.extensions.getScreenHeight
+import com.samuelunknown.library.extensions.initActionBar
+import com.samuelunknown.library.extensions.setDimVisibility
+import com.samuelunknown.library.extensions.updateHeight
+import com.samuelunknown.library.extensions.updateMargins
 import com.samuelunknown.library.presentation.imageLoader.ImageLoaderFactoryHolder
 import com.samuelunknown.library.presentation.model.GalleryAction
 import com.samuelunknown.library.presentation.model.GalleryState
@@ -34,23 +39,19 @@ class GalleryFragment private constructor(
     private val onAcceptAction: (ImagesResultDto) -> Unit,
     private val onCancelAction: () -> Unit,
 ) : BottomSheetDialogFragment() {
+
+    // region Properties
     private var _binding: FragmentGalleryBinding? = null
     private val binding get() = _binding!!
 
-    private val screenHeight: Int by lazy {
-        val rectangle = Rect()
-        requireActivity().window.decorView.getWindowVisibleDisplayFrame(rectangle)
-        rectangle.height()
-    }
+    private val screenHeight: Int by lazy { requireActivity().getScreenHeight() }
 
-    private val peekHeight: Int by lazy { screenHeight / 3 }
+    private val peekHeight: Int by lazy { (screenHeight * PEEK_HEIGHT_PERCENTAGE).roundToInt() }
+
+    private val pickButtonDefaultBottomMargin: Int by lazy { binding.pickButton.marginBottom }
 
     private val bottomSheet: BottomSheetDialog
         get() = requireDialog() as BottomSheetDialog
-
-    private val vm: GalleryFragmentVm by savedStateViewModel {
-        GalleryFragmentVmFactory(GetImagesUseCaseImpl(requireContext().contentResolver))
-    }
 
     private val galleryAdapter = GalleryAdapter(
         imageLoaderFactory = ImageLoaderFactoryHolder.imageLoaderFactory,
@@ -61,6 +62,12 @@ class GalleryFragment private constructor(
         }
     )
 
+    private val vm: GalleryFragmentVm by savedStateViewModel {
+        GalleryFragmentVmFactory(GetImagesUseCaseImpl(requireContext().contentResolver))
+    }
+    // endregion
+
+    // region Lifecycle
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentGalleryBinding.inflate(inflater, container, false)
         return binding.root
@@ -68,9 +75,10 @@ class GalleryFragment private constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initBottomSheetDialog()
         initRootView()
-        initRecyclerView()
+        initBottomSheetDialog()
+        initToolbar()
+        initRecycler()
         initSubscriptions()
     }
 
@@ -84,21 +92,58 @@ class GalleryFragment private constructor(
         onCancelAction()
         super.onDismiss(dialog)
     }
+    // endregion Lifecycle
+
+    // region Initializations
+    private fun initRootView() {
+        binding.root.updateHeight(screenHeight)
+    }
 
     private fun initBottomSheetDialog() {
-        bottomSheet.behavior.apply {
-            peekHeight = this@GalleryFragment.peekHeight
-            state = BottomSheetBehavior.STATE_COLLAPSED
+        with(bottomSheet) {
+            behavior.apply {
+                if (IS_BOTTOM_SHEET_USED) {
+                    val bottomSheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
+                        override fun onStateChanged(view: View, state: Int) {
+                            val isDimVisible = state != BottomSheetBehavior.STATE_EXPANDED
+                            window?.setDimVisibility(isDimVisible)
+                        }
+
+                        override fun onSlide(view: View, offset: Float) {
+                            val boundedOffset = if (offset < 0) 0f else offset
+                            binding.motionLayout.progress = boundedOffset
+                            updatePickButtonOffset(boundedOffset)
+                        }
+                    }
+
+                    addBottomSheetCallback(bottomSheetCallback)
+                    peekHeight = this@GalleryFragment.peekHeight
+                    isHideable = true
+                    state = BottomSheetBehavior.STATE_COLLAPSED
+                    binding.motionLayout.progress = 0f
+                    updatePickButtonOffset(0f)
+                } else {
+                    peekHeight = screenHeight
+                    isHideable = false
+                    state = BottomSheetBehavior.STATE_EXPANDED
+                    binding.motionLayout.progress = 1f
+                    updatePickButtonOffset(1f)
+                    window?.setDimVisibility(false)
+                }
+            }
         }
     }
 
-    private fun initRootView() {
-        val params = binding.root.layoutParams as FrameLayout.LayoutParams
-        params.height = screenHeight
-        binding.root.layoutParams = params
+    private fun initToolbar() {
+        initActionBar(
+            toolbar = binding.toolbar,
+            title = "Gallery",
+            displayHomeAsUpEnabled = true,
+            navigationAction = { dismiss() }
+        )
     }
 
-    private fun initRecyclerView() {
+    private fun initRecycler() {
         binding.recycler.apply {
             adapter = galleryAdapter
             itemAnimator = GalleryItemAnimator()
@@ -129,11 +174,24 @@ class GalleryFragment private constructor(
             }
         }
     }
+    // endregion
+
+    private fun updatePickButtonOffset(offset: Float) {
+        val bottomMargin = MathUtils.lerp(
+            (pickButtonDefaultBottomMargin + screenHeight - peekHeight).toFloat(),
+            pickButtonDefaultBottomMargin.toFloat(),
+            offset
+        ).toInt()
+
+        binding.pickButton.updateMargins(bottomMargin = bottomMargin)
+    }
 
     companion object {
         private val TAG = GalleryFragment::class.java.simpleName
         private const val SPAN_COUNT = 3
-        
+        private const val PEEK_HEIGHT_PERCENTAGE = 0.7
+        private const val IS_BOTTOM_SHEET_USED = true
+
         fun init(
             onAcceptAction: (ImagesResultDto) -> Unit = {},
             onCancelAction: () -> Unit = {}

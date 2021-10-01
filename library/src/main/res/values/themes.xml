@@ -10,14 +10,22 @@
         <item name="android:windowIsFloating">false</item>
         <item name="android:statusBarColor">#00000000</item>
         <item name="android:navigationBarColor">#00000000</item>
-        <item name="bottomSheetDialogTheme">@style/GalleryImagePickerTheme.BottomSheetDialog</item>
+        <item name="bottomSheetDialogTheme">@style/GalleryImagePickerTheme.Overlay.BottomSheetDialog</item>
     </style>
 
-    <style name="GalleryImagePickerTheme.BottomSheetDialog" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
-        <item name="bottomSheetStyle">@style/GalleryBottomSheetWidget.BottomSheetDialog</item>
-        <!--<item name="android:windowIsFloating">false</item>--> <!-- This is important -->
-        <!--<item name="android:navigationBarColor">#FFFFFF</item>-->
+    <style name="GalleryImagePickerTheme.Overlay.BottomSheetDialog" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/GalleryImagePickerWidget.BottomSheetDialog</item>
+        <item name="android:windowIsFloating">false</item> <!-- This is important -->
+        <item name="android:navigationBarColor">#FFFFFF</item>
         <!--<item name="android:statusBarColor">#00000000</item>--> <!-- And then this will be needed -->
         <!--<item name="android:colorBackground">#FF0000</item>-->
     </style>
+
+    <style name="GalleryImagePickerTheme.Overlay.AppBar" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
+        <item name="colorPrimary">@color/gallery_image_picker__color_toolbar</item>
+        <item name="colorOnPrimary">@color/gallery_image_picker__color_toolbar_text</item>
+        <item name="android:colorControlHighlight">@color/gallery_image_picker__color_toolbar_icon_highlight</item>
+    </style>
+
+    <style name="GalleryImagePickerTheme.Overlay.Popup" parent="ThemeOverlay.MaterialComponents.Light" />
 </resources>

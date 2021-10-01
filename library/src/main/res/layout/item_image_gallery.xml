@@ -6,7 +6,7 @@
     android:id="@+id/item_image_gallery"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:layoutDescription="@xml/item_image_gallery_scene"
+    app:layoutDescription="@xml/scene_item_image_gallery"
     tools:layout_width="wrap_content"
     tools:padding="8dp"
     >
