@@ -1,5 +1,6 @@
 package com.samuelunknown.sample
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -11,13 +12,21 @@ import com.samuelunknown.sample.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
+    @SuppressLint("SetTextI18n")
     private val getImagesLauncher = registerForActivityResult(ImagesResultContract()) { result: ImagesResultDto? ->
         when (result) {
             is ImagesResultDto.Success -> {
-                Log.d(TAG, "images: ${result.images}")
+                if (result.images.isEmpty()) {
+                    binding.result.text = "There is no selected images"
+                } else {
+                    binding.result.text = result.images.joinToString(
+                        prefix = "Images:\n\n",
+                        separator = "\n\n"
+                    )
+                }
             }
             is ImagesResultDto.Error -> {
-                Log.d(TAG, "error: ${result.message}")
+                binding.result.text = "Error: ${result.message}"
             }
         }
     }
@@ -32,9 +41,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initButton() {
         binding.getImages.setOnClickListener {
-            getImagesLauncher.launch(
-                GalleryConfigurationDto()
-            )
+            getImagesLauncher.launch(GalleryConfigurationDto())
         }
     }
 

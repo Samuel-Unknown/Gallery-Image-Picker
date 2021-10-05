@@ -39,5 +39,6 @@ object Versions {
         val constraintLayout = "2.1.0"
         val lifecycle = "2.4.0-alpha03"
         val fragment = "1.3.6"
+        val preference = "1.1.1"
     }
 }

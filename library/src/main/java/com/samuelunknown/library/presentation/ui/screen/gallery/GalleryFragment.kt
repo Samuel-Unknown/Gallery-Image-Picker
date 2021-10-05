@@ -1,5 +1,6 @@
 package com.samuelunknown.library.presentation.ui.screen.gallery
 
+import android.Manifest
 import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
@@ -23,8 +24,10 @@ import com.samuelunknown.library.R
 import com.samuelunknown.library.databinding.FragmentGalleryBinding
 import com.samuelunknown.library.domain.GetImagesUseCaseImpl
 import com.samuelunknown.library.domain.model.ImagesResultDto
+import com.samuelunknown.library.extensions.PermissionResult
 import com.samuelunknown.library.extensions.getScreenHeight
 import com.samuelunknown.library.extensions.initActionBar
+import com.samuelunknown.library.extensions.requestPermission
 import com.samuelunknown.library.extensions.setDimVisibility
 import com.samuelunknown.library.extensions.updateHeight
 import com.samuelunknown.library.extensions.updateMargins
@@ -35,6 +38,7 @@ import com.samuelunknown.library.presentation.ui.savedStateViewModel
 import com.samuelunknown.library.presentation.ui.screen.gallery.recycler.GalleryAdapter
 import com.samuelunknown.library.presentation.ui.screen.gallery.recycler.GalleryItemAnimator
 import com.samuelunknown.library.presentation.ui.screen.gallery.recycler.GridSpacingItemDecoration
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -78,12 +82,17 @@ class GalleryFragment private constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initRootView()
-        initBottomSheetDialog()
-        initToolbar()
-        initRecycler()
-        initPickupButton()
-        initSubscriptions()
+
+        // NB: since vm must be initialized (for collecting actionFlow actions) before views send any actions
+        vm.run {
+            initRootView()
+            initBottomSheetDialog()
+            initToolbar()
+            initRecycler()
+            initPickupButton()
+            initSubscriptions()
+            initPermissionRequest()
+        }
     }
 
     override fun onDestroyView() {
@@ -186,6 +195,35 @@ class GalleryFragment private constructor(
                             onResultAction(state.result)
                             dismiss()
                         }
+                        is GalleryState.Error -> {
+                            onResultAction(state.error)
+                            dismiss()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun initPermissionRequest() {
+        val permission = Manifest.permission.READ_EXTERNAL_STORAGE
+
+        requestPermission(permission) { result ->
+            when (result) {
+                is PermissionResult.Granted -> {
+                    lifecycleScope.launch {
+                        vm.actionFlow.emit(GalleryAction.GetImages)
+                    }
+                }
+                is PermissionResult.NotGranted -> {
+                    lifecycleScope.launch {
+                        delay(DELAY_IN_MILLISECONDS_FOR_SMOOTH_DIALOG_CLOSING_AFTER_PERMISSION_ERROR)
+                        onResultAction(
+                            ImagesResultDto.Error.PermissionError(
+                                permission = permission,
+                                isGrantingPermissionInSettingsRequired = result.isGrantingPermissionInSettingsRequired
+                            )
+                        )
                     }
                 }
             }
@@ -221,6 +259,7 @@ class GalleryFragment private constructor(
         private const val SPAN_COUNT = 3
         private const val PEEK_HEIGHT_PERCENTAGE = 0.7
         private const val IS_BOTTOM_SHEET_USED = true
+        private const val DELAY_IN_MILLISECONDS_FOR_SMOOTH_DIALOG_CLOSING_AFTER_PERMISSION_ERROR = 300L
 
         fun init(
             onResultAction: (ImagesResultDto) -> Unit = {}

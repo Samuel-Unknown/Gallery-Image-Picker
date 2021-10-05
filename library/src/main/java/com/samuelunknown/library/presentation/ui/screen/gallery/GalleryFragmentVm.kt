@@ -25,18 +25,6 @@ class GalleryFragmentVm(private val getImagesUseCase: GetImagesUseCase) : ViewMo
 
     init {
         initSubscriptions()
-        getImages()
-    }
-
-    private fun getImages() {
-        viewModelScope.launch {
-            try {
-                val images = getImagesUseCase.execute().subList(0, 100)
-                _stateFlow.emit(GalleryState.Loaded(items = images.map { it.toGalleryItemImage() }))
-            } catch (ex: Exception) {
-//                onAcceptAction(ImagesResultDto.Error.Unknown(ex.localizedMessage))
-            }
-        }
     }
 
     private fun initSubscriptions() {
@@ -44,12 +32,25 @@ class GalleryFragmentVm(private val getImagesUseCase: GetImagesUseCase) : ViewMo
             actionFlow.collect { action ->
                 Log.d(TAG, "Action: $action")
                 when (action) {
-                    is GalleryAction.ChangeSelectionAction -> handleChangeSelectionAction(action)
+                    is GalleryAction.GetImages -> handleGetImagesAction()
                     is GalleryAction.Pickup -> handlePickupAction()
-                    else -> {
-                        // TODO
-                    }
+                    is GalleryAction.ChangeSelectionAction -> handleChangeSelectionAction(action)
                 }
+            }
+        }
+    }
+
+    private fun handleGetImagesAction() {
+        viewModelScope.launch {
+            try {
+                val images = getImagesUseCase.execute()
+                _stateFlow.emit(
+                    GalleryState.Loaded(items = images.map { it.toGalleryItemImage() })
+                )
+            } catch (ex: Exception) {
+                _stateFlow.emit(
+                    GalleryState.Error(error = ImagesResultDto.Error.Unknown(ex.localizedMessage))
+                )
             }
         }
     }
