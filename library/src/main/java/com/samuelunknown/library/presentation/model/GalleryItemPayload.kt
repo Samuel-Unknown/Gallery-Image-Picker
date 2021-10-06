@@ -1,5 +1,5 @@
 package com.samuelunknown.library.presentation.model
 
-sealed class GalleryItemPayload {
+internal sealed class GalleryItemPayload {
     data class SelectionPayload(val item: GalleryItem.Image)
 }

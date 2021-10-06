@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 
-fun Fragment.initActionBar(
+internal fun Fragment.initActionBar(
     toolbar: Toolbar,
     title: String? = null,
     subtitle: String? = null,

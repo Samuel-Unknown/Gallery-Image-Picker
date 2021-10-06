@@ -43,7 +43,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-class GalleryFragment private constructor(
+internal class GalleryFragment private constructor(
     private val onResultAction: (ImagesResultDto) -> Unit
 ) : BottomSheetDialogFragment() {
 

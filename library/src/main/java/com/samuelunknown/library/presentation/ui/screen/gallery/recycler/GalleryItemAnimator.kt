@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.samuelunknown.library.presentation.model.GalleryItemPayload
 import java.util.*
 
-class GalleryItemAnimator : DefaultItemAnimator() {
+internal class GalleryItemAnimator : DefaultItemAnimator() {
 
     private val viewHoldersInProgress: WeakHashMap<RecyclerView.ViewHolder, UpdateAction> = WeakHashMap()
 

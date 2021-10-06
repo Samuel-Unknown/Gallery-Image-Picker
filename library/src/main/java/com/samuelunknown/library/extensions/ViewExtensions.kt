@@ -3,7 +3,7 @@ package com.samuelunknown.library.extensions
 import android.view.View
 import android.view.ViewGroup
 
-fun View.updateMargins(
+internal fun View.updateMargins(
     startMargin: Int? = null,
     topMargin: Int? = null,
     endMargin: Int? = null,
@@ -17,7 +17,7 @@ fun View.updateMargins(
     this.layoutParams = params
 }
 
-fun View.updateHeight(height: Int) {
+internal fun View.updateHeight(height: Int) {
     val params = this.layoutParams as ViewGroup.LayoutParams
     params.height = height
     this.layoutParams = params

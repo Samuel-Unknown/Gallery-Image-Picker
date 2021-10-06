@@ -9,7 +9,7 @@ import androidx.core.view.WindowInsetsCompat
  * Set an [OnApplyWindowInsetsListener] to take over the policy for applying
  * window insets to this view. This will only take effect on devices with API 21 or above.
  */
-fun View.doOnApplyWindowInsetsListenerCompat(
+internal fun View.doOnApplyWindowInsetsListenerCompat(
     autoClearListener: Boolean = true,
     listener: (View, WindowInsetsCompat) -> Unit
 ) {

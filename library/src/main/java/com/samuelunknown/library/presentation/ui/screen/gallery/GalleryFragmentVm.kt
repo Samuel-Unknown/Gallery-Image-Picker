@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class GalleryFragmentVm(private val getImagesUseCase: GetImagesUseCase) : ViewModel() {
+internal class GalleryFragmentVm(private val getImagesUseCase: GetImagesUseCase) : ViewModel() {
 
     private val _stateFlow = MutableStateFlow<GalleryState>(GalleryState.Init)
     val stateFlow: Flow<GalleryState> = _stateFlow

@@ -7,7 +7,7 @@ import com.samuelunknown.library.domain.model.ImageDto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class GetImagesUseCaseImpl(
+internal class GetImagesUseCaseImpl(
     private val contentResolver: ContentResolver
 ) : GetImagesUseCase {
     override suspend fun execute(mimeTypes: List<String>): List<ImageDto> {

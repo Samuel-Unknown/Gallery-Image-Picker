@@ -10,11 +10,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.savedstate.SavedStateRegistryOwner
 
-interface SavedStateVmAssistedFactory<VM : ViewModel> {
+internal interface SavedStateVmAssistedFactory<VM : ViewModel> {
     fun create(handle: SavedStateHandle): VM
 }
 
-class SavedStateVmFactory<out VM : ViewModel>(
+internal class SavedStateVmFactory<out VM : ViewModel>(
     private val vmFactory: SavedStateVmAssistedFactory<VM>,
     owner: SavedStateRegistryOwner,
     defaultArgs: Bundle? = null
@@ -29,7 +29,7 @@ class SavedStateVmFactory<out VM : ViewModel>(
     }
 }
 
-inline fun <reified VM : ViewModel> AppCompatActivity.savedStateViewModel(
+internal inline fun <reified VM : ViewModel> AppCompatActivity.savedStateViewModel(
     noinline vmFactoryProducer: () -> SavedStateVmAssistedFactory<VM>,
 ): Lazy<VM> {
     return viewModels {
@@ -40,7 +40,7 @@ inline fun <reified VM : ViewModel> AppCompatActivity.savedStateViewModel(
     }
 }
 
-inline fun <reified VM : ViewModel> Fragment.savedStateViewModel(
+internal inline fun <reified VM : ViewModel> Fragment.savedStateViewModel(
     noinline vmFactoryProducer: () -> SavedStateVmAssistedFactory<VM>,
 ): Lazy<VM> {
     return viewModels {

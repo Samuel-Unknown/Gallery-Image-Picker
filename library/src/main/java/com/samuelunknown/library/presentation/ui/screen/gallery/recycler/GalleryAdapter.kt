@@ -10,7 +10,7 @@ import com.samuelunknown.library.presentation.imageLoader.ImageLoader
 import com.samuelunknown.library.presentation.imageLoader.ImageLoaderFactory
 import com.samuelunknown.library.presentation.model.GalleryItem
 
-class GalleryAdapter(
+internal class GalleryAdapter(
     private val imageLoaderFactory: ImageLoaderFactory,
     private val changeSelectionAction: (GalleryItem.Image) -> Unit
 ) : RecyclerView.Adapter<GalleryAdapter.GalleryItemViewHolder>() {
