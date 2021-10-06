@@ -19,8 +19,8 @@ object Versions {
     }
 
     object Kotlin {
-        val stdLib = "1.5.30"
-        val coroutines = "1.5.1"
+        val stdLib = "1.5.31"
+        val coroutines = "1.5.2"
     }
 
     object Google {
@@ -34,10 +34,10 @@ object Versions {
     }
 
     object AndroidX {
-        val appcompat = "1.3.0"
-        val coreKtx = "1.5.0"
-        val constraintLayout = "2.1.0"
-        val lifecycle = "2.4.0-alpha03"
+        val appcompat = "1.3.1"
+        val coreKtx = "1.6.0"
+        val constraintLayout = "2.1.1"
+        val lifecycle = "2.4.0-rc01"
         val fragment = "1.3.6"
         val preference = "1.1.1"
     }

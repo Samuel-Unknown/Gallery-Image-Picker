@@ -2,7 +2,6 @@ package com.samuelunknown.sample
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.samuelunknown.library.domain.model.GalleryConfigurationDto
 import com.samuelunknown.library.domain.model.ImagesResultDto
@@ -43,9 +42,5 @@ class MainActivity : AppCompatActivity() {
         binding.getImages.setOnClickListener {
             getImagesLauncher.launch(GalleryConfigurationDto())
         }
-    }
-
-    companion object {
-        private val TAG = MainActivity::class.java.simpleName
     }
 }
