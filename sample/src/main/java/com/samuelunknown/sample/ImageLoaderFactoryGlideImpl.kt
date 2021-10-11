@@ -6,8 +6,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.samuelunknown.library.presentation.imageLoader.ImageLoader
-import com.samuelunknown.library.presentation.imageLoader.ImageLoaderFactory
+import com.samuelunknown.galleryImagePicker.presentation.imageLoader.ImageLoader
+import com.samuelunknown.galleryImagePicker.presentation.imageLoader.ImageLoaderFactory
 import kotlin.math.roundToInt
 
 class ImageLoaderFactoryGlideImpl : ImageLoaderFactory {

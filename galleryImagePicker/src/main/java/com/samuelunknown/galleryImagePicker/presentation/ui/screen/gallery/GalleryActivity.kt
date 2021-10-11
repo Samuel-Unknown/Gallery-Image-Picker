@@ -1,0 +1,43 @@
+package com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery
+
+import android.app.Activity
+import android.content.Intent
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
+import com.samuelunknown.galleryImagePicker.databinding.ActivityGalleryBinding
+import com.samuelunknown.galleryImagePicker.domain.model.ImagesResultDto
+import com.samuelunknown.galleryImagePicker.extensions.doOnApplyWindowInsetsListenerCompat
+import com.samuelunknown.galleryImagePicker.extensions.putImagesResultDto
+
+class GalleryActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityGalleryBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityGalleryBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        showGalleryFragment()
+    }
+
+    private fun showGalleryFragment() {
+        val galleryFragment = GalleryFragment.init(
+            onResultAction = { imagesResultDto -> finishWithResult(imagesResultDto) },
+        )
+
+        // In order to determine the screen height correctly inside the Gallery Fragment
+        // (in cases with cutouts) we should show GalleryFragment after getting info about windowInsets
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        binding.root.doOnApplyWindowInsetsListenerCompat { _, _ ->
+            galleryFragment.show(supportFragmentManager, galleryFragment.tag)
+        }
+    }
+
+    private fun finishWithResult(result: ImagesResultDto) {
+        setResult(
+            Activity.RESULT_OK,
+            Intent().putImagesResultDto(result)
+        )
+        finish()
+    }
+}
