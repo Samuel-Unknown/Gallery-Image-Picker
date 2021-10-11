@@ -1,7 +1,7 @@
 package com.samuelunknown.sample
 
 import android.app.Application
-import com.samuelunknown.library.GalleryImagePicker
+import com.samuelunknown.galleryImagePicker.GalleryImagePicker
 
 class Application: Application() {
     override fun onCreate() {

@@ -1,6 +1,6 @@
 @Suppress("MayBeConstant")
 
 object ProjectModules {
-    val library = ":library"
+    val galleryImagePicker = ":galleryImagePicker"
     val sample = ":sample"
 }

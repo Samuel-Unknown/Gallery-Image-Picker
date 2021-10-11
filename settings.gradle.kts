@@ -1,5 +1,5 @@
 include(
-    ":library",
+    ":galleryImagePicker",
     ":sample"
 )
 rootProject.name = "Gallery Image Picker"

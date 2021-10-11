@@ -44,7 +44,7 @@ android {
 
 dependencies {
     // Gallery Image Picker
-    implementation(project(ProjectModules.library))
+    implementation(project(ProjectModules.galleryImagePicker))
 
     // Kotlin
     implementation(Libraries.Kotlin.stdLib)
