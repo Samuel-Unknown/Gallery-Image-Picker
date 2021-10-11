@@ -5,8 +5,9 @@
 Android library for picking images.
 
 **Features:**
-* You can use any image loading library (*Glide*, *Picasso*, *Coil* etc.)
+* You can use any image loading library for previews (*Glide*, *Picasso*, *Coil* etc.)
 * Permission processing
+* Returns name and Uri for picked images
 
 <img src="/Gallery-Image-Picker.gif?raw=true" width="300px" align="middle">
 
