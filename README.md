@@ -1,5 +1,10 @@
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.samuel-unknown/gallery-image-picker/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.samuel-unknown/gallery-image-picker)
+
+
 # Gallery-Image-Picker
 Android library for picking images.
+
+![Sample](https://samuel-unknown.com/wp-content/uploads/2021/10/Gallery-Image-Picker.gif)
 
 **Features:**
 * You can use any image loading library (*Glide*, *Picasso*, *Coil* etc.)
@@ -108,6 +113,7 @@ class MainActivity : AppCompatActivity() {
 
 # License
 
+```
    Copyright 2021 Samuel Unknown
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -121,3 +127,4 @@ class MainActivity : AppCompatActivity() {
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+```
