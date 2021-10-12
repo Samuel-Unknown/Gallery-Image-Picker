@@ -27,77 +27,85 @@ dependencies {
 ```
 
 ## Usage
-<details>
-  <summary>Click to expand</summary>
-
 1. Create `ImageLoaderFactory` implementation  
-```Kotlin
-// Example with Glide 
-class ImageLoaderFactoryGlideImpl : ImageLoaderFactory {
-    override fun create(): ImageLoader = object : ImageLoader {
-        override fun load(imageView: ImageView, uri: Uri) {
+    <details>
+        <summary>Click to expand</summary>
+   
+    ```Kotlin
+    // Example with Glide 
+    class ImageLoaderFactoryGlideImpl : ImageLoaderFactory {
+        override fun create(): ImageLoader = object : ImageLoader {
+            override fun load(imageView: ImageView, uri: Uri) {
 
-            val radius = imageView.context.resources
-                .getDimension(R.dimen.image_corner_radius)
-                .roundToInt()
+                val radius = imageView.context.resources
+                    .getDimension(R.dimen.image_corner_radius)
+                    .roundToInt()
 
-            Glide.with(imageView)
-                .load(uri)
-                .transform(
-                    MultiTransformation(
-                        CenterCrop(),
-                        RoundedCorners(radius)
+                Glide.with(imageView)
+                    .load(uri)
+                    .transform(
+                        MultiTransformation(
+                            CenterCrop(),
+                            RoundedCorners(radius)
+                        )
                     )
-                )
-                .placeholder(R.drawable.bg_placeholder)
-                .into(imageView)
-        }
+                    .placeholder(R.drawable.bg_placeholder)
+                    .into(imageView)
+            }
 
-        override fun cancel(imageView: ImageView) {
-            Glide.with(imageView).clear(imageView)
+            override fun cancel(imageView: ImageView) {
+                Glide.with(imageView).clear(imageView)
+            }
         }
     }
-}
-```
+    ```
+    </details>
 
 2. Initialize library with `ImageLoaderFactory` implementation
-```Kotlin
-  class Application: Application() {
-    override fun onCreate() {
-        super.onCreate()
-        
-        GalleryImagePicker.init(ImageLoaderFactoryGlideImpl())
+    <details>
+        <summary>Click to expand</summary>
+    
+    ```Kotlin
+      class Application: Application() {
+        override fun onCreate() {
+            super.onCreate()
+
+            GalleryImagePicker.init(ImageLoaderFactoryGlideImpl())
+        }
     }
-}
-```
+    ```
+    </details>
 
 3. Register launcher and launch it when it needed
-```Kotlin
-class MainActivity : AppCompatActivity() {
+    <details>
+        <summary>Click to expand</summary>
     
-    private val getImagesLauncher = registerForActivityResult(ImagesResultContract()) { result: ImagesResultDto ->
-        when (result) {
-            is ImagesResultDto.Success -> {
-                result.images.forEach { imageDto ->
-                    Log.d(TAG, "imageDto: $imageDto")
-                 }
+    ```Kotlin
+    class MainActivity : AppCompatActivity() {
+
+        private val getImagesLauncher = registerForActivityResult(ImagesResultContract()) { result: ImagesResultDto ->
+            when (result) {
+                is ImagesResultDto.Success -> {
+                    result.images.forEach { imageDto ->
+                        Log.d(TAG, "imageDto: $imageDto")
+                     }
+                }
+                is ImagesResultDto.Error -> {
+                    Log.d(TAG, "error: ${result.message}")
+                }
             }
-            is ImagesResultDto.Error -> {
-                Log.d(TAG, "error: ${result.message}")
+        }
+
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+
+            openGalleryButtonView.setOnClickListener {
+                getImagesLauncher.launch(GalleryConfigurationDto())
             }
         }
     }
-    
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    
-        openGalleryButtonView.setOnClickListener {
-            getImagesLauncher.launch(GalleryConfigurationDto())
-        }
-    }
-}
-```
-</details>
+    ```
+    </details>
 
 ## Development roadmap
 #### Version 1.1.*
@@ -109,8 +117,7 @@ class MainActivity : AppCompatActivity() {
 #### Version 1.3.*
 - [ ] Camera integration (preview and capture)
 
-# License
-
+## License
 ```
 Copyright 2021 Samuel Unknown
 
