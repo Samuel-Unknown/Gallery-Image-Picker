@@ -99,9 +99,10 @@ class MainActivity : AppCompatActivity() {
 ```
 </details>
 
-## Development Roadmap
+## Development roadmap
 #### Version 1.1.*
 - [x] Mime types support with config
+- [ ] Handle screen orientation changes
 - [ ] UI customizations
 #### Version 1.2.*
 - [ ] Directory selection
