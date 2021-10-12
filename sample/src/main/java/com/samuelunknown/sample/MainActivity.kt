@@ -12,7 +12,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     @SuppressLint("SetTextI18n")
-    private val getImagesLauncher = registerForActivityResult(ImagesResultContract()) { result: ImagesResultDto? ->
+    private val getImagesLauncher = registerForActivityResult(ImagesResultContract()) { result: ImagesResultDto ->
         when (result) {
             is ImagesResultDto.Success -> {
                 if (result.images.isEmpty()) {

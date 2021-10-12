@@ -4,9 +4,9 @@ Android library for picking images.
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.samuel-unknown/gallery-image-picker/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.samuel-unknown/gallery-image-picker)
 
 **Features:**
-* You can use any image loading library for previews (*Glide*, *Picasso*, *Coil* etc.)
-* Permission processing
-* Returns name and Uri for picked images
+- You can use any image loading library for previews (*Glide*, *Picasso*, *Coil* etc.)
+- Permission processing
+- Returns name and Uri for picked images
 
 <img src="/Gallery-Image-Picker.gif?raw=true" width="300px" align="middle">
 
