@@ -1,8 +1,7 @@
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.samuel-unknown/gallery-image-picker/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.samuel-unknown/gallery-image-picker)
-
-
 # Gallery-Image-Picker
 Android library for picking images.
+
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.samuel-unknown/gallery-image-picker/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.samuel-unknown/gallery-image-picker)
 
 **Features:**
 * You can use any image loading library for previews (*Glide*, *Picasso*, *Coil* etc.)
@@ -12,6 +11,7 @@ Android library for picking images.
 <img src="/Gallery-Image-Picker.gif?raw=true" width="300px" align="middle">
 
 ## Add library to a project
+Add the mavenCentral repository in root build.gradle:
 ```
 allprojects {
     repositories {
@@ -19,6 +19,7 @@ allprojects {
     }
 }
 ```
+Add the following dependency in app build.gradle:
 ```
 dependencies {
     implementation 'io.github.samuel-unknown:gallery-image-picker:1.0.1'
@@ -73,8 +74,7 @@ class ImageLoaderFactoryGlideImpl : ImageLoaderFactory {
 3. Register launcher and launch it when it needed
 ```Kotlin
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
-
+    
     private val getImagesLauncher = registerForActivityResult(ImagesResultContract()) { result: ImagesResultDto ->
         when (result) {
             is ImagesResultDto.Success -> {
@@ -90,14 +90,10 @@ class MainActivity : AppCompatActivity() {
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        getImagesLauncher.launch(GalleryConfigurationDto())
-    }
-
-    companion object {
-        private val TAG = MainActivity::class.java.simpleName
+    
+        openGalleryButtonView.setOnClickListener {
+            getImagesLauncher.launch(GalleryConfigurationDto())
+        }
     }
 }
 ```
