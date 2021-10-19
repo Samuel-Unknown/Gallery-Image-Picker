@@ -40,5 +40,6 @@ object Versions {
         val lifecycle = "2.4.0-rc01"
         val fragment = "1.3.6"
         val preference = "1.1.1"
+        val window = "1.0.0-beta02"
     }
 }

@@ -41,7 +41,7 @@
         <item name="android:paddingTop">12dp</item>
         <item name="android:paddingRight">48dp</item>
         <item name="android:paddingBottom">12dp</item>
-        <item name="android:text">Accept</item>
+        <item name="android:text">@string/gallery_image_picker__accept_button</item>
         <item name="android:textAppearance">@style/GalleryImagePicker.TextAppearance.Button</item>
         <item name="android:textColor">@color/gallery_image_picker__color_pickup_button_text</item>
         <item name="cornerRadius">80dp</item>

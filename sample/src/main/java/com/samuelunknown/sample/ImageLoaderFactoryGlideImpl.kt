@@ -1,5 +1,6 @@
 package com.samuelunknown.sample
 
+import android.content.Context
 import android.net.Uri
 import android.widget.ImageView
 import com.bumptech.glide.Glide
@@ -10,15 +11,18 @@ import com.samuelunknown.galleryImagePicker.presentation.imageLoader.ImageLoader
 import com.samuelunknown.galleryImagePicker.presentation.imageLoader.ImageLoaderFactory
 import kotlin.math.roundToInt
 
-class ImageLoaderFactoryGlideImpl : ImageLoaderFactory {
+class ImageLoaderFactoryGlideImpl(private val appContext: Context) : ImageLoaderFactory {
+
+    val radius: Int by lazy {
+        appContext.resources
+            .getDimension(R.dimen.image_corner_radius)
+            .roundToInt()
+    }
+
     override fun create(): ImageLoader = object : ImageLoader {
         override fun load(imageView: ImageView, uri: Uri) {
 
-            val radius = imageView.context.resources
-                .getDimension(R.dimen.image_corner_radius)
-                .roundToInt()
-
-            Glide.with(imageView)
+            Glide.with(appContext)
                 .load(uri)
                 .transform(
                     MultiTransformation(
@@ -31,7 +35,7 @@ class ImageLoaderFactoryGlideImpl : ImageLoaderFactory {
         }
 
         override fun cancel(imageView: ImageView) {
-            Glide.with(imageView).clear(imageView)
+            Glide.with(appContext).clear(imageView)
         }
     }
 }

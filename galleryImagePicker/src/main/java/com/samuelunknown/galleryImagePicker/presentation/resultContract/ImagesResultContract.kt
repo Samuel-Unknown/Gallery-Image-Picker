@@ -1,4 +1,4 @@
-package com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery
+package com.samuelunknown.galleryImagePicker.presentation.resultContract
 
 import android.app.Activity
 import android.content.Context
@@ -8,6 +8,7 @@ import com.samuelunknown.galleryImagePicker.extensions.getImagesResultDto
 import com.samuelunknown.galleryImagePicker.extensions.putGalleryConfigurationDto
 import com.samuelunknown.galleryImagePicker.domain.model.GalleryConfigurationDto
 import com.samuelunknown.galleryImagePicker.domain.model.ImagesResultDto
+import com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.GalleryActivity
 
 class ImagesResultContract : ActivityResultContract<GalleryConfigurationDto, ImagesResultDto>() {
     override fun createIntent(context: Context, galleryConfigurationDto: GalleryConfigurationDto) =

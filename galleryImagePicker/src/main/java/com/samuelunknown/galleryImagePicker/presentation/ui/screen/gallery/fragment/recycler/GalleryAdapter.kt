@@ -1,4 +1,4 @@
-package com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.recycler
+package com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.fragment.recycler
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

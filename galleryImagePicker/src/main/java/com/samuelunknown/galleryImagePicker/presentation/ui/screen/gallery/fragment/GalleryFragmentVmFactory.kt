@@ -1,4 +1,4 @@
-package com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery
+package com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.fragment
 
 import androidx.lifecycle.SavedStateHandle
 import com.samuelunknown.galleryImagePicker.domain.GetImagesUseCase

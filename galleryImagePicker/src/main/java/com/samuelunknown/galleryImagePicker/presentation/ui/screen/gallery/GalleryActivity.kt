@@ -7,37 +7,39 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import com.samuelunknown.galleryImagePicker.databinding.ActivityGalleryBinding
 import com.samuelunknown.galleryImagePicker.domain.model.ImagesResultDto
-import com.samuelunknown.galleryImagePicker.extensions.doOnApplyWindowInsetsListenerCompat
 import com.samuelunknown.galleryImagePicker.extensions.putImagesResultDto
+import com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.fragment.GalleryFragment
 
-class GalleryActivity : AppCompatActivity() {
+internal class GalleryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityGalleryBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityGalleryBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        showGalleryFragment()
-    }
+    private val galleryFragment: GalleryFragment
+        get() = supportFragmentManager.findFragmentByTag(GalleryFragment.TAG) as GalleryFragment
 
-    private fun showGalleryFragment() {
-        val galleryFragment = GalleryFragment.init(
-            onResultAction = { imagesResultDto -> finishWithResult(imagesResultDto) },
-        )
-
-        // In order to determine the screen height correctly inside the Gallery Fragment
-        // (in cases with cutouts) we should show GalleryFragment after getting info about windowInsets
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        binding.root.doOnApplyWindowInsetsListenerCompat { _, _ ->
-            galleryFragment.show(supportFragmentManager, galleryFragment.tag)
-        }
-    }
-
-    private fun finishWithResult(result: ImagesResultDto) {
+    private val onResultAction: (ImagesResultDto) -> Unit = { result ->
         setResult(
             Activity.RESULT_OK,
             Intent().putImagesResultDto(result)
         )
         finish()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityGalleryBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        if (savedInstanceState == null) {
+            showGalleryFragment()
+        } else {
+            galleryFragment.setOnResultAction(onResultAction)
+        }
+    }
+
+    private fun showGalleryFragment() {
+        val galleryFragment = GalleryFragment.init(onResultAction)
+        galleryFragment.show(supportFragmentManager, GalleryFragment.TAG)
     }
 }

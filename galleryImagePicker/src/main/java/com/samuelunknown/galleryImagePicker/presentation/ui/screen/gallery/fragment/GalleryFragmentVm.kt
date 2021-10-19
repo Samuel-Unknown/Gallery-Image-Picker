@@ -1,6 +1,5 @@
-package com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery
+package com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.fragment
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.samuelunknown.galleryImagePicker.domain.GetImagesUseCase
@@ -30,7 +29,6 @@ internal class GalleryFragmentVm(private val getImagesUseCase: GetImagesUseCase)
     private fun initSubscriptions() {
         viewModelScope.launch {
             actionFlow.collect { action ->
-                Log.d(TAG, "Action: $action")
                 when (action) {
                     is GalleryAction.GetImages -> handleGetImagesAction()
                     is GalleryAction.Pickup -> handlePickupAction()
@@ -41,6 +39,10 @@ internal class GalleryFragmentVm(private val getImagesUseCase: GetImagesUseCase)
     }
 
     private fun handleGetImagesAction() {
+        if (_stateFlow.value is GalleryState.Loaded) {
+            return
+        }
+
         viewModelScope.launch {
             try {
                 val images = getImagesUseCase.execute()

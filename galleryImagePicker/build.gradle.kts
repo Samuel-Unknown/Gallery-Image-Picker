@@ -40,6 +40,7 @@ dependencies {
     implementation(Libraries.AndroidX.fragmentKtx)
     implementation(Libraries.AndroidX.preference)
     implementation(Libraries.AndroidX.Lifecycle.runtimeKtx)
+    implementation(Libraries.AndroidX.window)
 
     // Material
     implementation(Libraries.Google.Android.material)

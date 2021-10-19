@@ -10,6 +10,6 @@ class Application: Application() {
     }
 
     private fun initGalleryImagePickerLib() {
-        GalleryImagePicker.init(ImageLoaderFactoryGlideImpl())
+        GalleryImagePicker.init(ImageLoaderFactoryGlideImpl(appContext = this))
     }
 }

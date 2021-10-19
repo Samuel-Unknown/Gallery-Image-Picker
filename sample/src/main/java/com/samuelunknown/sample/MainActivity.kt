@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.samuelunknown.galleryImagePicker.domain.model.GalleryConfigurationDto
 import com.samuelunknown.galleryImagePicker.domain.model.ImagesResultDto
-import com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.ImagesResultContract
+import com.samuelunknown.galleryImagePicker.presentation.resultContract.ImagesResultContract
 import com.samuelunknown.sample.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {

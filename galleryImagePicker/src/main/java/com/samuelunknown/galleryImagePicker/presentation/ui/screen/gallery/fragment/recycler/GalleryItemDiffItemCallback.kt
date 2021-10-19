@@ -1,4 +1,4 @@
-package com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.recycler
+package com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.fragment.recycler
 
 import androidx.recyclerview.widget.DiffUtil
 import com.samuelunknown.galleryImagePicker.presentation.model.GalleryItem

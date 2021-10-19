@@ -1,4 +1,4 @@
-package com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.recycler
+package com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.fragment.recycler
 
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.motion.widget.TransitionAdapter

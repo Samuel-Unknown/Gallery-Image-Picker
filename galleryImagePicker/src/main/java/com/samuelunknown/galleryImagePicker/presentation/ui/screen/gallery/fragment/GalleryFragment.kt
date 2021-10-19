@@ -1,9 +1,8 @@
-package com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery
+package com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.fragment
 
 import android.Manifest
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +24,7 @@ import com.samuelunknown.galleryImagePicker.databinding.FragmentGalleryBinding
 import com.samuelunknown.galleryImagePicker.domain.GetImagesUseCaseImpl
 import com.samuelunknown.galleryImagePicker.domain.model.ImagesResultDto
 import com.samuelunknown.galleryImagePicker.extensions.PermissionResult
-import com.samuelunknown.galleryImagePicker.extensions.getScreenHeight
+import com.samuelunknown.galleryImagePicker.extensions.calculateScreenHeightWithoutSystemBars
 import com.samuelunknown.galleryImagePicker.extensions.initActionBar
 import com.samuelunknown.galleryImagePicker.extensions.requestPermission
 import com.samuelunknown.galleryImagePicker.extensions.setDimVisibility
@@ -35,27 +34,29 @@ import com.samuelunknown.galleryImagePicker.presentation.imageLoader.ImageLoader
 import com.samuelunknown.galleryImagePicker.presentation.model.GalleryAction
 import com.samuelunknown.galleryImagePicker.presentation.model.GalleryState
 import com.samuelunknown.galleryImagePicker.presentation.ui.savedStateViewModel
-import com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.recycler.GalleryAdapter
-import com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.recycler.GalleryItemAnimator
-import com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.recycler.GridSpacingItemDecoration
+import com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.fragment.recycler.GalleryAdapter
+import com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.fragment.recycler.GalleryItemAnimator
+import com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.fragment.recycler.GridSpacingItemDecoration
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-internal class GalleryFragment private constructor(
-    private val onResultAction: (ImagesResultDto) -> Unit
-) : BottomSheetDialogFragment() {
+internal class GalleryFragment : BottomSheetDialogFragment() {
 
     // region Properties
+    private var onResultAction: ((ImagesResultDto) -> Unit)? = null
+    private var result: ImagesResultDto? = null
+
     private var _binding: FragmentGalleryBinding? = null
     private val binding get() = _binding!!
 
-    private val screenHeight: Int by lazy { requireActivity().getScreenHeight() }
+    private var screenHeight: Int = 0
+    private var peekHeight: Int = 0
 
-    private val peekHeight: Int by lazy { (screenHeight * PEEK_HEIGHT_PERCENTAGE).roundToInt() }
-
-    private val pickButtonDefaultBottomMargin: Int by lazy { binding.pickupButton.marginBottom }
+    private val pickButtonDefaultBottomMargin: Int by lazy(LazyThreadSafetyMode.NONE) {
+        binding.pickupButton.marginBottom
+    }
 
     private val bottomSheet: BottomSheetDialog
         get() = requireDialog() as BottomSheetDialog
@@ -85,13 +86,18 @@ internal class GalleryFragment private constructor(
 
         // NB: since vm must be initialized (for collecting actionFlow actions) before views send any actions
         vm.run {
-            initRootView()
-            initBottomSheetDialog()
-            initToolbar()
-            initRecycler()
-            initPickupButton()
-            initSubscriptions()
-            initPermissionRequest()
+            requireActivity().calculateScreenHeightWithoutSystemBars() { height ->
+                screenHeight = height
+                peekHeight = (screenHeight * PEEK_HEIGHT_PERCENTAGE).roundToInt()
+
+                initRootView()
+                initBottomSheetDialog()
+                initToolbar()
+                initRecycler()
+                initPickupButton()
+                initSubscriptions()
+                initPermissionRequest()
+            }
         }
     }
 
@@ -102,7 +108,13 @@ internal class GalleryFragment private constructor(
     }
 
     override fun onDismiss(dialog: DialogInterface) {
-        onResultAction(ImagesResultDto.Success())
+        // NB: the result is empty when we press the back button
+        // on bottom navigation or somewhere outside of BottomSheet
+
+        if (requireActivity().isChangingConfigurations.not()) {
+            onResultAction?.invoke(result ?: ImagesResultDto.Success())
+        }
+
         super.onDismiss(dialog)
     }
     // endregion Lifecycle
@@ -150,7 +162,7 @@ internal class GalleryFragment private constructor(
     private fun initToolbar() {
         initActionBar(
             toolbar = binding.toolbar,
-            title = "Gallery",
+            title = getString(R.string.gallery_image_picker__toolbar),
             displayHomeAsUpEnabled = true,
             navigationAction = { dismiss() }
         )
@@ -160,6 +172,7 @@ internal class GalleryFragment private constructor(
         binding.recycler.apply {
             adapter = galleryAdapter
             itemAnimator = GalleryItemAnimator()
+            setHasFixedSize(true)
             addItemDecoration(
                 GridSpacingItemDecoration(
                     spanCount = SPAN_COUNT,
@@ -182,7 +195,6 @@ internal class GalleryFragment private constructor(
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.stateFlow.collect { state ->
-                    Log.d(TAG, "State: $state")
                     when (state) {
                         is GalleryState.Init -> {
                             binding.pickupButton.isVisible = false
@@ -192,12 +204,10 @@ internal class GalleryFragment private constructor(
                             galleryAdapter.updateItems(state.items)
                         }
                         is GalleryState.Picked -> {
-                            onResultAction(state.result)
-                            dismiss()
+                            finishWithResult(state.result)
                         }
                         is GalleryState.Error -> {
-                            onResultAction(state.error)
-                            dismiss()
+                            finishWithResult(state.error)
                         }
                     }
                 }
@@ -218,7 +228,7 @@ internal class GalleryFragment private constructor(
                 is PermissionResult.NotGranted -> {
                     lifecycleScope.launch {
                         delay(DELAY_IN_MILLISECONDS_FOR_SMOOTH_DIALOG_CLOSING_AFTER_PERMISSION_ERROR)
-                        onResultAction(
+                        finishWithResult(
                             ImagesResultDto.Error.PermissionError(
                                 permission = permission,
                                 isGrantingPermissionInSettingsRequired = result.isGrantingPermissionInSettingsRequired
@@ -240,11 +250,7 @@ internal class GalleryFragment private constructor(
 
         binding.pickupButton.updateMargins(bottomMargin = bottomMargin)
 
-        // since pickupButton position changed we need update Recycler bottom padding
-        updateRecyclerBottomPadding()
-    }
-
-    private fun updateRecyclerBottomPadding() {
+        // since pickupButton position changed we need update Recycler bottom padding and pickupBackground height
         with(binding) {
             pickupButton.doOnLayout {
                 val padding = screenHeight - it.top + it.marginTop
@@ -254,17 +260,23 @@ internal class GalleryFragment private constructor(
         }
     }
 
+    private fun finishWithResult(resultDto: ImagesResultDto) {
+        result = resultDto
+        dismiss()
+    }
+
+    internal fun setOnResultAction(onResultAction: (ImagesResultDto) -> Unit = {}) {
+        this.onResultAction = onResultAction
+    }
+
     companion object {
-        private val TAG = GalleryFragment::class.java.simpleName
+        val TAG: String = GalleryFragment::class.java.simpleName
         private const val SPAN_COUNT = 3
         private const val PEEK_HEIGHT_PERCENTAGE = 0.7
         private const val IS_BOTTOM_SHEET_USED = true
         private const val DELAY_IN_MILLISECONDS_FOR_SMOOTH_DIALOG_CLOSING_AFTER_PERMISSION_ERROR = 300L
 
-        fun init(
-            onResultAction: (ImagesResultDto) -> Unit = {}
-        ) = GalleryFragment(
-            onResultAction = onResultAction
-        )
+        fun init(onResultAction: (ImagesResultDto) -> Unit = {}) =
+            GalleryFragment().also { it.setOnResultAction(onResultAction) }
     }
 }

@@ -5,7 +5,8 @@ internal object ImageLoaderFactoryHolder {
     private var _imageLoaderFactory: ImageLoaderFactory? = null
 
     val imageLoaderFactory: ImageLoaderFactory
-        get() = _imageLoaderFactory ?: throw IllegalStateException("GalleryImagePicker.init()")
+        get() = _imageLoaderFactory
+            ?: throw IllegalStateException("Did you forget to call `GalleryImagePicker.init()`?")
 
     fun init(factory: ImageLoaderFactory) {
         _imageLoaderFactory = factory

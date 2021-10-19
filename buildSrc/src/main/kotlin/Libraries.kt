@@ -27,6 +27,7 @@ object Libraries {
         val constraintLayout = "androidx.constraintlayout:constraintlayout:${Versions.AndroidX.constraintLayout}"
         val fragmentKtx = "androidx.fragment:fragment-ktx:${Versions.AndroidX.fragment}"
         val preference ="androidx.preference:preference-ktx:${Versions.AndroidX.preference}"
+        val window = "androidx.window:window:${Versions.AndroidX.window}"
 
         object Lifecycle {
             val runtimeKtx = "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.AndroidX.lifecycle}"

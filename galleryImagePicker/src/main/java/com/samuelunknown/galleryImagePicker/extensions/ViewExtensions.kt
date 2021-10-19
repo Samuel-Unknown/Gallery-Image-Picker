@@ -22,3 +22,9 @@ internal fun View.updateHeight(height: Int) {
     params.height = height
     this.layoutParams = params
 }
+
+internal fun View.updateWidth(width: Int) {
+    val params = this.layoutParams as ViewGroup.LayoutParams
+    params.width = width
+    this.layoutParams = params
+}
