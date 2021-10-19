@@ -9,3 +9,5 @@
 .cxx
 local.properties
 /publish.properties
+/keystore.properties
+/release.jks

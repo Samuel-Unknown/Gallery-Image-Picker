@@ -1,3 +1,6 @@
+import java.util.Properties
+import java.io.FileReader
+
 plugins {
     id(ANDROID_APPLICATION_PLUGIN)
     id(KOTLIN_ANDROID_PLUGIN)
@@ -29,9 +32,24 @@ android {
         }
     }
 
+    signingConfigs {
+        create("release") {
+            val keystorePropertiesFile = rootProject.file(Keystore.Files.Release.properties)
+            val keystoreFile = rootProject.file(Keystore.Files.Release.jks)
+            val keystoreProperties = Properties()
+            FileReader(keystorePropertiesFile).use { reader -> keystoreProperties.load(reader) }
+
+            storeFile = keystoreFile
+            storePassword = keystoreProperties.getProperty(Keystore.Properties.storePassword)
+            keyAlias = keystoreProperties.getProperty(Keystore.Properties.keyAlias)
+            keyPassword = keystoreProperties.getProperty(Keystore.Properties.keyPassword)
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
+            signingConfig = signingConfigs.getByName("release")
             setProguardFiles(
                 listOf(
                     getDefaultProguardFile("proguard-android-optimize.txt"),
