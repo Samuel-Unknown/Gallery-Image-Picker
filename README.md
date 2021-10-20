@@ -22,7 +22,7 @@ allprojects {
 Add the following dependency in app build.gradle:
 ```
 dependencies {
-    implementation 'io.github.samuel-unknown:gallery-image-picker:1.0.1'
+    implementation 'io.github.samuel-unknown:gallery-image-picker:1.0.2'
 }
 ```
 
@@ -33,15 +33,18 @@ dependencies {
    
     ```Kotlin
     // Example with Glide 
-    class ImageLoaderFactoryGlideImpl : ImageLoaderFactory {
+    class ImageLoaderFactoryGlideImpl(private val appContext: Context) : ImageLoaderFactory {
+
+        val radius: Int by lazy {
+            appContext.resources
+                .getDimension(R.dimen.image_corner_radius)
+                .roundToInt()
+        }
+
         override fun create(): ImageLoader = object : ImageLoader {
             override fun load(imageView: ImageView, uri: Uri) {
 
-                val radius = imageView.context.resources
-                    .getDimension(R.dimen.image_corner_radius)
-                    .roundToInt()
-
-                Glide.with(imageView)
+                Glide.with(appContext)
                     .load(uri)
                     .transform(
                         MultiTransformation(
@@ -54,7 +57,7 @@ dependencies {
             }
 
             override fun cancel(imageView: ImageView) {
-                Glide.with(imageView).clear(imageView)
+                Glide.with(appContext).clear(imageView)
             }
         }
     }
@@ -66,11 +69,14 @@ dependencies {
         <summary>Click to expand</summary>
     
     ```Kotlin
-      class Application: Application() {
+    class Application: Application() {
         override fun onCreate() {
             super.onCreate()
+            initGalleryImagePickerLib()
+        }
 
-            GalleryImagePicker.init(ImageLoaderFactoryGlideImpl())
+        private fun initGalleryImagePickerLib() {
+            GalleryImagePicker.init(ImageLoaderFactoryGlideImpl(appContext = this))
         }
     }
     ```
@@ -109,8 +115,8 @@ dependencies {
 
 ## Development roadmap
 #### Version 1.1.*
-- [x] Mime types support with config
-- [ ] Handle screen orientation changes
+- [ ] Mime types support with config
+- [x] Handle screen orientation changes
 - [ ] UI customizations
 #### Version 1.2.*
 - [ ] Directory selection
