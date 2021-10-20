@@ -1,6 +1,7 @@
 package com.samuelunknown.galleryImagePicker.extensions
 
 import android.content.pm.PackageManager
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -13,7 +14,10 @@ private fun getSharedPreferencesPermissionKey(permission: String): String =
 
 internal sealed class PermissionResult {
     object Granted : PermissionResult()
-    data class NotGranted(val isGrantingPermissionInSettingsRequired: Boolean) : PermissionResult()
+    data class NotGranted(
+        val permission: String,
+        val isGrantingPermissionInSettingsRequired: Boolean
+    ) : PermissionResult()
 }
 
 internal fun Fragment.getWasPermissionRequestedRationale(permission: String): Boolean {
@@ -31,42 +35,72 @@ internal fun Fragment.setWasPermissionRequestedRationale(permission: String) {
     }
 }
 
-internal fun Fragment.requestPermission(
-    permission: String,
-    resultAction: (result: PermissionResult) -> Unit
-) {
-    if (isPermissionGranted(permission)) {
-        resultAction(PermissionResult.Granted)
-        return
-    }
-
-    val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) {
-            resultAction(PermissionResult.Granted)
-        } else {
-            resultAction(
-                PermissionResult.NotGranted(
-                    isGrantingPermissionInSettingsRequired = getWasPermissionRequestedRationale(permission)
-                )
-            )
-        }
-    }
-
-    if (shouldShowRequestPermissionRationale(permission)) {
-        requestPermissionLauncher.launch(permission)
-        setWasPermissionRequestedRationale(permission)
-    } else {
-        if (getWasPermissionRequestedRationale(permission)) {
-            resultAction(PermissionResult.NotGranted(isGrantingPermissionInSettingsRequired = true))
-        } else {
-            requestPermissionLauncher.launch(permission)
-        }
-    }
-}
-
 internal fun Fragment.isPermissionGranted(permission: String): Boolean {
     val result = ContextCompat.checkSelfPermission(requireContext(), permission)
     return result == PackageManager.PERMISSION_GRANTED
+}
+
+internal class PermissionLauncher private constructor(
+    private val fragment: Fragment,
+    private val permission: String,
+    private val resultAction: (result: PermissionResult) -> Unit,
+    private val requestPermissionLauncher: ActivityResultLauncher<String>
+) {
+
+    fun request() {
+        if (fragment.isPermissionGranted(permission)) {
+            resultAction(PermissionResult.Granted)
+            return
+        }
+
+        if (fragment.shouldShowRequestPermissionRationale(permission)) {
+            requestPermissionLauncher.launch(permission)
+            fragment.setWasPermissionRequestedRationale(permission)
+        } else {
+            if (fragment.getWasPermissionRequestedRationale(permission)) {
+                resultAction(
+                    PermissionResult.NotGranted(
+                        permission = permission,
+                        isGrantingPermissionInSettingsRequired = true
+                    )
+                )
+            } else {
+                requestPermissionLauncher.launch(permission)
+            }
+        }
+    }
+
+    companion object {
+        fun init(
+            fragment: Fragment,
+            permission: String,
+            resultAction: (result: PermissionResult) -> Unit
+        ): PermissionLauncher {
+
+            val requestPermissionLauncher = fragment.registerForActivityResult(
+                ActivityResultContracts.RequestPermission()
+            ) { isGranted: Boolean ->
+                if (isGranted) {
+                    resultAction(PermissionResult.Granted)
+                } else {
+                    val isGrantingPermissionInSettingsRequired = fragment
+                        .getWasPermissionRequestedRationale(permission)
+
+                    resultAction(
+                        PermissionResult.NotGranted(
+                            permission = permission,
+                            isGrantingPermissionInSettingsRequired = isGrantingPermissionInSettingsRequired
+                        )
+                    )
+                }
+            }
+
+            return PermissionLauncher(
+                fragment = fragment,
+                permission = permission,
+                resultAction = resultAction,
+                requestPermissionLauncher = requestPermissionLauncher
+            )
+        }
+    }
 }

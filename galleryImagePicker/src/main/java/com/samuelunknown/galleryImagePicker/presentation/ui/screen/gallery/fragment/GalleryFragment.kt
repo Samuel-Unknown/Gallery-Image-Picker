@@ -23,10 +23,10 @@ import com.samuelunknown.galleryImagePicker.R
 import com.samuelunknown.galleryImagePicker.databinding.FragmentGalleryBinding
 import com.samuelunknown.galleryImagePicker.domain.GetImagesUseCaseImpl
 import com.samuelunknown.galleryImagePicker.domain.model.ImagesResultDto
+import com.samuelunknown.galleryImagePicker.extensions.PermissionLauncher
 import com.samuelunknown.galleryImagePicker.extensions.PermissionResult
 import com.samuelunknown.galleryImagePicker.extensions.calculateScreenHeightWithoutSystemBars
 import com.samuelunknown.galleryImagePicker.extensions.initActionBar
-import com.samuelunknown.galleryImagePicker.extensions.requestPermission
 import com.samuelunknown.galleryImagePicker.extensions.setDimVisibility
 import com.samuelunknown.galleryImagePicker.extensions.updateHeight
 import com.samuelunknown.galleryImagePicker.extensions.updateMargins
@@ -73,6 +73,31 @@ internal class GalleryFragment : BottomSheetDialogFragment() {
     private val vm: GalleryFragmentVm by savedStateViewModel {
         GalleryFragmentVmFactory(GetImagesUseCaseImpl(requireContext().contentResolver))
     }
+
+    private val permissionLauncher = PermissionLauncher.init(
+        fragment = this,
+        permission = Manifest.permission.READ_EXTERNAL_STORAGE,
+        resultAction = { result ->
+            when (result) {
+                is PermissionResult.Granted -> {
+                    lifecycleScope.launch {
+                        vm.actionFlow.emit(GalleryAction.GetImages)
+                    }
+                }
+                is PermissionResult.NotGranted -> {
+                    lifecycleScope.launch {
+                        delay(DELAY_IN_MILLISECONDS_FOR_SMOOTH_DIALOG_CLOSING_AFTER_PERMISSION_ERROR)
+                        finishWithResult(
+                            ImagesResultDto.Error.PermissionError(
+                                permission = result.permission,
+                                isGrantingPermissionInSettingsRequired = result.isGrantingPermissionInSettingsRequired
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    )
     // endregion
 
     // region Lifecycle
@@ -96,7 +121,8 @@ internal class GalleryFragment : BottomSheetDialogFragment() {
                 initRecycler()
                 initPickupButton()
                 initSubscriptions()
-                initPermissionRequest()
+
+                permissionLauncher.request()
             }
         }
     }
@@ -209,31 +235,6 @@ internal class GalleryFragment : BottomSheetDialogFragment() {
                         is GalleryState.Error -> {
                             finishWithResult(state.error)
                         }
-                    }
-                }
-            }
-        }
-    }
-
-    private fun initPermissionRequest() {
-        val permission = Manifest.permission.READ_EXTERNAL_STORAGE
-
-        requestPermission(permission) { result ->
-            when (result) {
-                is PermissionResult.Granted -> {
-                    lifecycleScope.launch {
-                        vm.actionFlow.emit(GalleryAction.GetImages)
-                    }
-                }
-                is PermissionResult.NotGranted -> {
-                    lifecycleScope.launch {
-                        delay(DELAY_IN_MILLISECONDS_FOR_SMOOTH_DIALOG_CLOSING_AFTER_PERMISSION_ERROR)
-                        finishWithResult(
-                            ImagesResultDto.Error.PermissionError(
-                                permission = permission,
-                                isGrantingPermissionInSettingsRequired = result.isGrantingPermissionInSettingsRequired
-                            )
-                        )
                     }
                 }
             }
