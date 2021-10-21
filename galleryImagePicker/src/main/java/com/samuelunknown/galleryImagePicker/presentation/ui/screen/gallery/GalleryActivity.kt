@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import com.samuelunknown.galleryImagePicker.databinding.ActivityGalleryBinding
 import com.samuelunknown.galleryImagePicker.domain.model.ImagesResultDto
+import com.samuelunknown.galleryImagePicker.extensions.getGalleryConfigurationDto
 import com.samuelunknown.galleryImagePicker.extensions.putImagesResultDto
 import com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.fragment.GalleryFragment
 
@@ -39,7 +40,10 @@ internal class GalleryActivity : AppCompatActivity() {
     }
 
     private fun showGalleryFragment() {
-        val galleryFragment = GalleryFragment.init(onResultAction)
+        val galleryFragment = GalleryFragment.init(
+            galleryConfigurationDto = intent.getGalleryConfigurationDto(),
+            onResultAction = onResultAction
+        )
         galleryFragment.show(supportFragmentManager, GalleryFragment.TAG)
     }
 }

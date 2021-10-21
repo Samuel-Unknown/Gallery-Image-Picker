@@ -6,7 +6,7 @@ import com.samuelunknown.galleryImagePicker.domain.model.ImagesResultDto
 import java.lang.Exception
 
 private const val EXTRA_IMAGES_RESULT_DTO = "EXTRA_IMAGES_RESULT_DTO"
-private const val EXTRA_CONFIGURATION_DTO = "EXTRA_GALLERY_CONFIGURATION_DTO"
+private const val EXTRA_CONFIGURATION_DTO = "EXTRA_CONFIGURATION_DTO"
 
 internal fun Intent.getImagesResultDto(): ImagesResultDto? {
     return this.getParcelableExtra(EXTRA_IMAGES_RESULT_DTO)

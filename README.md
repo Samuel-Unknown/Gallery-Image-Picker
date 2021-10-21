@@ -115,9 +115,9 @@ dependencies {
 
 ## Development roadmap
 #### Version 1.1.*
-- [ ] Mime types support with config *(in progress)*
+- [x] Mime types support with config
 - [x] Handle screen orientation changes
-- [ ] UI customizations
+- [ ] UI customizations *(in progress)*
 #### Version 1.2.*
 - [ ] Directory choosing 
 - [ ] Perfomance improvements

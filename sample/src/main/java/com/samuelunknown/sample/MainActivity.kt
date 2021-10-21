@@ -40,7 +40,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun initButton() {
         binding.getImages.setOnClickListener {
-            getImagesLauncher.launch(GalleryConfigurationDto())
+            getImagesLauncher.launch(
+                GalleryConfigurationDto(
+                    mimeTypes = listOf("image/jpeg", "image/png")
+                )
+            )
         }
     }
 }

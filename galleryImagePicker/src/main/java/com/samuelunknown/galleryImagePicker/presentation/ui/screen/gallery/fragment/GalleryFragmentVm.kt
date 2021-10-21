@@ -3,6 +3,7 @@ package com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.frag
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.samuelunknown.galleryImagePicker.domain.GetImagesUseCase
+import com.samuelunknown.galleryImagePicker.domain.model.GalleryConfigurationDto
 import com.samuelunknown.galleryImagePicker.domain.model.ImagesResultDto
 import com.samuelunknown.galleryImagePicker.presentation.model.GalleryAction
 import com.samuelunknown.galleryImagePicker.presentation.model.GalleryItem
@@ -15,7 +16,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-internal class GalleryFragmentVm(private val getImagesUseCase: GetImagesUseCase) : ViewModel() {
+internal class GalleryFragmentVm(
+    private val configurationDto: GalleryConfigurationDto,
+    private val getImagesUseCase: GetImagesUseCase
+) : ViewModel() {
 
     private val _stateFlow = MutableStateFlow<GalleryState>(GalleryState.Init)
     val stateFlow: Flow<GalleryState> = _stateFlow
@@ -45,7 +49,9 @@ internal class GalleryFragmentVm(private val getImagesUseCase: GetImagesUseCase)
 
         viewModelScope.launch {
             try {
-                val images = getImagesUseCase.execute()
+                val images = getImagesUseCase.execute(
+                    mimeTypes = configurationDto.mimeTypes ?: listOf()
+                )
                 _stateFlow.emit(
                     GalleryState.Loaded(items = images.map { it.toGalleryItemImage() })
                 )
