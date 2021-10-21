@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
 import androidx.core.view.marginBottom
@@ -22,6 +23,7 @@ import com.google.android.material.math.MathUtils
 import com.samuelunknown.galleryImagePicker.R
 import com.samuelunknown.galleryImagePicker.databinding.FragmentGalleryBinding
 import com.samuelunknown.galleryImagePicker.domain.GetImagesUseCaseImpl
+import com.samuelunknown.galleryImagePicker.domain.model.GalleryConfigurationDto
 import com.samuelunknown.galleryImagePicker.domain.model.ImagesResultDto
 import com.samuelunknown.galleryImagePicker.extensions.PermissionLauncher
 import com.samuelunknown.galleryImagePicker.extensions.PermissionResult
@@ -71,7 +73,10 @@ internal class GalleryFragment : BottomSheetDialogFragment() {
     )
 
     private val vm: GalleryFragmentVm by savedStateViewModel {
-        GalleryFragmentVmFactory(GetImagesUseCaseImpl(requireContext().contentResolver))
+        GalleryFragmentVmFactory(
+            configurationDto = configurationDto,
+            getImagesUseCase = GetImagesUseCaseImpl(requireContext().contentResolver)
+        )
     }
 
     private val permissionLauncher = PermissionLauncher.init(
@@ -98,6 +103,11 @@ internal class GalleryFragment : BottomSheetDialogFragment() {
             }
         }
     )
+
+    private val configurationDto: GalleryConfigurationDto by lazy(LazyThreadSafetyMode.NONE) {
+        arguments?.getParcelable<GalleryConfigurationDto>(EXTRA_ARGUMENT_DTO)
+            ?: throw Exception("arguments is null)")
+    }
     // endregion
 
     // region Lifecycle
@@ -276,8 +286,14 @@ internal class GalleryFragment : BottomSheetDialogFragment() {
         private const val PEEK_HEIGHT_PERCENTAGE = 0.7
         private const val IS_BOTTOM_SHEET_USED = true
         private const val DELAY_IN_MILLISECONDS_FOR_SMOOTH_DIALOG_CLOSING_AFTER_PERMISSION_ERROR = 300L
+        private const val EXTRA_ARGUMENT_DTO = "EXTRA_ARGUMENT_DTO"
 
-        fun init(onResultAction: (ImagesResultDto) -> Unit = {}) =
-            GalleryFragment().also { it.setOnResultAction(onResultAction) }
+        fun init(
+            galleryConfigurationDto: GalleryConfigurationDto,
+            onResultAction: (ImagesResultDto) -> Unit = {}
+        ) = GalleryFragment().also {
+            it.setOnResultAction(onResultAction)
+            it.arguments = bundleOf(EXTRA_ARGUMENT_DTO to galleryConfigurationDto)
+        }
     }
 }
