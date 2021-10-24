@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">sample</string>
-    <string name="main_activity_get_images">Get Images</string>
+    <string name="main_activity__get_images">Get Images</string>
+
+    <string name="main_activity__mime_info">If nothing is checked mime filter won\'t apply*</string>
+    <string name="main_activity__mime_image_jpeg">image/jpeg</string>
+    <string name="main_activity__mime_image_png">image/png</string>
+    <string name="main_activity__mime_image_gif">image/gif</string>
+
 </resources>

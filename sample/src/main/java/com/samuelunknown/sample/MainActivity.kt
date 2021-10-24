@@ -42,9 +42,22 @@ class MainActivity : AppCompatActivity() {
         binding.getImages.setOnClickListener {
             getImagesLauncher.launch(
                 GalleryConfigurationDto(
-                    mimeTypes = listOf("image/jpeg", "image/png")
+                    mimeTypes = getMimeTypes()
                 )
             )
         }
+    }
+
+    // todo remove. Use vm state to get current selected mime types
+    private fun getMimeTypes(): List<String> {
+        val mutableList = mutableListOf<String>()
+        if (binding.mimeJpeg.isChecked)
+            mutableList.add("image/jpeg")
+        if (binding.mimePng.isChecked)
+            mutableList.add("image/png")
+        if (binding.mimeGif.isChecked)
+            mutableList.add("image/gif")
+
+        return mutableList
     }
 }
