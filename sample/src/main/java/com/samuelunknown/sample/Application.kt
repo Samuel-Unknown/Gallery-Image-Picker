@@ -11,5 +11,7 @@ class Application: Application() {
 
     private fun initGalleryImagePickerLib() {
         GalleryImagePicker.init(ImageLoaderFactoryGlideImpl(appContext = this))
+        // NB: we can use another implementation if we want.
+        // GalleryImagePicker.init(ImageLoaderFactoryCoilImpl(appContext = this))
     }
 }

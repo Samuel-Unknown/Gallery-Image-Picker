@@ -1,6 +1,7 @@
 @file:Suppress("MayBeConstant")
 
 object Versions {
+    val coil = "2.0.0-alpha01"
     val glide = "4.12.0"
 
     object Sdk {

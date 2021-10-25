@@ -64,6 +64,7 @@ internal class GalleryFragment : BottomSheetDialogFragment() {
         get() = requireDialog() as BottomSheetDialog
 
     private val galleryAdapter = GalleryAdapter(
+        spanCount = SPAN_COUNT,
         imageLoaderFactory = ImageLoaderFactoryHolder.imageLoaderFactory,
         changeSelectionAction = { item ->
             lifecycleScope.launch {

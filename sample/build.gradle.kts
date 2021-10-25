@@ -80,4 +80,7 @@ dependencies {
     // Glide
     implementation(Libraries.Glide.glide)
     kapt(Libraries.Glide.compiler)
+
+    // Coil
+    implementation(Libraries.coil)
 }

@@ -1,6 +1,8 @@
 @file:Suppress("MayBeConstant")
 
 object Libraries {
+    val coil = "io.coil-kt:coil:${Versions.coil}"
+
     object Glide {
         val glide = "com.github.bumptech.glide:glide:${Versions.glide}"
         val compiler = "com.github.bumptech.glide:compiler:${Versions.glide}"
