@@ -3,6 +3,7 @@ package com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.frag
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.IdRes
+import androidx.annotation.Px
 import androidx.core.view.doOnAttach
 import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -17,6 +18,7 @@ import com.samuelunknown.galleryImagePicker.presentation.model.GalleryItem
 
 internal class GalleryAdapter(
     private val spanCount: Int,
+    @Px private val spacingSize: Int,
     private val imageLoaderFactory: ImageLoaderFactory,
     private val changeSelectionAction: (GalleryItem.Image) -> Unit
 ) : RecyclerView.Adapter<GalleryAdapter.GalleryItemViewHolder>() {
@@ -43,8 +45,7 @@ internal class GalleryAdapter(
         )
 
         fun setImageSize(@IdRes constraintSetId: Int) {
-            val space = 4 * binding.root.context.resources
-                .getDimensionPixelSize(R.dimen.gallery_image_picker__grid_spacing)
+            val space = (spanCount + 1) * spacingSize
             val size = (parent.width - space) / spanCount
 
             with(binding) {

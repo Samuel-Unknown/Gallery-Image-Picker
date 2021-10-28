@@ -39,8 +39,8 @@ dependencies {
     implementation(Libraries.AndroidX.constraintLayout)
     implementation(Libraries.AndroidX.fragmentKtx)
     implementation(Libraries.AndroidX.preference)
-    implementation(Libraries.AndroidX.Lifecycle.runtimeKtx)
     implementation(Libraries.AndroidX.window)
+    implementation(Libraries.AndroidX.Lifecycle.runtimeKtx)
 
     // Material
     implementation(Libraries.Google.Android.material)

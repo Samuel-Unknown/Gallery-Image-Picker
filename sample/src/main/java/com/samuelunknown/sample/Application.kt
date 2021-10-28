@@ -2,6 +2,7 @@ package com.samuelunknown.sample
 
 import android.app.Application
 import com.samuelunknown.galleryImagePicker.GalleryImagePicker
+import com.samuelunknown.sample.imageLoaderFactory.ImageLoaderFactoryGlideImpl
 
 class Application: Application() {
     override fun onCreate() {

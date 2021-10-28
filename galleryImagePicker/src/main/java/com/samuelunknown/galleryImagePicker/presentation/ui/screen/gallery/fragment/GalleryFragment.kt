@@ -56,29 +56,8 @@ internal class GalleryFragment : BottomSheetDialogFragment() {
     private var screenHeight: Int = 0
     private var peekHeight: Int = 0
 
-    private val pickButtonDefaultBottomMargin: Int by lazy(LazyThreadSafetyMode.NONE) {
-        binding.pickupButton.marginBottom
-    }
-
     private val bottomSheet: BottomSheetDialog
         get() = requireDialog() as BottomSheetDialog
-
-    private val galleryAdapter = GalleryAdapter(
-        spanCount = SPAN_COUNT,
-        imageLoaderFactory = ImageLoaderFactoryHolder.imageLoaderFactory,
-        changeSelectionAction = { item ->
-            lifecycleScope.launch {
-                vm.actionFlow.emit(GalleryAction.ChangeSelectionAction(item))
-            }
-        }
-    )
-
-    private val vm: GalleryFragmentVm by savedStateViewModel {
-        GalleryFragmentVmFactory(
-            configurationDto = configurationDto,
-            getImagesUseCase = GetImagesUseCaseImpl(requireContext().contentResolver)
-        )
-    }
 
     private val permissionLauncher = PermissionLauncher.init(
         fragment = this,
@@ -108,6 +87,30 @@ internal class GalleryFragment : BottomSheetDialogFragment() {
     private val configurationDto: GalleryConfigurationDto by lazy(LazyThreadSafetyMode.NONE) {
         arguments?.getParcelable<GalleryConfigurationDto>(EXTRA_ARGUMENT_DTO)
             ?: throw Exception("arguments is null)")
+    }
+
+    private val pickButtonDefaultBottomMargin: Int by lazy(LazyThreadSafetyMode.NONE) {
+        binding.pickupButton.marginBottom
+    }
+
+    private val galleryAdapter: GalleryAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        GalleryAdapter(
+            spanCount = configurationDto.spanCount,
+            spacingSize = configurationDto.spacingSize,
+            imageLoaderFactory = ImageLoaderFactoryHolder.imageLoaderFactory,
+            changeSelectionAction = { item ->
+                lifecycleScope.launch {
+                    vm.actionFlow.emit(GalleryAction.ChangeSelectionAction(item))
+                }
+            }
+        )
+    }
+
+    private val vm: GalleryFragmentVm by savedStateViewModel {
+        GalleryFragmentVmFactory(
+            configurationDto = configurationDto,
+            getImagesUseCase = GetImagesUseCaseImpl(requireContext().contentResolver)
+        )
     }
     // endregion
 
@@ -212,11 +215,11 @@ internal class GalleryFragment : BottomSheetDialogFragment() {
             setHasFixedSize(true)
             addItemDecoration(
                 GridSpacingItemDecoration(
-                    spanCount = SPAN_COUNT,
-                    spacing = resources.getDimension(R.dimen.gallery_image_picker__grid_spacing).roundToInt()
+                    spanCount = configurationDto.spanCount,
+                    spacing = configurationDto.spacingSize
                 )
             )
-            (layoutManager as GridLayoutManager).spanCount = SPAN_COUNT
+            (layoutManager as GridLayoutManager).spanCount = configurationDto.spanCount
         }
     }
 
@@ -283,7 +286,6 @@ internal class GalleryFragment : BottomSheetDialogFragment() {
 
     companion object {
         val TAG: String = GalleryFragment::class.java.simpleName
-        private const val SPAN_COUNT = 3
         private const val PEEK_HEIGHT_PERCENTAGE = 0.7
         private const val IS_BOTTOM_SHEET_USED = true
         private const val DELAY_IN_MILLISECONDS_FOR_SMOOTH_DIALOG_CLOSING_AFTER_PERMISSION_ERROR = 300L
