@@ -3,6 +3,8 @@ package com.samuelunknown.sample.mainActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isInvisible
+import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -10,6 +12,7 @@ import com.samuelunknown.galleryImagePicker.domain.model.ImagesResultDto
 import com.samuelunknown.galleryImagePicker.presentation.resultContract.ImagesResultContract
 import com.samuelunknown.sample.databinding.ActivityMainBinding
 import com.samuelunknown.sample.extensions.setIsCheckedIfItDoesNotMatch
+import com.samuelunknown.sample.extensions.setTextIfItDoesNotMatch
 import com.samuelunknown.sample.mainActivity.MainActivityAction.ViewAction
 import com.samuelunknown.sample.mainActivity.MainActivityAction.VmAction
 import kotlinx.coroutines.flow.collect
@@ -33,6 +36,11 @@ class MainActivity : AppCompatActivity() {
 
         initGetImagesButton()
         initMimeTypeFilterCheckboxes()
+        initSpanCountEditText()
+        initSpacingSizeEditText()
+        initOpenLikeBottomSheetCheckbox()
+        initPeekHeightEditText()
+
         initStateSubscription()
         initViewActionSubscription()
     }
@@ -63,6 +71,38 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun initSpanCountEditText() {
+        binding.span.doAfterTextChanged { editable ->
+            lifecycleScope.launch {
+                vm.emitAction(VmAction.ChangeSpanCountAction(editable.toString()))
+            }
+        }
+    }
+
+    private fun initSpacingSizeEditText() {
+        binding.spacing.doAfterTextChanged { editable ->
+            lifecycleScope.launch {
+                vm.emitAction(VmAction.ChangeSpacingSizeAction(editable.toString()))
+            }
+        }
+    }
+
+    private fun initOpenLikeBottomSheetCheckbox() {
+        binding.openLikeBottomSheet.setOnCheckedChangeListener { _, isChecked ->
+            lifecycleScope.launch {
+                vm.emitAction(VmAction.ChangeOpenLikeBottomSheetAction(isChecked))
+            }
+        }
+    }
+
+    private fun initPeekHeightEditText() {
+        binding.peekHeight.doAfterTextChanged { editable ->
+            lifecycleScope.launch {
+                vm.emitAction(VmAction.ChangePeekHeightAction(editable.toString()))
+            }
+        }
+    }
+
     private fun initStateSubscription() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -80,6 +120,17 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                     }
+
+                    binding.span.setTextIfItDoesNotMatch(state.spanCount?.toString() ?: "")
+                    binding.spanWrapper.error = state.spanCountError
+
+                    binding.spacing.setTextIfItDoesNotMatch(state.spacingSizeInPixels?.toString() ?: "")
+                    binding.spacingWrapper.error = state.spacingSizeInPixelsError
+
+                    binding.openLikeBottomSheet.setIsCheckedIfItDoesNotMatch(state.openLikeBottomSheet)
+                    binding.peekHeight.setTextIfItDoesNotMatch(state.peekHeightInPercents?.toString() ?: "")
+                    binding.peekHeightWrapper.error = state.peekHeightError
+                    binding.peekHeightWrapper.isInvisible = state.openLikeBottomSheet.not()
 
                     binding.result.text = state.resultText
                 }

@@ -42,7 +42,6 @@ import com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.fragm
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
 
 internal class GalleryFragment : BottomSheetDialogFragment() {
 
@@ -96,7 +95,7 @@ internal class GalleryFragment : BottomSheetDialogFragment() {
     private val galleryAdapter: GalleryAdapter by lazy(LazyThreadSafetyMode.NONE) {
         GalleryAdapter(
             spanCount = configurationDto.spanCount,
-            spacingSize = configurationDto.spacingSize,
+            spacingSize = configurationDto.spacingSizeInPixels,
             imageLoaderFactory = ImageLoaderFactoryHolder.imageLoaderFactory,
             changeSelectionAction = { item ->
                 lifecycleScope.launch {
@@ -127,7 +126,7 @@ internal class GalleryFragment : BottomSheetDialogFragment() {
         vm.run {
             requireActivity().calculateScreenHeightWithoutSystemBars() { height ->
                 screenHeight = height
-                peekHeight = (screenHeight * PEEK_HEIGHT_PERCENTAGE).roundToInt()
+                peekHeight = screenHeight * configurationDto.peekHeightInPercents / 100
 
                 initRootView()
                 initBottomSheetDialog()
@@ -167,7 +166,7 @@ internal class GalleryFragment : BottomSheetDialogFragment() {
     private fun initBottomSheetDialog() {
         with(bottomSheet) {
             behavior.apply {
-                if (IS_BOTTOM_SHEET_USED) {
+                if (configurationDto.openLikeBottomSheet) {
                     val bottomSheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
                         override fun onStateChanged(view: View, state: Int) {
                             val isDimVisible = state != BottomSheetBehavior.STATE_EXPANDED
@@ -216,7 +215,7 @@ internal class GalleryFragment : BottomSheetDialogFragment() {
             addItemDecoration(
                 GridSpacingItemDecoration(
                     spanCount = configurationDto.spanCount,
-                    spacing = configurationDto.spacingSize
+                    spacing = configurationDto.spacingSizeInPixels
                 )
             )
             (layoutManager as GridLayoutManager).spanCount = configurationDto.spanCount
@@ -286,8 +285,6 @@ internal class GalleryFragment : BottomSheetDialogFragment() {
 
     companion object {
         val TAG: String = GalleryFragment::class.java.simpleName
-        private const val PEEK_HEIGHT_PERCENTAGE = 0.7
-        private const val IS_BOTTOM_SHEET_USED = true
         private const val DELAY_IN_MILLISECONDS_FOR_SMOOTH_DIALOG_CLOSING_AFTER_PERMISSION_ERROR = 300L
         private const val EXTRA_ARGUMENT_DTO = "EXTRA_ARGUMENT_DTO"
 

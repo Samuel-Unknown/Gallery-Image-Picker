@@ -44,9 +44,36 @@ class MainActivityVm : ViewModel() {
                     is VmAction.ChangeResultAction -> {
                         changeResultText(action)
                     }
+                    is VmAction.ChangeSpacingSizeAction -> changeSpacingSize(action)
+                    is VmAction.ChangeSpanCountAction -> changeSpanCount(action)
+                    is VmAction.ChangeOpenLikeBottomSheetAction -> changeOpenLikeBottomSheet(action)
+                    is VmAction.ChangePeekHeightAction -> changePeekHeight(action)
                 }
             }
         }
+    }
+
+    private suspend fun prepareToOpenGallery() {
+        val spanCount = _stateFlow.value.spanCount ?: return
+        val spacingSizeInPixels = _stateFlow.value.spacingSizeInPixels ?: return
+        val peekHeightInPercents = _stateFlow.value.peekHeightInPercents ?: return
+
+        val dto = GalleryConfigurationDto(
+            spanCount = spanCount,
+            spacingSizeInPixels = spacingSizeInPixels,
+            openLikeBottomSheet = _stateFlow.value.openLikeBottomSheet,
+            peekHeightInPercents = peekHeightInPercents,
+            mimeTypes = _stateFlow.value.mimeTypes
+        )
+        _viewActionFlow.emit(ViewAction.OpenGalleryAction(dto))
+    }
+
+    private suspend fun changeMimeTypeFilter(action: VmAction.ChangeMimeTypeFilterAction) {
+        val newMimeTypeFilters = _stateFlow.value.mimeTypeFilters.toMutableList()
+        val index = newMimeTypeFilters.indexOfFirst { it.name == action.mimeTypeFilter.name }
+        newMimeTypeFilters[index] = action.mimeTypeFilter
+
+        _stateFlow.emit(_stateFlow.value.copy(mimeTypeFilters = newMimeTypeFilters))
     }
 
     private suspend fun changeResultText(action: VmAction.ChangeResultAction) {
@@ -65,20 +92,77 @@ class MainActivityVm : ViewModel() {
         _stateFlow.emit(newState)
     }
 
-    private suspend fun prepareToOpenGallery() {
-        val dto = GalleryConfigurationDto(
-            spanCount = _stateFlow.value.spanCount,
-            spacingSize = _stateFlow.value.spacingSizeInPixels,
-            mimeTypes = _stateFlow.value.mimeTypes
-        )
-        _viewActionFlow.emit(ViewAction.OpenGalleryAction(dto))
+    private suspend fun changeSpanCount(action: VmAction.ChangeSpanCountAction) {
+        val newState = try {
+            val spanCount = action.spanCountText.toInt()
+            if (spanCount > 0) {
+                _stateFlow.value.copy(
+                    spanCount = spanCount,
+                    spanCountError = null
+                )
+            } else {
+                _stateFlow.value.copy(
+                    spanCount = null,
+                    spanCountError = MainActivityState.EMPTY_VALUE_ERROR
+                )
+            }
+       } catch (ex: Exception) {
+            _stateFlow.value.copy(
+                spanCount = null,
+                spanCountError = MainActivityState.EMPTY_VALUE_ERROR
+            )
+       }
+        _stateFlow.emit(newState)
     }
 
-    private suspend fun changeMimeTypeFilter(action: VmAction.ChangeMimeTypeFilterAction) {
-        val newMimeTypeFilters = _stateFlow.value.mimeTypeFilters.toMutableList()
-        val index = newMimeTypeFilters.indexOfFirst { it.name == action.mimeTypeFilter.name }
-        newMimeTypeFilters[index] = action.mimeTypeFilter
+    private suspend fun changeSpacingSize(action: VmAction.ChangeSpacingSizeAction) {
+        val newState = try {
+            val spacingSizeInPixels = action.spacingSizeText.toInt()
+            if (spacingSizeInPixels >= 0) {
+                _stateFlow.value.copy(
+                    spacingSizeInPixels = spacingSizeInPixels,
+                    spacingSizeInPixelsError = null
+                )
+            } else {
+                _stateFlow.value.copy(
+                    spacingSizeInPixels = null,
+                    spacingSizeInPixelsError = MainActivityState.EMPTY_VALUE_ERROR
+                )
+            }
+        } catch (ex: Exception) {
+            _stateFlow.value.copy(
+                spacingSizeInPixels = null,
+                spacingSizeInPixelsError = MainActivityState.EMPTY_VALUE_ERROR
+            )
+        }
+        _stateFlow.emit(newState)
+    }
 
-        _stateFlow.emit(_stateFlow.value.copy(mimeTypeFilters = newMimeTypeFilters))
+    private suspend fun changePeekHeight(action: VmAction.ChangePeekHeightAction) {
+        val newState = try {
+            val peekHeightInPercents = action.peekHeightText.toInt()
+            if (peekHeightInPercents in 0..100) {
+                _stateFlow.value.copy(
+                    peekHeightInPercents = peekHeightInPercents,
+                    peekHeightError = null
+                )
+            } else {
+                _stateFlow.value.copy(
+                    peekHeightInPercents = null,
+                    peekHeightError = MainActivityState.EMPTY_VALUE_ERROR
+                )
+            }
+        } catch (ex: Exception) {
+            _stateFlow.value.copy(
+                peekHeightInPercents = null,
+                peekHeightError = MainActivityState.EMPTY_VALUE_ERROR
+            )
+        }
+        _stateFlow.emit(newState)
+    }
+
+    private suspend fun changeOpenLikeBottomSheet(action: VmAction.ChangeOpenLikeBottomSheetAction) {
+        val newState =_stateFlow.value.copy(openLikeBottomSheet = action.openLikeBottomSheet)
+        _stateFlow.emit(newState)
     }
 }
