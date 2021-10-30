@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
 import androidx.core.view.marginBottom
@@ -43,10 +42,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-internal class GalleryFragment : BottomSheetDialogFragment() {
+internal class GalleryFragment private constructor(
+    private val configurationDto: GalleryConfigurationDto,
+    private val onResultAction: (ImagesResultDto) -> Unit = {}
+) : BottomSheetDialogFragment() {
 
     // region Properties
-    private var onResultAction: ((ImagesResultDto) -> Unit)? = null
     private var result: ImagesResultDto? = null
 
     private var _binding: FragmentGalleryBinding? = null
@@ -82,11 +83,6 @@ internal class GalleryFragment : BottomSheetDialogFragment() {
             }
         }
     )
-
-    private val configurationDto: GalleryConfigurationDto by lazy(LazyThreadSafetyMode.NONE) {
-        arguments?.getParcelable<GalleryConfigurationDto>(EXTRA_ARGUMENT_DTO)
-            ?: throw Exception("arguments is null)")
-    }
 
     private val pickButtonDefaultBottomMargin: Int by lazy(LazyThreadSafetyMode.NONE) {
         binding.pickupButton.marginBottom
@@ -124,7 +120,7 @@ internal class GalleryFragment : BottomSheetDialogFragment() {
 
         // NB: since vm must be initialized (for collecting actionFlow actions) before views send any actions
         vm.run {
-            requireActivity().calculateScreenHeightWithoutSystemBars() { height ->
+            requireActivity().calculateScreenHeightWithoutSystemBars { height ->
                 screenHeight = height
                 peekHeight = screenHeight * configurationDto.peekHeightInPercents / 100
 
@@ -151,7 +147,7 @@ internal class GalleryFragment : BottomSheetDialogFragment() {
         // on bottom navigation or somewhere outside of BottomSheet
 
         if (requireActivity().isChangingConfigurations.not()) {
-            onResultAction?.invoke(result ?: ImagesResultDto.Success())
+            onResultAction.invoke(result ?: ImagesResultDto.Success())
         }
 
         super.onDismiss(dialog)
@@ -279,21 +275,16 @@ internal class GalleryFragment : BottomSheetDialogFragment() {
         dismiss()
     }
 
-    internal fun setOnResultAction(onResultAction: (ImagesResultDto) -> Unit = {}) {
-        this.onResultAction = onResultAction
-    }
-
     companion object {
         val TAG: String = GalleryFragment::class.java.simpleName
         private const val DELAY_IN_MILLISECONDS_FOR_SMOOTH_DIALOG_CLOSING_AFTER_PERMISSION_ERROR = 300L
-        private const val EXTRA_ARGUMENT_DTO = "EXTRA_ARGUMENT_DTO"
 
         fun init(
-            galleryConfigurationDto: GalleryConfigurationDto,
+            configurationDto: GalleryConfigurationDto,
             onResultAction: (ImagesResultDto) -> Unit = {}
-        ) = GalleryFragment().also {
-            it.setOnResultAction(onResultAction)
-            it.arguments = bundleOf(EXTRA_ARGUMENT_DTO to galleryConfigurationDto)
-        }
+        ) = GalleryFragment(
+            configurationDto = configurationDto,
+            onResultAction = onResultAction
+        )
     }
 }

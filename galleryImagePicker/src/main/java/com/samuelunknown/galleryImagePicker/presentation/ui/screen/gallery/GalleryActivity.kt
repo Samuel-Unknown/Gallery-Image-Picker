@@ -10,12 +10,10 @@ import com.samuelunknown.galleryImagePicker.domain.model.ImagesResultDto
 import com.samuelunknown.galleryImagePicker.extensions.getGalleryConfigurationDto
 import com.samuelunknown.galleryImagePicker.extensions.putImagesResultDto
 import com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.fragment.GalleryFragment
+import com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.fragment.GalleryFragmentFactory
 
 internal class GalleryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityGalleryBinding
-
-    private val galleryFragment: GalleryFragment
-        get() = supportFragmentManager.findFragmentByTag(GalleryFragment.TAG) as GalleryFragment
 
     private val onResultAction: (ImagesResultDto) -> Unit = { result ->
         setResult(
@@ -26,7 +24,12 @@ internal class GalleryActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        supportFragmentManager.fragmentFactory = GalleryFragmentFactory(
+            configurationDto = intent.getGalleryConfigurationDto(),
+            onResultAction = onResultAction
+        )
         super.onCreate(savedInstanceState)
+
         binding = ActivityGalleryBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -34,14 +37,12 @@ internal class GalleryActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             showGalleryFragment()
-        } else {
-            galleryFragment.setOnResultAction(onResultAction)
         }
     }
 
     private fun showGalleryFragment() {
         val galleryFragment = GalleryFragment.init(
-            galleryConfigurationDto = intent.getGalleryConfigurationDto(),
+            configurationDto = intent.getGalleryConfigurationDto(),
             onResultAction = onResultAction
         )
         galleryFragment.show(supportFragmentManager, GalleryFragment.TAG)
