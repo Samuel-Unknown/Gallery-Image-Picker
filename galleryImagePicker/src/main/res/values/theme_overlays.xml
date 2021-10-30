@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="GalleryImagePicker.ThemeOverlay.BottomSheetDialog" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">?attr/gallery_image_picker__style_bottom_sheet</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:navigationBarColor">@color/gallery_image_picker__color_navbar_light</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+    </style>
+
+    <style name="GalleryImagePicker.ThemeOverlay.AppBar" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
+        <item name="colorPrimary">@color/gallery_image_picker__color_toolbar</item>
+        <item name="colorOnPrimary">@color/gallery_image_picker__color_toolbar_text</item>
+        <item name="android:colorControlHighlight">@color/gallery_image_picker__color_toolbar_icon_highlight</item>
+    </style>
+
+    <style name="GalleryImagePicker.ThemeOverlay.Popup" parent="ThemeOverlay.MaterialComponents.Light" />
+</resources>

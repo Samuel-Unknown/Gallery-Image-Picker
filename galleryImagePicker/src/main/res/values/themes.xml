@@ -4,29 +4,38 @@
 
     <style name="GalleryImagePicker.Theme.Transparent" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowBackground">@color/gallery_image_picker__color_transparent</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowIsFloating">false</item>
-        <item name="android:statusBarColor">#00000000</item>
-        <item name="android:navigationBarColor">#00000000</item>
-        <item name="bottomSheetDialogTheme">@style/GalleryImagePicker.ThemeOverlay.BottomSheetDialog</item>
+        <item name="android:statusBarColor">@color/gallery_image_picker__color_transparent</item>
+        <item name="bottomSheetDialogTheme">?attr/gallery_image_picker__theme_bottom_sheet_dialog</item>
     </style>
 
-    <style name="GalleryImagePicker.ThemeOverlay.BottomSheetDialog" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
-        <item name="bottomSheetStyle">@style/GalleryImagePicker.Widget.BottomSheetDialog</item>
-        <item name="android:windowIsFloating">false</item> <!-- This is important -->
-        <item name="android:navigationBarColor">#FFFFFF</item>
-        <!--<item name="android:statusBarColor">#00000000</item>--> <!-- And then this will be needed -->
+    <style name="GalleryImagePicker.Theme.Light" parent="GalleryImagePicker.Theme.Transparent">
+        <item name="gallery_image_picker__theme_app_bar">@style/GalleryImagePicker.ThemeOverlay.AppBar</item>
+        <item name="gallery_image_picker__theme_bottom_sheet_dialog">@style/GalleryImagePicker.ThemeOverlay.BottomSheetDialog</item>
+        <item name="gallery_image_picker__shape_bottom_sheet_top_line">@drawable/bg_dialog_line</item>
+        <item name="gallery_image_picker__style_bottom_sheet">@style/GalleryImagePicker.Widget.BottomSheetDialog</item>
+        <item name="gallery_image_picker__style_toolbar">@style/GalleryImagePicker.Widget.Toolbar</item>
+        <item name="gallery_image_picker__style_button">@style/GalleryImagePicker.Widget.PickupButton</item>
+        <item name="gallery_image_picker__style_counter">@style/GalleryImagePicker.Widget.Counter</item>
+        <item name="gallery_image_picker__text_appearance_button">@style/GalleryImagePicker.TextAppearance.Button</item>
+        <item name="gallery_image_picker__text_appearance_counter">@style/GalleryImagePicker.TextAppearance.Counter</item>
     </style>
 
-    <style name="GalleryImagePicker.ThemeOverlay.AppBar" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
-        <item name="colorPrimary">@color/gallery_image_picker__color_toolbar</item>
-        <item name="colorOnPrimary">@color/gallery_image_picker__color_toolbar_text</item>
-        <item name="android:colorControlHighlight">@color/gallery_image_picker__color_toolbar_icon_highlight</item>
+    <style name="GalleryImagePicker.Theme.Dark" parent="GalleryImagePicker.Theme.Transparent">
+        <item name="gallery_image_picker__theme_app_bar">@style/GalleryImagePicker.ThemeOverlay.AppBar</item>
+        <item name="gallery_image_picker__theme_bottom_sheet_dialog">@style/GalleryImagePicker.ThemeOverlay.BottomSheetDialog</item>
+        <item name="gallery_image_picker__shape_appearance_bottom_sheet_dialog">@style/GalleryImagePicker.ShapeAppearance.BottomSheetDialog</item>
+        <item name="gallery_image_picker__shape_bottom_sheet_top_line">@drawable/bg_dialog_line</item>
+        <item name="gallery_image_picker__style_bottom_sheet">@style/GalleryImagePicker.Widget.BottomSheetDialog</item>
+        <item name="gallery_image_picker__style_toolbar">@style/GalleryImagePicker.Widget.Toolbar</item>
+        <item name="gallery_image_picker__style_button">@style/GalleryImagePicker.Widget.PickupButton</item>
+        <item name="gallery_image_picker__style_counter">@style/GalleryImagePicker.Widget.Counter</item>
+        <item name="gallery_image_picker__text_appearance_button">@style/GalleryImagePicker.TextAppearance.Button</item>
+        <item name="gallery_image_picker__text_appearance_counter">@style/GalleryImagePicker.TextAppearance.Counter</item>
     </style>
-
-    <style name="GalleryImagePicker.ThemeOverlay.Popup" parent="ThemeOverlay.MaterialComponents.Light" />
 </resources>

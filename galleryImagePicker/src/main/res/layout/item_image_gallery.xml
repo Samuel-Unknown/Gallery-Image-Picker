@@ -38,9 +38,9 @@
         tools:ignore="ContentDescription"
         />
 
-<TextView
+    <TextView
         android:id="@+id/counter"
-        style="@style/GalleryImagePickerTextAppearance.SelectedPicker"
+        style="?attr/gallery_image_picker__style_counter"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="4dp"

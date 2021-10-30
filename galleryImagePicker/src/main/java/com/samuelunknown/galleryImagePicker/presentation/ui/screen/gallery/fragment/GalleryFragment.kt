@@ -197,7 +197,6 @@ internal class GalleryFragment private constructor(
     private fun initToolbar() {
         initActionBar(
             toolbar = binding.toolbar,
-            title = getString(R.string.gallery_image_picker__toolbar),
             displayHomeAsUpEnabled = true,
             navigationAction = { dismiss() }
         )

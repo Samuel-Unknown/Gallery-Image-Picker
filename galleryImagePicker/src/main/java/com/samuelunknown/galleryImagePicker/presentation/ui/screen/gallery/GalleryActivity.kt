@@ -2,9 +2,11 @@ package com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery
 
 import android.app.Activity
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
+import com.samuelunknown.galleryImagePicker.R
 import com.samuelunknown.galleryImagePicker.databinding.ActivityGalleryBinding
 import com.samuelunknown.galleryImagePicker.domain.model.ImagesResultDto
 import com.samuelunknown.galleryImagePicker.extensions.getGalleryConfigurationDto
@@ -21,6 +23,12 @@ internal class GalleryActivity : AppCompatActivity() {
             Intent().putImagesResultDto(result)
         )
         finish()
+    }
+
+    override fun getTheme(): Resources.Theme {
+        return super.getTheme().apply {
+            applyStyle(R.style.GalleryImagePicker_Theme_Light, true)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
