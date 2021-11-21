@@ -91,6 +91,7 @@
                     android:inputType="number"
                     android:lines="1"
                     android:maxLines="1"
+                    android:nextFocusDown="@+id/spacing"
                     />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -116,6 +117,7 @@
                     android:inputType="number"
                     android:lines="1"
                     android:maxLines="1"
+                    android:nextFocusDown="@+id/peek_height"
                     />
 
             </com.google.android.material.textfield.TextInputLayout>
