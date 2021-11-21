@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Widget.Toolbar" parent="GalleryImagePicker.Widget.Toolbar">
+        <item name="title">@string/gallery__toolbar</item>
+        <item name="navigationIcon">@drawable/ic_close</item>
+    </style>
+
+    <style name="Widget.BottomSheetDialog" parent="GalleryImagePicker.Widget.BottomSheetDialog">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.BottomSheetDialog</item>
+    </style>
+
+    <style name="Widget.PickupButton" parent="GalleryImagePicker.Widget.PickupButton">
+        <item name="android:layout_marginBottom">24dp</item>
+        <item name="android:layout_marginTop">24dp</item>
+        <item name="android:layout_marginEnd">24dp</item>
+        <item name="android:layout_gravity">bottom|end</item>
+        <item name="android:backgroundTint">@color/color_main</item>
+        <item name="android:paddingLeft">24dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingRight">24dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:text">@string/gallery__pick_up_button</item>
+        <item name="android:textAppearance">@style/TextAppearance.Button</item>
+        <item name="android:textColor">@color/color_main_contrast</item>
+        <item name="cornerRadius">8dp</item>
+    </style>
+
+    <style name="Widget.Counter" parent="GalleryImagePicker.Widget.Counter">
+        <item name="android:background">@drawable/bg_picker</item>
+        <item name="android:textColor">#000000</item>
+    </style>
+</resources>

@@ -2,9 +2,19 @@
     <string name="app_name">sample</string>
     <string name="main_activity__get_images">Get Images</string>
 
-    <string name="main_activity__mime_info">If nothing is checked mime filter won\'t apply*</string>
     <string name="main_activity__mime_image_jpeg">image/jpeg</string>
     <string name="main_activity__mime_image_png">image/png</string>
     <string name="main_activity__mime_image_gif">image/gif</string>
+    <string name="main_activity__mime_info">If none are checked mime filters won\'t apply*</string>
+    <string name="main_activity__span_count">Span count</string>
+    <string name="main_activity__spacing_in_pixels">Spacing in pixels</string>
+    <string name="main_activity__open_like_bottom_sheet">Open like bottom sheet</string>
+    <string name="main_activity__peek_height">Peek height</string>
+    <string name="main_activity__peek_height_suffix">%</string>
+    <string name="main_activity__dark_mode">Dark mode</string>
+    <string name="main_activity__custom_style">Custom style</string>
+    <string name="main_activity__result_info">Result:</string>
 
+    <string name="gallery__pick_up_button">Pick up</string>
+    <string name="gallery__toolbar">Custom Gallery</string>
 </resources>

@@ -22,8 +22,8 @@ internal fun Fragment.initActionBar(
 
         supportActionBar?.apply {
             displayHomeAsUpEnabled?.let { setDisplayHomeAsUpEnabled(it) }
-            setTitle(title)
-            setSubtitle(subtitle)
+            title?.let { setTitle(it) }
+            subtitle?.let { setSubtitle(it) }
             iconResId?.let { setHomeAsUpIndicator(it) }
         }
     }

@@ -10,7 +10,7 @@
 
         <activity
             android:name="com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.GalleryActivity"
-            android:theme="@style/GalleryImagePicker.Theme.Transparent"
+            android:theme="@style/GalleryImagePicker.Theme.Default"
             android:exported="true"
             />
 

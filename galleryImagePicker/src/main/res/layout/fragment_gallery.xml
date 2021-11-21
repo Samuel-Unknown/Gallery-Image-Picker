@@ -20,7 +20,7 @@
             android:id="@+id/app_bar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:theme="@style/GalleryImagePicker.ThemeOverlay.AppBar"
+            android:theme="?attr/gallery_image_picker__theme_app_bar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -28,20 +28,20 @@
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
-                style="@style/GalleryImagePicker.Widget.Toolbar"
+                style="?attr/gallery_image_picker__style_toolbar"
                 tools:layout_height="50dp"
                 />
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <ImageView
+        <View
             android:id="@+id/line"
             android:layout_width="0dp"
-            android:layout_height="6dp"
+            android:layout_height="4dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:background="@drawable/bg_dialog_line"
+            android:background="@drawable/gallery_image_picker__bg_dialog_line"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/app_bar"
@@ -68,11 +68,11 @@
     </androidx.constraintlayout.motion.widget.MotionLayout>
 
     <View
-        android:id="@+id/pickup_background"
+        android:id="@+id/underlay"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_gravity="bottom"
-        android:background="@color/gallery_image_picker__color_pickup_background"
+        android:background="?attr/gallery_image_picker__color_underlay"
         android:focusable="true"
         android:clickable="true"
         android:visibility="visible"
@@ -80,7 +80,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/pickup_button"
-        style="@style/GalleryImagePicker.Widget.PickupButton"
+        style="?attr/gallery_image_picker__style_button"
         android:visibility="gone"
         tools:visibility="visible"
         />

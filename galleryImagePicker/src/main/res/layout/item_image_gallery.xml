@@ -24,31 +24,31 @@
         tools:layout_width="120dp"
         />
 
-    <ImageView
-        android:id="@+id/picker"
+    <View
+        android:id="@+id/picker_ring"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
-        android:src="@drawable/bg_unselected_picker"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.2"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.2"
+        android:background="@drawable/gallery_image_picker__bg_picker_ring"
+        app:layout_constraintEnd_toEndOf="@+id/image"
+        app:layout_constraintHeight_percent="0.3"
+        app:layout_constraintTop_toTopOf="@+id/image"
+        app:layout_constraintWidth_percent="0.3"
         tools:ignore="ContentDescription"
         />
 
     <TextView
         android:id="@+id/counter"
-        style="@style/GalleryImagePickerTextAppearance.SelectedPicker"
+        style="?attr/gallery_image_picker__style_counter"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.2"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.2"
+        app:layout_constraintEnd_toEndOf="@+id/image"
+        app:layout_constraintHeight_percent="0.3"
+        app:layout_constraintTop_toTopOf="@+id/image"
+        app:layout_constraintWidth_percent="0.3"
         tools:text="100"
         />
 

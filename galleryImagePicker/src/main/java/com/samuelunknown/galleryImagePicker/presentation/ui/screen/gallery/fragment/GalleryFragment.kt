@@ -19,7 +19,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.math.MathUtils
-import com.samuelunknown.galleryImagePicker.R
 import com.samuelunknown.galleryImagePicker.databinding.FragmentGalleryBinding
 import com.samuelunknown.galleryImagePicker.domain.GetImagesUseCaseImpl
 import com.samuelunknown.galleryImagePicker.domain.model.GalleryConfigurationDto
@@ -41,10 +40,9 @@ import com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.fragm
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
 
 internal class GalleryFragment private constructor(
-    configurationDto: GalleryConfigurationDto,
+    private val configurationDto: GalleryConfigurationDto,
     private val onResultAction: (ImagesResultDto) -> Unit = {}
 ) : BottomSheetDialogFragment() {
 
@@ -57,29 +55,8 @@ internal class GalleryFragment private constructor(
     private var screenHeight: Int = 0
     private var peekHeight: Int = 0
 
-    private val pickButtonDefaultBottomMargin: Int by lazy(LazyThreadSafetyMode.NONE) {
-        binding.pickupButton.marginBottom
-    }
-
     private val bottomSheet: BottomSheetDialog
         get() = requireDialog() as BottomSheetDialog
-
-    private val galleryAdapter = GalleryAdapter(
-        spanCount = SPAN_COUNT,
-        imageLoaderFactory = ImageLoaderFactoryHolder.imageLoaderFactory,
-        changeSelectionAction = { item ->
-            lifecycleScope.launch {
-                vm.actionFlow.emit(GalleryAction.ChangeSelectionAction(item))
-            }
-        }
-    )
-
-    private val vm: GalleryFragmentVm by savedStateViewModel {
-        GalleryFragmentVmFactory(
-            configurationDto = configurationDto,
-            getImagesUseCase = GetImagesUseCaseImpl(requireContext().contentResolver)
-        )
-    }
 
     private val permissionLauncher = PermissionLauncher.init(
         fragment = this,
@@ -105,6 +82,30 @@ internal class GalleryFragment private constructor(
             }
         }
     )
+
+    private val pickButtonDefaultBottomMargin: Int by lazy(LazyThreadSafetyMode.NONE) {
+        binding.pickupButton.marginBottom
+    }
+
+    private val galleryAdapter: GalleryAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        GalleryAdapter(
+            spanCount = configurationDto.spanCount,
+            spacingSize = configurationDto.spacingSizeInPixels,
+            imageLoaderFactory = ImageLoaderFactoryHolder.imageLoaderFactory,
+            changeSelectionAction = { item ->
+                lifecycleScope.launch {
+                    vm.actionFlow.emit(GalleryAction.ChangeSelectionAction(item))
+                }
+            }
+        )
+    }
+
+    private val vm: GalleryFragmentVm by savedStateViewModel {
+        GalleryFragmentVmFactory(
+            configurationDto = configurationDto,
+            getImagesUseCase = GetImagesUseCaseImpl(requireContext().contentResolver)
+        )
+    }
     // endregion
 
     // region Lifecycle
@@ -120,7 +121,7 @@ internal class GalleryFragment private constructor(
         vm.run {
             requireActivity().calculateScreenHeightWithoutSystemBars { height ->
                 screenHeight = height
-                peekHeight = (screenHeight * PEEK_HEIGHT_PERCENTAGE).roundToInt()
+                peekHeight = screenHeight * configurationDto.peekHeightInPercents / 100
 
                 initRootView()
                 initBottomSheetDialog()
@@ -160,7 +161,7 @@ internal class GalleryFragment private constructor(
     private fun initBottomSheetDialog() {
         with(bottomSheet) {
             behavior.apply {
-                if (IS_BOTTOM_SHEET_USED) {
+                if (configurationDto.openLikeBottomSheet) {
                     val bottomSheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
                         override fun onStateChanged(view: View, state: Int) {
                             val isDimVisible = state != BottomSheetBehavior.STATE_EXPANDED
@@ -195,7 +196,6 @@ internal class GalleryFragment private constructor(
     private fun initToolbar() {
         initActionBar(
             toolbar = binding.toolbar,
-            title = getString(R.string.gallery_image_picker__toolbar),
             displayHomeAsUpEnabled = true,
             navigationAction = { dismiss() }
         )
@@ -208,11 +208,11 @@ internal class GalleryFragment private constructor(
             setHasFixedSize(true)
             addItemDecoration(
                 GridSpacingItemDecoration(
-                    spanCount = SPAN_COUNT,
-                    spacing = resources.getDimension(R.dimen.gallery_image_picker__grid_spacing).roundToInt()
+                    spanCount = configurationDto.spanCount,
+                    spacing = configurationDto.spacingSizeInPixels
                 )
             )
-            (layoutManager as GridLayoutManager).spanCount = SPAN_COUNT
+            (layoutManager as GridLayoutManager).spanCount = configurationDto.spanCount
         }
     }
 
@@ -258,12 +258,12 @@ internal class GalleryFragment private constructor(
 
         binding.pickupButton.updateMargins(bottomMargin = bottomMargin)
 
-        // since pickupButton position changed we need update Recycler bottom padding and pickupBackground height
+        // since pickupButton position changed we need update Recycler bottom padding and underlay height
         with(binding) {
             pickupButton.doOnLayout {
                 val padding = screenHeight - it.top + it.marginTop
                 recycler.updatePadding(bottom = padding)
-                pickupBackground.updateHeight(padding)
+                underlay.updateHeight(padding)
             }
         }
     }
@@ -275,9 +275,6 @@ internal class GalleryFragment private constructor(
 
     companion object {
         val TAG: String = GalleryFragment::class.java.simpleName
-        private const val SPAN_COUNT = 3
-        private const val PEEK_HEIGHT_PERCENTAGE = 0.7
-        private const val IS_BOTTOM_SHEET_USED = true
         private const val DELAY_IN_MILLISECONDS_FOR_SMOOTH_DIALOG_CLOSING_AFTER_PERMISSION_ERROR = 300L
 
         fun init(

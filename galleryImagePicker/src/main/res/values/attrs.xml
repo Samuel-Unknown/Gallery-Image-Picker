@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="GalleryImagePickerAttributes">
+        <attr name="gallery_image_picker__theme_app_bar" format="reference" />
+        <attr name="gallery_image_picker__theme_bottom_sheet_dialog" format="reference" />
+        <attr name="gallery_image_picker__style_toolbar" format="reference" />
+        <attr name="gallery_image_picker__style_button" format="reference" />
+        <attr name="gallery_image_picker__style_counter" format="reference" />
+        <attr name="gallery_image_picker__color_underlay" format="color|reference" />
+        <attr name="gallery_image_picker__color_top_line" format="color|reference" />
+    </declare-styleable>
+</resources>

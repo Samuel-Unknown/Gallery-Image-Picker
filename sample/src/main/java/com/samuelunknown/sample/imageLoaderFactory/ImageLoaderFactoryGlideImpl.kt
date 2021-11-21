@@ -1,4 +1,4 @@
-package com.samuelunknown.sample
+package com.samuelunknown.sample.imageLoaderFactory
 
 import android.content.Context
 import android.net.Uri
@@ -11,7 +11,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withC
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
 import com.samuelunknown.galleryImagePicker.presentation.imageLoader.ImageLoader
-import com.samuelunknown.sample.imageLoaderFactory.ImageLoaderFactoryBase
+import com.samuelunknown.sample.R
 import kotlin.math.roundToInt
 
 class ImageLoaderFactoryGlideImpl(private val appContext: Context) : ImageLoaderFactoryBase(appContext) {

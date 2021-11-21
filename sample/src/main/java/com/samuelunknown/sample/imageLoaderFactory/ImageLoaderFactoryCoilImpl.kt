@@ -1,4 +1,4 @@
-package com.samuelunknown.sample
+package com.samuelunknown.sample.imageLoaderFactory
 
 import android.content.Context
 import android.net.Uri
@@ -8,7 +8,7 @@ import coil.load
 import coil.size.Scale
 import coil.transform.RoundedCornersTransformation
 import com.samuelunknown.galleryImagePicker.presentation.imageLoader.ImageLoader
-import com.samuelunknown.sample.imageLoaderFactory.ImageLoaderFactoryBase
+import com.samuelunknown.sample.R
 
 class ImageLoaderFactoryCoilImpl(appContext: Context) : ImageLoaderFactoryBase(appContext) {
     private val transformation = RoundedCornersTransformation(radius)
