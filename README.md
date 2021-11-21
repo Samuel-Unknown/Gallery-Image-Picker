@@ -22,7 +22,7 @@ allprojects {
 Add the following dependency in app build.gradle:
 ```
 dependencies {
-    implementation 'io.github.samuel-unknown:gallery-image-picker:1.0.2'
+    implementation 'io.github.samuel-unknown:gallery-image-picker:1.1.0'
 }
 ```
 
@@ -33,25 +33,26 @@ dependencies {
    
     ```Kotlin
     // Example with Glide 
-    class ImageLoaderFactoryGlideImpl(private val appContext: Context) : ImageLoaderFactory {
+    class ImageLoaderFactoryGlideImpl(private val appContext: Context) : ImageLoaderFactoryBase(appContext) {
+        private val radius: Float = appContext.resources.getDimension(R.dimen.image_corner_radius)
+    
+        private val drawableCrossFadeFactory = DrawableCrossFadeFactory
+            .Builder(DEFAULT_CROSS_FADE_DURATION_IN_MILLIS)
+            .setCrossFadeEnabled(true)
+            .build()
 
-        val radius: Int by lazy {
-            appContext.resources
-                .getDimension(R.dimen.image_corner_radius)
-                .roundToInt()
-        }
+        private val transformation = MultiTransformation(
+            CenterCrop(),
+            RoundedCorners(radius.roundToInt())
+        )
 
         override fun create(): ImageLoader = object : ImageLoader {
             override fun load(imageView: ImageView, uri: Uri) {
-
                 Glide.with(appContext)
                     .load(uri)
-                    .transform(
-                        MultiTransformation(
-                            CenterCrop(),
-                            RoundedCorners(radius)
-                        )
-                    )
+                    .apply(RequestOptions().override(imageView.width, imageView.height))
+                    .transition(withCrossFade(drawableCrossFadeFactory))
+                    .transform(transformation)
                     .placeholder(R.drawable.bg_placeholder)
                     .into(imageView)
             }
@@ -59,6 +60,10 @@ dependencies {
             override fun cancel(imageView: ImageView) {
                 Glide.with(appContext).clear(imageView)
             }
+        }
+    
+        protected companion object {
+            const val DEFAULT_CROSS_FADE_DURATION_IN_MILLIS = 100
         }
     }
     ```
@@ -112,14 +117,27 @@ dependencies {
     }
     ```
     </details>
-
+4. Customizations
+    <details>
+        <summary>Click to expand</summary>
+    
+    `class GalleryConfigurationDto` uses for customizations. There are different arguments for that:
+    - `@StyleRes val themeResId: Int` - for creating a custom theme.
+    - `@Px val spacingSizeInPixels: Int` - for spacing between cells.
+    - `val spanCount: Int` - for setting cells count.
+    - `val openLikeBottomSheet: Boolean` - tells about opening, should be gallery opened  like BottomSheet or in full-screen mode.
+    - `val peekHeightInPercents: Int` - for setting BottomSheet height.
+    - `val mimeTypes: List<String>? = null` - filtering images by mimeTypes.
+    
+        You can find an example of using here [here](https://github.com/Samuel-Unknown/Gallery-Image-Picker/tree/master/sample)
+    </details>
 ## Development roadmap
 #### Version 1.1.*
 - [x] Mime types support with config
 - [x] Handle screen orientation changes
-- [ ] UI customizations *(in progress)*
+- [x] UI customizations
 #### Version 1.2.*
-- [ ] Directory choosing 
+- [ ] Directory choosing *(in progress)*
 - [ ] Perfomance improvements
 #### Version 1.3.*
 - [ ] Camera integration (preview and capture)
