@@ -16,5 +16,7 @@ sealed class MainActivityAction {
         data class ChangeSpacingSizeAction(val spacingSizeText: String) : VmAction()
         data class ChangeOpenLikeBottomSheetAction(val openLikeBottomSheet: Boolean) : VmAction()
         data class ChangePeekHeightAction(val peekHeightText: String) : VmAction()
+        data class ChangeIsDarkModeEnabledAction(val  isEnabled: Boolean) : VmAction()
+        data class ChangeIsCustomStyleEnabledAction(val isEnabled: Boolean) : VmAction()
     }
 }

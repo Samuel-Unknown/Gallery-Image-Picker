@@ -33,7 +33,7 @@
         </Constraint>
 
         <Constraint
-            android:id="@+id/picker"
+            android:id="@+id/picker_ring"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="4dp"
@@ -88,7 +88,7 @@
         </Constraint>
 
         <Constraint
-            android:id="@+id/picker"
+            android:id="@+id/picker_ring"
             app:deriveConstraintsFrom="@id/start"
             >
 

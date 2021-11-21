@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ThemeOverlay.BottomSheetDialog" parent="GalleryImagePicker.ThemeOverlay.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/Widget.BottomSheetDialog</item>
+    </style>
+
+    <style name="ThemeOverlay.AppBar" parent="GalleryImagePicker.ThemeOverlay.AppBar" />
+</resources>

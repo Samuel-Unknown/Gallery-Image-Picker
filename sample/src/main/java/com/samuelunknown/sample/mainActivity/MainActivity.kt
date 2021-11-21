@@ -3,6 +3,9 @@ package com.samuelunknown.sample.mainActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate.getDefaultNightMode
+import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
 import androidx.core.view.isInvisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Lifecycle
@@ -40,6 +43,8 @@ class MainActivity : AppCompatActivity() {
         initSpacingSizeEditText()
         initOpenLikeBottomSheetCheckbox()
         initPeekHeightEditText()
+        initIsDarkModeCheckbox()
+        initIsCustomStyleCheckbox()
 
         initStateSubscription()
         initViewActionSubscription()
@@ -103,6 +108,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun initIsDarkModeCheckbox() {
+        binding.darkMode.setOnCheckedChangeListener { _, isChecked ->
+            lifecycleScope.launch {
+                vm.emitAction(VmAction.ChangeIsDarkModeEnabledAction(isChecked))
+            }
+        }
+    }
+
+    private fun initIsCustomStyleCheckbox() {
+        binding.customStyle.setOnCheckedChangeListener { _, isChecked ->
+            lifecycleScope.launch {
+                vm.emitAction(VmAction.ChangeIsCustomStyleEnabledAction(isChecked))
+            }
+        }
+    }
+
     private fun initStateSubscription() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -132,7 +153,12 @@ class MainActivity : AppCompatActivity() {
                     binding.peekHeightWrapper.error = state.peekHeightError
                     binding.peekHeightWrapper.isInvisible = state.openLikeBottomSheet.not()
 
+                    binding.darkMode.setIsCheckedIfItDoesNotMatch(state.isDarkModeEnabled)
+                    binding.customStyle.setIsCheckedIfItDoesNotMatch(state.isCustomStyleEnabled)
+
                     binding.result.text = state.resultText
+
+                    updateNightMode(state.isDarkModeEnabled)
                 }
             }
         }
@@ -147,6 +173,19 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
+        }
+    }
+
+    private fun updateNightMode(isDarkModeEnabled: Boolean) {
+        val nightMode = if (isDarkModeEnabled) {
+            AppCompatDelegate.MODE_NIGHT_YES
+        } else {
+            AppCompatDelegate.MODE_NIGHT_NO
+        }
+
+        if (nightMode != getDefaultNightMode()) {
+            setDefaultNightMode(nightMode)
+            delegate.applyDayNight()
         }
     }
 }

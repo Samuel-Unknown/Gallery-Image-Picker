@@ -8,33 +8,29 @@
         <item name="popupTheme">@style/GalleryImagePicker.ThemeOverlay.Popup</item>
         <item name="titleTextColor">@color/gallery_image_picker__color_toolbar_text</item>
         <item name="title">@string/gallery_image_picker__toolbar</item>
-        <!--<item name="navigationIcon">override if needed</item>-->
         <item name="navigationIconTint">@color/gallery_image_picker__color_toolbar_icon</item>
     </style>
 
     <style name="GalleryImagePicker.Widget.BottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet.Modal">
-        <item name="shapeAppearanceOverlay">?attr/gallery_image_picker__shape_appearance_bottom_sheet_dialog</item>
-        <item name="android:backgroundTint">@color/gallery_image_picker__color_background</item>
+        <item name="shapeAppearanceOverlay">@style/GalleryImagePicker.ShapeAppearance.BottomSheetDialog</item>
+        <item name="android:backgroundTint">@color/gallery_image_picker__color_bottom_sheet_background</item>
     </style>
 
     <style name="GalleryImagePicker.Widget.PickupButton" parent="Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
-
         <item name="android:layout_marginBottom">12dp</item>
         <item name="android:layout_marginTop">12dp</item>
-
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">bottom|center</item>
-
         <item name="android:backgroundTint">@color/gallery_image_picker__color_pickup_button</item>
         <item name="android:paddingLeft">48dp</item>
         <item name="android:paddingTop">12dp</item>
         <item name="android:paddingRight">48dp</item>
         <item name="android:paddingBottom">12dp</item>
         <item name="android:text">@string/gallery_image_picker__accept_button</item>
-        <item name="android:textAppearance">?attr/gallery_image_picker__text_appearance_button</item>
+        <item name="android:textAppearance">@style/GalleryImagePicker.TextAppearance.Button</item>
         <item name="android:textColor">@color/gallery_image_picker__color_pickup_button_text</item>
         <item name="cornerRadius">80dp</item>
     </style>
@@ -43,8 +39,8 @@
         <item name="android:gravity">center</item>
         <item name="android:includeFontPadding">false</item>
         <item name="android:padding">4dp</item>
-        <item name="android:background">@drawable/bg_selected_picker</item>
-        <item name="android:textAppearance">?attr/gallery_image_picker__text_appearance_button</item>
+        <item name="android:background">@drawable/gallery_image_picker__bg_counter</item>
+        <item name="android:textAppearance">@style/GalleryImagePicker.TextAppearance.Counter</item>
         <item name="android:textColor">@color/gallery_image_picker__color_counter_text</item>
         <item name="autoSizeTextType">uniform</item>
         <item name="autoSizeMinTextSize">8sp</item>

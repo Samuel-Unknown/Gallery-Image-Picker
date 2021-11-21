@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.samuelunknown.galleryImagePicker.domain.model.GalleryConfigurationDto
 import com.samuelunknown.galleryImagePicker.domain.model.ImagesResultDto
+import com.samuelunknown.sample.R
 import com.samuelunknown.sample.mainActivity.MainActivityAction.ViewAction
 import com.samuelunknown.sample.mainActivity.MainActivityAction.VmAction
 import kotlinx.coroutines.flow.Flow
@@ -48,6 +49,8 @@ class MainActivityVm : ViewModel() {
                     is VmAction.ChangeSpanCountAction -> changeSpanCount(action)
                     is VmAction.ChangeOpenLikeBottomSheetAction -> changeOpenLikeBottomSheet(action)
                     is VmAction.ChangePeekHeightAction -> changePeekHeight(action)
+                    is VmAction.ChangeIsCustomStyleEnabledAction -> changeIsCustomStyleEnabledAction(action)
+                    is VmAction.ChangeIsDarkModeEnabledAction -> changeIsDarkModeEnabledAction(action)
                 }
             }
         }
@@ -57,10 +60,16 @@ class MainActivityVm : ViewModel() {
         val spanCount = _stateFlow.value.spanCount ?: return
         val spacingSizeInPixels = _stateFlow.value.spacingSizeInPixels ?: return
         val peekHeightInPercents = _stateFlow.value.peekHeightInPercents ?: return
+        val themeResId = if (_stateFlow.value.isCustomStyleEnabled) {
+            R.style.Theme_CustomGallery
+        } else {
+            R.style.GalleryImagePicker_Theme_Default
+        }
 
         val dto = GalleryConfigurationDto(
-            spanCount = spanCount,
+            themeResId = themeResId,
             spacingSizeInPixels = spacingSizeInPixels,
+            spanCount = spanCount,
             openLikeBottomSheet = _stateFlow.value.openLikeBottomSheet,
             peekHeightInPercents = peekHeightInPercents,
             mimeTypes = _stateFlow.value.mimeTypes
@@ -106,12 +115,12 @@ class MainActivityVm : ViewModel() {
                     spanCountError = MainActivityState.EMPTY_VALUE_ERROR
                 )
             }
-       } catch (ex: Exception) {
+        } catch (ex: Exception) {
             _stateFlow.value.copy(
                 spanCount = null,
                 spanCountError = MainActivityState.EMPTY_VALUE_ERROR
             )
-       }
+        }
         _stateFlow.emit(newState)
     }
 
@@ -162,7 +171,17 @@ class MainActivityVm : ViewModel() {
     }
 
     private suspend fun changeOpenLikeBottomSheet(action: VmAction.ChangeOpenLikeBottomSheetAction) {
-        val newState =_stateFlow.value.copy(openLikeBottomSheet = action.openLikeBottomSheet)
+        val newState = _stateFlow.value.copy(openLikeBottomSheet = action.openLikeBottomSheet)
+        _stateFlow.emit(newState)
+    }
+
+    private suspend fun changeIsDarkModeEnabledAction(action: VmAction.ChangeIsDarkModeEnabledAction) {
+        val newState = _stateFlow.value.copy(isDarkModeEnabled = action.isEnabled)
+        _stateFlow.emit(newState)
+    }
+
+    private suspend fun changeIsCustomStyleEnabledAction(action: VmAction.ChangeIsCustomStyleEnabledAction) {
+        val newState = _stateFlow.value.copy(isCustomStyleEnabled = action.isEnabled)
         _stateFlow.emit(newState)
     }
 }

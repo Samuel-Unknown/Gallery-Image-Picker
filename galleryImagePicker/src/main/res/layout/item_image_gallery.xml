@@ -24,13 +24,13 @@
         tools:layout_width="120dp"
         />
 
-    <ImageView
-        android:id="@+id/picker"
+    <View
+        android:id="@+id/picker_ring"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
-        android:src="@drawable/bg_unselected_picker"
+        android:background="@drawable/gallery_image_picker__bg_picker_ring"
         app:layout_constraintEnd_toEndOf="@+id/image"
         app:layout_constraintHeight_percent="0.3"
         app:layout_constraintTop_toTopOf="@+id/image"

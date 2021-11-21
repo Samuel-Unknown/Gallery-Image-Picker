@@ -19,7 +19,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.math.MathUtils
-import com.samuelunknown.galleryImagePicker.R
 import com.samuelunknown.galleryImagePicker.databinding.FragmentGalleryBinding
 import com.samuelunknown.galleryImagePicker.domain.GetImagesUseCaseImpl
 import com.samuelunknown.galleryImagePicker.domain.model.GalleryConfigurationDto
@@ -259,12 +258,12 @@ internal class GalleryFragment private constructor(
 
         binding.pickupButton.updateMargins(bottomMargin = bottomMargin)
 
-        // since pickupButton position changed we need update Recycler bottom padding and pickupBackground height
+        // since pickupButton position changed we need update Recycler bottom padding and underlay height
         with(binding) {
             pickupButton.doOnLayout {
                 val padding = screenHeight - it.top + it.marginTop
                 recycler.updatePadding(bottom = padding)
-                pickupBackground.updateHeight(padding)
+                underlay.updateHeight(padding)
             }
         }
     }

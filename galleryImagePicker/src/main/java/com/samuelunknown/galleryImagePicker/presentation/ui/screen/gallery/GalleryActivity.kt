@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import com.samuelunknown.galleryImagePicker.R
 import com.samuelunknown.galleryImagePicker.databinding.ActivityGalleryBinding
+import com.samuelunknown.galleryImagePicker.domain.model.GalleryConfigurationDto
 import com.samuelunknown.galleryImagePicker.domain.model.ImagesResultDto
 import com.samuelunknown.galleryImagePicker.extensions.getGalleryConfigurationDto
 import com.samuelunknown.galleryImagePicker.extensions.putImagesResultDto
@@ -16,6 +17,10 @@ import com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.fragm
 
 internal class GalleryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityGalleryBinding
+
+    private val configurationDto: GalleryConfigurationDto by lazy(LazyThreadSafetyMode.NONE) {
+        intent.getGalleryConfigurationDto()
+    }
 
     private val onResultAction: (ImagesResultDto) -> Unit = { result ->
         setResult(
@@ -26,14 +31,12 @@ internal class GalleryActivity : AppCompatActivity() {
     }
 
     override fun getTheme(): Resources.Theme {
-        return super.getTheme().apply {
-            applyStyle(R.style.GalleryImagePicker_Theme_Light, true)
-        }
+        return super.getTheme().apply { applyStyle(configurationDto.themeResId, true) }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         supportFragmentManager.fragmentFactory = GalleryFragmentFactory(
-            configurationDto = intent.getGalleryConfigurationDto(),
+            configurationDto = configurationDto,
             onResultAction = onResultAction
         )
         super.onCreate(savedInstanceState)
@@ -50,7 +53,7 @@ internal class GalleryActivity : AppCompatActivity() {
 
     private fun showGalleryFragment() {
         val galleryFragment = GalleryFragment.init(
-            configurationDto = intent.getGalleryConfigurationDto(),
+            configurationDto = configurationDto,
             onResultAction = onResultAction
         )
         galleryFragment.show(supportFragmentManager, GalleryFragment.TAG)

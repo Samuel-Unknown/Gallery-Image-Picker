@@ -3,7 +3,7 @@
     android:shape="rectangle"
     >
 
-    <solid android:color="@color/gallery_image_picker__color_toolbar_line" />
+    <solid android:color="?attr/gallery_image_picker__color_top_line" />
 
     <corners android:radius="500dp" />
 

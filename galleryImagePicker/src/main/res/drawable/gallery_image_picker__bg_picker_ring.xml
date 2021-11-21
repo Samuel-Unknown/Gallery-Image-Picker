@@ -5,6 +5,6 @@
     android:useLevel="false"
     >
 
-    <solid android:color="@color/gallery_image_picker__color_picker" />
+    <solid android:color="@color/gallery_image_picker__color_picker_ring" />
 
 </shape>

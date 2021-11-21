@@ -11,5 +11,10 @@
     <string name="main_activity__open_like_bottom_sheet">Open like bottom sheet</string>
     <string name="main_activity__peek_height">Peek height</string>
     <string name="main_activity__peek_height_suffix">%</string>
+    <string name="main_activity__dark_mode">Dark mode</string>
+    <string name="main_activity__custom_style">Custom style</string>
     <string name="main_activity__result_info">Result:</string>
+
+    <string name="gallery__pick_up_button">Pick up</string>
+    <string name="gallery__toolbar">Custom Gallery</string>
 </resources>

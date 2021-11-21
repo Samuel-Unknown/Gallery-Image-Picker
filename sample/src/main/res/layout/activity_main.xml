@@ -142,11 +142,11 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:hint="@string/main_activity__peek_height"
-                app:suffixText="@string/main_activity__peek_height_suffix"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/open_like_bottom_sheet"
                 app:layout_constraintTop_toBottomOf="@+id/spacing_wrapper"
+                app:suffixText="@string/main_activity__peek_height_suffix"
                 >
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -160,6 +160,35 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <CheckBox
+                android:id="@+id/dark_mode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:checked="true"
+                android:text="@string/main_activity__dark_mode"
+                app:layout_constraintEnd_toStartOf="@+id/custom_style"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/open_like_bottom_sheet"
+                />
+
+            <CheckBox
+                android:id="@+id/custom_style"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:checked="true"
+                android:text="@string/main_activity__custom_style"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/dark_mode"
+                app:layout_constraintTop_toBottomOf="@+id/open_like_bottom_sheet"
+                />
+
             <View
                 android:id="@+id/divider"
                 android:layout_width="0dp"
@@ -168,7 +197,7 @@
                 android:background="#6A6A6A"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/open_like_bottom_sheet"
+                app:layout_constraintTop_toBottomOf="@+id/dark_mode"
                 />
 
             <TextView

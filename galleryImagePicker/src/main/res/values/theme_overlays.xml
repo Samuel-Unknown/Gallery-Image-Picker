@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="GalleryImagePicker.ThemeOverlay.BottomSheetDialog" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
-        <item name="bottomSheetStyle">?attr/gallery_image_picker__style_bottom_sheet</item>
+        <item name="bottomSheetStyle">@style/GalleryImagePicker.Widget.BottomSheetDialog</item>
         <item name="android:windowIsFloating">false</item>
-        <item name="android:navigationBarColor">@color/gallery_image_picker__color_navbar_light</item>
+        <item name="android:navigationBarColor">@color/gallery_image_picker__color_navbar</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
     </style>
 

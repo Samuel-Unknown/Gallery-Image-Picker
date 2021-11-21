@@ -1,19 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="GalleryImagePicker" />
-
-    <style name="GalleryImagePicker.Theme.Transparent" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:backgroundDimEnabled">false</item>
-        <item name="android:windowContentTransitions">true</item>
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="bottomSheetDialogTheme">?attr/gallery_image_picker__theme_bottom_sheet_dialog</item>
-    </style>
-
     <style name="GalleryImagePicker.Theme.Default" parent="GalleryImagePicker.Theme.Transparent">
         <item name="gallery_image_picker__theme_app_bar">@style/GalleryImagePicker.ThemeOverlay.AppBar</item>
         <item name="gallery_image_picker__theme_bottom_sheet_dialog">@style/GalleryImagePicker.ThemeOverlay.BottomSheetDialog</item>
