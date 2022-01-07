@@ -10,9 +10,10 @@ import com.samuelunknown.galleryImagePicker.presentation.model.GalleryItem
 import com.samuelunknown.galleryImagePicker.presentation.model.GalleryState
 import com.samuelunknown.galleryImagePicker.presentation.model.toGalleryItemImage
 import com.samuelunknown.galleryImagePicker.presentation.model.toImageDto
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -22,7 +23,7 @@ internal class GalleryFragmentVm(
 ) : ViewModel() {
 
     private val _stateFlow = MutableStateFlow<GalleryState>(GalleryState.Init)
-    val stateFlow: Flow<GalleryState> = _stateFlow
+    val stateFlow: StateFlow<GalleryState> = _stateFlow.asStateFlow()
 
     val actionFlow = MutableSharedFlow<GalleryAction>()
 
@@ -50,7 +51,7 @@ internal class GalleryFragmentVm(
         viewModelScope.launch {
             try {
                 val images = getImagesUseCase.execute(
-                    mimeTypes = configurationDto.mimeTypes ?: listOf()
+                    mimeTypes = configurationDto.mimeTypes ?: emptyList()
                 )
                 _stateFlow.emit(
                     GalleryState.Loaded(items = images.map { it.toGalleryItemImage() })
@@ -64,50 +65,48 @@ internal class GalleryFragmentVm(
     }
 
     private fun handleChangeSelectionAction(action: GalleryAction.ChangeSelectionAction) {
-        _stateFlow.value.let { state ->
-            check(state is GalleryState.Loaded)
+        val state = _stateFlow.value
+        check(state is GalleryState.Loaded)
 
-            val newItems = state.items.toMutableList()
-            val indexOfItemToChange = state.items
-                .indexOfFirst { it is GalleryItem.Image && it.uri == action.item.uri }
-            val itemToChange = state.items[indexOfItemToChange] as GalleryItem.Image
+        val newItems = state.items.toMutableList()
+        val indexOfItemToChange = state.items
+            .indexOfFirst { it is GalleryItem.Image && it.uri == action.item.uri }
+        val itemToChange = state.items[indexOfItemToChange] as GalleryItem.Image
 
-            if (action.item.isSelected) {
-                newItems.forEachIndexed { index, galleryItem ->
-                    if (galleryItem is GalleryItem.Image && galleryItem.counter > itemToChange.counter) {
-                        newItems[index] = galleryItem.copy(counter = galleryItem.counter - 1)
-                    }
+        if (action.item.isSelected) {
+            newItems.forEachIndexed { index, galleryItem ->
+                if (galleryItem is GalleryItem.Image && galleryItem.counter > itemToChange.counter) {
+                    newItems[index] = galleryItem.copy(counter = galleryItem.counter - 1)
                 }
-                newItems[indexOfItemToChange] = itemToChange.copy(counter = 0)
-            } else {
-                val maxCounter = state.items.filterIsInstance<GalleryItem.Image>()
-                    .map(GalleryItem.Image::counter)
-                    .maxOrNull() ?: 0
-
-                newItems[indexOfItemToChange] = itemToChange.copy(counter = maxCounter + 1)
             }
+            newItems[indexOfItemToChange] = itemToChange.copy(counter = 0)
+        } else {
+            val maxCounter = state.items.filterIsInstance<GalleryItem.Image>()
+                .map(GalleryItem.Image::counter)
+                .maxOrNull() ?: 0
 
-            viewModelScope.launch {
-                _stateFlow.emit(GalleryState.Loaded(newItems))
-            }
+            newItems[indexOfItemToChange] = itemToChange.copy(counter = maxCounter + 1)
+        }
+
+        viewModelScope.launch {
+            _stateFlow.emit(GalleryState.Loaded(newItems))
         }
     }
 
     private fun handlePickupAction() {
-        _stateFlow.value.let { state ->
-            check(state is GalleryState.Loaded)
+        val state = _stateFlow.value
+        check(state is GalleryState.Loaded)
 
-            val selectedSortedImages = state.items
-                .filterIsInstance<GalleryItem.Image>()
-                .filter(GalleryItem.Image::isSelected)
-                .sortedBy { it.counter }
-                .map { it.toImageDto() }
+        val selectedSortedImages = state.items
+            .filterIsInstance<GalleryItem.Image>()
+            .filter(GalleryItem.Image::isSelected)
+            .sortedBy { it.counter }
+            .map { it.toImageDto() }
 
-            val result = ImagesResultDto.Success(selectedSortedImages)
+        val result = ImagesResultDto.Success(selectedSortedImages)
 
-            viewModelScope.launch {
-                _stateFlow.emit(GalleryState.Picked(result))
-            }
+        viewModelScope.launch {
+            _stateFlow.emit(GalleryState.Picked(result))
         }
     }
 

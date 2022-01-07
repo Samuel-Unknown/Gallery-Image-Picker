@@ -1,6 +1,6 @@
 @file:Suppress("MayBeConstant")
 
-class Keystore {
+object Keystore {
     object Properties {
         val storePassword = "STORE_PASSWORD"
         val keyAlias = "KEY_ALIAS"

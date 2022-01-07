@@ -89,6 +89,7 @@ internal class GalleryFragment private constructor(
 
     private val galleryAdapter: GalleryAdapter by lazy(LazyThreadSafetyMode.NONE) {
         GalleryAdapter(
+            context = requireContext(),
             spanCount = configurationDto.spanCount,
             spacingSize = configurationDto.spacingSizeInPixels,
             imageLoaderFactory = ImageLoaderFactoryHolder.imageLoaderFactory,
@@ -234,7 +235,7 @@ internal class GalleryFragment private constructor(
                         }
                         is GalleryState.Loaded -> {
                             binding.pickupButton.isVisible = true
-                            galleryAdapter.updateItems(state.items)
+                            galleryAdapter.submitList(state.items)
                         }
                         is GalleryState.Picked -> {
                             finishWithResult(state.result)
