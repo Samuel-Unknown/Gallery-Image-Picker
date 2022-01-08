@@ -7,6 +7,8 @@ Android library for picking images.
 - You can use any image loading library for previews (*Glide*, *Picasso*, *Coil* etc.)
 - Permission processing
 - Returns name and Uri for picked images
+- UI customizations
+- Filtering by mime types
 
 <img src="/Gallery-Image-Picker.gif?raw=true" width="300px" align="middle">
 
@@ -22,58 +24,25 @@ allprojects {
 Add the following dependency in app build.gradle:
 ```
 dependencies {
-    implementation 'io.github.samuel-unknown:gallery-image-picker:1.1.0'
+    implementation 'io.github.samuel-unknown:gallery-image-picker:1.2.0'
+    
+    // if you want to use default Glide implementation for ImageLoaderFactory
+    implementation 'io.github.samuel-unknown:gallery-image-picker-glide:1.2.0'
+    
+    // if you want to use default Coil implementation for ImageLoaderFactory
+    implementation 'io.github.samuel-unknown:gallery-image-picker-coil:1.2.0'
 }
 ```
 
 ## Usage
-1. Create `ImageLoaderFactory` implementation  
-    <details>
-        <summary>Click to expand</summary>
-   
-    ```Kotlin
-    // Example with Glide 
-    class ImageLoaderFactoryGlideImpl(private val appContext: Context) : ImageLoaderFactoryBase(appContext) {
-        private val radius: Float = appContext.resources.getDimension(R.dimen.image_corner_radius)
-    
-        private val drawableCrossFadeFactory = DrawableCrossFadeFactory
-            .Builder(DEFAULT_CROSS_FADE_DURATION_IN_MILLIS)
-            .setCrossFadeEnabled(true)
-            .build()
-
-        private val transformation = MultiTransformation(
-            CenterCrop(),
-            RoundedCorners(radius.roundToInt())
-        )
-
-        override fun create(): ImageLoader = object : ImageLoader {
-            override fun load(imageView: ImageView, uri: Uri) {
-                Glide.with(appContext)
-                    .load(uri)
-                    .apply(RequestOptions().override(imageView.width, imageView.height))
-                    .transition(withCrossFade(drawableCrossFadeFactory))
-                    .transform(transformation)
-                    .placeholder(R.drawable.bg_placeholder)
-                    .into(imageView)
-            }
-
-            override fun cancel(imageView: ImageView) {
-                Glide.with(appContext).clear(imageView)
-            }
-        }
-    
-        protected companion object {
-            const val DEFAULT_CROSS_FADE_DURATION_IN_MILLIS = 100
-        }
-    }
-    ```
-    </details>
+1. Create custom `ImageLoaderFactory` implementation or use default implementation (Glide or Coil) by adding dependency as said above
 
 2. Initialize library with `ImageLoaderFactory` implementation
     <details>
         <summary>Click to expand</summary>
     
     ```Kotlin
+    // MyApplication.kt
     class MyApplication: Application(R.layout.activity_main) {
         override fun onCreate() {
             super.onCreate()
@@ -85,6 +54,17 @@ dependencies {
         }
     }
     ```
+    
+    ```Xml
+    <!--AndroidManifest.xml-->
+    <application
+        android:name=".MyApplication"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true">
+    </application>
+    ```
     </details>
 
 3. Register launcher and launch it when it needed
@@ -92,8 +72,8 @@ dependencies {
         <summary>Click to expand</summary>
     
     ```Kotlin
-    class MainActivity : AppCompatActivity() {
-
+    // MyApplication.kt
+    class MainActivity : AppCompatActivity(R.layout.activity_main) {
         private val getImagesLauncher = registerForActivityResult(ImagesResultContract()) { result: ImagesResultDto ->
             when (result) {
                 is ImagesResultDto.Success -> {
@@ -110,9 +90,20 @@ dependencies {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
 
-            openGalleryButtonView.setOnClickListener {
-                getImagesLauncher.launch(GalleryConfigurationDto())
+            findViewById<Button>(R.id.open_gallery_button_view).setOnClickListener {
+                getImagesLauncher.launch(
+                    GalleryConfigurationDto(
+                        spacingSizeInPixels = 30,
+                        spanCount = 4,
+                        openLikeBottomSheet = true,
+                        peekHeightInPercents = 60
+                    )
+                )
             }
+        }
+    
+        companion object {
+            private val TAG = MainActivity::class.java.simpleName
         }
     }
     ```
@@ -122,12 +113,12 @@ dependencies {
         <summary>Click to expand</summary>
     
     `class GalleryConfigurationDto` uses for customizations. There are different arguments for that:
-    - `@StyleRes val themeResId: Int` - for creating a custom theme.
     - `@Px val spacingSizeInPixels: Int` - for spacing between cells.
     - `val spanCount: Int` - for setting cells count.
     - `val openLikeBottomSheet: Boolean` - tells about opening, should be gallery opened  like BottomSheet or in full-screen mode.
     - `val peekHeightInPercents: Int` - for setting BottomSheet height.
     - `val mimeTypes: List<String>? = null` - filtering images by mimeTypes.
+    - `@StyleRes val themeResId: Int` - for creating a custom theme.
     
         You can find an example of using here [here](https://github.com/Samuel-Unknown/Gallery-Image-Picker/tree/master/sample)
     </details>
