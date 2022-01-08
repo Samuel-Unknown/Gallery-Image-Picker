@@ -74,7 +74,7 @@ dependencies {
         <summary>Click to expand</summary>
     
     ```Kotlin
-    class Application: Application() {
+    class MyApplication: Application(R.layout.activity_main) {
         override fun onCreate() {
             super.onCreate()
             initGalleryImagePickerLib()
@@ -137,9 +137,11 @@ dependencies {
 - [x] Handle screen orientation changes
 - [x] UI customizations
 #### Version 1.2.*
-- [ ] Directory choosing *(in progress)*
-- [ ] Perfomance improvements
+- [x] Add Glide and Coil implementation modules
 #### Version 1.3.*
+- [ ] Directory choosing *(in progress)*
+- [ ] Performance improvements
+#### Version 1.4.*
 - [ ] Camera integration (preview and capture)
 
 ## License

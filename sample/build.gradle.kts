@@ -63,6 +63,8 @@ android {
 dependencies {
     // Gallery Image Picker
     implementation(project(ProjectModules.galleryImagePicker))
+    implementation(project(ProjectModules.galleryImagePickerGlide))
+    //implementation(project(ProjectModules.galleryImagePickerCoil))
 
     // Kotlin
     implementation(Libraries.Kotlin.stdLib)
@@ -77,11 +79,4 @@ dependencies {
 
     // Material
     implementation(Libraries.Google.Android.material)
-
-    // Glide
-    implementation(Libraries.Glide.glide)
-    kapt(Libraries.Glide.compiler)
-
-    // Coil
-    implementation(Libraries.coil)
 }

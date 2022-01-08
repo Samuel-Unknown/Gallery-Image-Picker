@@ -1,4 +1,4 @@
-package com.samuelunknown.sample.imageLoaderFactory
+package com.samuelunknown.galleryImagePickerGlide.imageLoaderFactory
 
 import android.content.Context
 import android.net.Uri
@@ -11,10 +11,14 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withC
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
 import com.samuelunknown.galleryImagePicker.presentation.imageLoader.ImageLoader
-import com.samuelunknown.sample.R
+import com.samuelunknown.galleryImagePicker.presentation.imageLoader.ImageLoaderFactory
+import com.samuelunknown.galleryImagePickerGlide.R
 import kotlin.math.roundToInt
 
-class ImageLoaderFactoryGlideImpl(private val appContext: Context) : ImageLoaderFactoryBase(appContext) {
+class ImageLoaderFactoryGlideImpl(private val appContext: Context) : ImageLoaderFactory {
+    private val radius: Float =
+        appContext.resources.getDimension(R.dimen.gallery_image_picker_glide__image_corner_radius)
+
     private val drawableCrossFadeFactory = DrawableCrossFadeFactory
         .Builder(DEFAULT_CROSS_FADE_DURATION_IN_MILLIS)
         .setCrossFadeEnabled(true)
@@ -32,12 +36,16 @@ class ImageLoaderFactoryGlideImpl(private val appContext: Context) : ImageLoader
                 .apply(RequestOptions().override(imageView.width, imageView.height))
                 .transition(withCrossFade(drawableCrossFadeFactory))
                 .transform(transformation)
-                .placeholder(R.drawable.bg_placeholder)
+                .placeholder(R.drawable.gallery_image_picker_glide__bg_placeholder)
                 .into(imageView)
         }
 
         override fun cancel(imageView: ImageView) {
             Glide.with(appContext).clear(imageView)
         }
+    }
+
+    private companion object {
+        const val DEFAULT_CROSS_FADE_DURATION_IN_MILLIS = 100
     }
 }

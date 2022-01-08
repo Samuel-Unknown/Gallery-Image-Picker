@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/gallery_image_picker_glide__color_placeholder" />
+    <corners android:radius="@dimen/gallery_image_picker_glide__image_corner_radius" />
+</shape>

@@ -2,7 +2,8 @@ package com.samuelunknown.sample
 
 import android.app.Application
 import com.samuelunknown.galleryImagePicker.GalleryImagePicker
-import com.samuelunknown.sample.imageLoaderFactory.ImageLoaderFactoryGlideImpl
+import com.samuelunknown.galleryImagePickerGlide.imageLoaderFactory.ImageLoaderFactoryGlideImpl
+//import com.samuelunknown.galleryImagePickerCoil.imageLoaderFactory.ImageLoaderFactoryCoilImpl
 
 class Application: Application() {
     override fun onCreate() {

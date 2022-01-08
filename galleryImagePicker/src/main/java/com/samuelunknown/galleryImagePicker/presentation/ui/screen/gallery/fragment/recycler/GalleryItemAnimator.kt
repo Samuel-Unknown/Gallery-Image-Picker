@@ -115,6 +115,7 @@ internal class GalleryItemAnimator : DefaultItemAnimator() {
                         it.binding.root.progress = 0f
                         it.binding.counter.text = action.counterText
                     }
+                    null -> {}
                 }
             }
         }
