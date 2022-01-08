@@ -1,12 +1,13 @@
 package com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.fragment.recycler
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.annotation.Px
 import androidx.core.view.doOnAttach
 import androidx.core.view.doOnLayout
-import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.samuelunknown.galleryImagePicker.R
 import com.samuelunknown.galleryImagePicker.databinding.ItemImageGalleryBinding
@@ -17,32 +18,22 @@ import com.samuelunknown.galleryImagePicker.presentation.imageLoader.ImageLoader
 import com.samuelunknown.galleryImagePicker.presentation.model.GalleryItem
 
 internal class GalleryAdapter(
+    context: Context,
     private val spanCount: Int,
     @Px private val spacingSize: Int,
     private val imageLoaderFactory: ImageLoaderFactory,
     private val changeSelectionAction: (GalleryItem.Image) -> Unit
-) : RecyclerView.Adapter<GalleryAdapter.GalleryItemViewHolder>() {
+) : ListAdapter<GalleryItem, GalleryAdapter.GalleryItemViewHolder>(GalleryItemDiffItemCallback()) {
 
-    private val asyncListDiffer: AsyncListDiffer<GalleryItem> = AsyncListDiffer(
-        this,
-        GalleryItemDiffItemCallback()
-    )
+    private val layoutInflater = LayoutInflater.from(context)
 
-    private val items: List<GalleryItem>
-        get() = asyncListDiffer.currentList
-
+    @Deprecated("Use submitList", ReplaceWith("submitList(newItems)"))
     fun updateItems(newItems: List<GalleryItem>) {
-        asyncListDiffer.submitList(newItems)
+        submitList(newItems)
     }
 
-    override fun getItemCount(): Int = items.size
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GalleryItemViewHolder {
-        val binding = ItemImageGalleryBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
+        val binding = ItemImageGalleryBinding.inflate(layoutInflater, parent, false)
 
         fun setImageSize(@IdRes constraintSetId: Int) {
             val space = (spanCount + 1) * spacingSize
@@ -68,7 +59,7 @@ internal class GalleryAdapter(
     }
 
     override fun onBindViewHolder(holder: GalleryItemViewHolder, position: Int) {
-        when (val item = items[position]) {
+        when (val item = getItem(position)) {
             is GalleryItem.Image -> holder.bind(item)
         }
     }
@@ -96,11 +87,11 @@ internal class GalleryAdapter(
             with(binding) {
                 root.apply {
                     setOnClickListener {
-                        val clickedItem = items[layoutPosition] as GalleryItem.Image
+                        val clickedItem = getItem(layoutPosition) as GalleryItem.Image
                         changeSelectionAction(clickedItem)
                     }
                     setOnLongClickListener {
-                        val clickedItem = items[layoutPosition] as GalleryItem.Image
+                        val clickedItem = getItem(layoutPosition) as GalleryItem.Image
                         changeSelectionAction(clickedItem)
                         true
                     }

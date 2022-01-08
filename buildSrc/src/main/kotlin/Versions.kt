@@ -1,7 +1,7 @@
 @file:Suppress("MayBeConstant")
 
 object Versions {
-    val coil = "2.0.0-alpha01"
+    val coil = "2.0.0-alpha06"
     val glide = "4.12.0"
 
     object Sdk {
@@ -20,8 +20,8 @@ object Versions {
     }
 
     object Kotlin {
-        val stdLib = "1.5.31"
-        val coroutines = "1.5.2"
+        val stdLib = "1.6.10"
+        val coroutines = "1.6.0"
     }
 
     object Google {
@@ -31,16 +31,16 @@ object Versions {
     }
 
     object AndroidTools {
-        val gradle = "7.0.2" // Attention! Version also must be changed in buildSrd/build.gradle
+        val gradle = "7.0.4" // Attention! Version also must be changed in buildSrd/build.gradle
     }
 
     object AndroidX {
-        val appcompat = "1.3.1"
-        val coreKtx = "1.6.0"
-        val constraintLayout = "2.1.1"
-        val lifecycle = "2.4.0-rc01"
-        val fragment = "1.3.6"
+        val appcompat = "1.4.0"
+        val coreKtx = "1.7.0"
+        val constraintLayout = "2.1.2"
+        val lifecycle = "2.4.0"
+        val fragment = "1.4.0"
         val preference = "1.1.1"
-        val window = "1.0.0-beta02"
+        val window = "1.0.0-rc01"
     }
 }

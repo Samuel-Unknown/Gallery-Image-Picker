@@ -5,6 +5,12 @@ object Publishing {
     val artifactId = "gallery-image-picker"
     val version = Versions.Library.versionName
 
+    object ArtifactIds {
+        val galleryImagePicker = "gallery-image-picker"
+        val galleryImagePickerGlide = "gallery-image-picker-glide"
+        val galleryImagePickerCoil = "gallery-image-picker-coil"
+    }
+
     object POM {
         val url = "https://github.com/samuel-unknown/gallery-image-picker"
         val name = "Gallery Image Picker"
@@ -25,11 +31,6 @@ object Publishing {
     object Properties {
         val FileName = "publish.properties"
 
-        object GitHub {
-            val userId = "GITHUB_USER_ID"
-            val token = "GITHUB_TOKEN"
-        }
-
         object Sonatype {
             val username = "SONATYPE_USERNAME"
             val password = "SONATYPE_PASSWORD"
@@ -43,10 +44,6 @@ object Publishing {
     }
 
     object Repository {
-        object GitHub {
-            val name = "GitHubPackages"
-            val url = "https://maven.pkg.github.com/samuel-unknown/gallery-image-picker"
-        }
         object SonatypeStage {
             val name = "SonatypeStaging"
             val url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2"
