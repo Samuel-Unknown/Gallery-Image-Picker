@@ -30,6 +30,7 @@ fun Project.publishing(
                 pom {
                     name.set(Publishing.POM.name)
                     description.set(Publishing.POM.description)
+                    url.set(Publishing.POM.url)
 
                     licenses {
                         license {
