@@ -8,7 +8,7 @@ Android library for picking images.
 - Permission processing
 - Returns name and Uri for picked images
 - UI customizations
-- Filtering by mime types
+- Filtering by mime types and folders
 
 <img src="/Gallery-Image-Picker.gif?raw=true" width="300px" align="middle">
 
@@ -24,13 +24,13 @@ allprojects {
 Add the following dependency in app build.gradle:
 ```
 dependencies {
-    implementation 'io.github.samuel-unknown:gallery-image-picker:1.2.0'
+    implementation 'io.github.samuel-unknown:gallery-image-picker:1.3.0'
     
     // if you want to use default Glide implementation for ImageLoaderFactory
-    implementation 'io.github.samuel-unknown:gallery-image-picker-glide:1.2.0'
+    implementation 'io.github.samuel-unknown:gallery-image-picker-glide:1.3.0'
     
     // if you want to use default Coil implementation for ImageLoaderFactory
-    implementation 'io.github.samuel-unknown:gallery-image-picker-coil:1.2.0'
+    implementation 'io.github.samuel-unknown:gallery-image-picker-coil:1.3.0'
 }
 ```
 
@@ -130,10 +130,10 @@ dependencies {
 #### Version 1.2.*
 - [x] Add Glide and Coil implementation modules
 #### Version 1.3.*
-- [ ] Directory choosing *(in progress)*
-- [ ] Performance improvements
+- [x] Directory choosing
 #### Version 1.4.*
-- [ ] Camera integration (preview and capture)
+- [ ] Camera integration (preview and capture) *{in progress}*
+- [ ] Performance improvements
 
 ## License
 ```
