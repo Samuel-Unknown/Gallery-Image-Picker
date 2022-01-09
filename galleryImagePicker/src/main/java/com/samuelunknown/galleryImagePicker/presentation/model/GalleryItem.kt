@@ -14,4 +14,6 @@ internal sealed class GalleryItem {
         val counterText: String
             get() = counter.toString()
     }
+
+    // NB: there will be added CameraPreview item later
 }

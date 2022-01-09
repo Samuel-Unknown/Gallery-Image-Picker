@@ -30,7 +30,23 @@
                 android:id="@+id/toolbar"
                 style="?attr/gallery_image_picker__style_toolbar"
                 tools:layout_height="50dp"
-                />
+                >
+
+                <TextView
+                    android:id="@+id/toolbar_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="?attr/titleTextColor"
+                    android:textAppearance="?attr/titleTextAppearance"
+                    android:drawablePadding="8dp"
+                    android:focusable="true"
+                    android:clickable="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    app:drawableEndCompat="@drawable/gallery_image_picker__ic_arrow_down"
+                    app:drawableTint="?attr/titleTextColor"
+                    />
+
+            </com.google.android.material.appbar.MaterialToolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
 
