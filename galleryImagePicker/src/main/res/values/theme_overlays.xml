@@ -11,6 +11,10 @@
         <item name="colorPrimary">@color/gallery_image_picker__color_toolbar</item>
         <item name="colorOnPrimary">@color/gallery_image_picker__color_toolbar_text</item>
         <item name="android:colorControlHighlight">@color/gallery_image_picker__color_toolbar_icon_highlight</item>
+
+        <!-- Since we had to use TextView inside MaterialToolbar we need to add this attributes here -->
+        <item name="titleTextColor">@color/gallery_image_picker__color_toolbar_text</item>
+        <item name="titleTextAppearance">?attr/textAppearanceHeadline6</item>
     </style>
 
     <style name="GalleryImagePicker.ThemeOverlay.Popup" parent="ThemeOverlay.MaterialComponents.Light" />

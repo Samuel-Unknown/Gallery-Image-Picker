@@ -4,8 +4,10 @@ import android.Manifest
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
 import androidx.core.view.marginBottom
@@ -20,9 +22,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.math.MathUtils
 import com.samuelunknown.galleryImagePicker.databinding.FragmentGalleryBinding
-import com.samuelunknown.galleryImagePicker.domain.GetImagesUseCaseImpl
 import com.samuelunknown.galleryImagePicker.domain.model.GalleryConfigurationDto
 import com.samuelunknown.galleryImagePicker.domain.model.ImagesResultDto
+import com.samuelunknown.galleryImagePicker.domain.useCase.getFoldersUseCase.GetFoldersUseCaseImpl
+import com.samuelunknown.galleryImagePicker.domain.useCase.getImagesUseCase.GetImagesUseCaseImpl
 import com.samuelunknown.galleryImagePicker.extensions.PermissionLauncher
 import com.samuelunknown.galleryImagePicker.extensions.PermissionResult
 import com.samuelunknown.galleryImagePicker.extensions.calculateScreenHeightWithoutSystemBars
@@ -31,6 +34,7 @@ import com.samuelunknown.galleryImagePicker.extensions.setDimVisibility
 import com.samuelunknown.galleryImagePicker.extensions.updateHeight
 import com.samuelunknown.galleryImagePicker.extensions.updateMargins
 import com.samuelunknown.galleryImagePicker.presentation.imageLoader.ImageLoaderFactoryHolder
+import com.samuelunknown.galleryImagePicker.presentation.model.FolderItem
 import com.samuelunknown.galleryImagePicker.presentation.model.GalleryAction
 import com.samuelunknown.galleryImagePicker.presentation.model.GalleryState
 import com.samuelunknown.galleryImagePicker.presentation.ui.savedStateViewModel
@@ -38,7 +42,6 @@ import com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.fragm
 import com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.fragment.recycler.GalleryItemAnimator
 import com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.fragment.recycler.GridSpacingItemDecoration
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 internal class GalleryFragment private constructor(
@@ -65,7 +68,7 @@ internal class GalleryFragment private constructor(
             when (result) {
                 is PermissionResult.Granted -> {
                     lifecycleScope.launch {
-                        vm.actionFlow.emit(GalleryAction.GetImages)
+                        vm.actionFlow.emit(GalleryAction.GetImagesAndFoldersAction)
                     }
                 }
                 is PermissionResult.NotGranted -> {
@@ -83,8 +86,16 @@ internal class GalleryFragment private constructor(
         }
     )
 
+    private val defaultToolbarTitle: String by lazy(LazyThreadSafetyMode.NONE) {
+        binding.toolbar.title.toString()
+    }
+
     private val pickButtonDefaultBottomMargin: Int by lazy(LazyThreadSafetyMode.NONE) {
         binding.pickupButton.marginBottom
+    }
+
+    private val popupMenu: PopupMenu by lazy(LazyThreadSafetyMode.NONE) {
+        PopupMenu(requireContext(), binding.toolbarTitle)
     }
 
     private val galleryAdapter: GalleryAdapter by lazy(LazyThreadSafetyMode.NONE) {
@@ -102,9 +113,11 @@ internal class GalleryFragment private constructor(
     }
 
     private val vm: GalleryFragmentVm by savedStateViewModel {
+        val contentResolver = requireContext().contentResolver
         GalleryFragmentVmFactory(
             configurationDto = configurationDto,
-            getImagesUseCase = GetImagesUseCaseImpl(requireContext().contentResolver)
+            getImagesUseCase = GetImagesUseCaseImpl(contentResolver),
+            getFoldersUseCase = GetFoldersUseCaseImpl(contentResolver)
         )
     }
     // endregion
@@ -200,6 +213,13 @@ internal class GalleryFragment private constructor(
             displayHomeAsUpEnabled = true,
             navigationAction = { dismiss() }
         )
+
+        binding.toolbarTitle.apply {
+            text = defaultToolbarTitle
+            setOnClickListener { popupMenu.show() }
+        }
+
+        binding.toolbar.title = ""
     }
 
     private fun initRecycler() {
@@ -220,7 +240,7 @@ internal class GalleryFragment private constructor(
     private fun initPickupButton() {
         binding.pickupButton.setOnClickListener {
             lifecycleScope.launch {
-                vm.actionFlow.emit(GalleryAction.Pickup)
+                vm.actionFlow.emit(GalleryAction.PickupAction)
             }
         }
     }
@@ -235,7 +255,11 @@ internal class GalleryFragment private constructor(
                         }
                         is GalleryState.Loaded -> {
                             binding.pickupButton.isVisible = true
+                            binding.toolbarTitle.text =
+                                state.selectedFolder?.name ?: defaultToolbarTitle
+
                             galleryAdapter.submitList(state.items)
+                            setPopupMenuFoldersFolders(state.folders)
                         }
                         is GalleryState.Picked -> {
                             finishWithResult(state.result)
@@ -274,9 +298,30 @@ internal class GalleryFragment private constructor(
         dismiss()
     }
 
+    private fun setPopupMenuFoldersFolders(folders: List<FolderItem>) {
+        val menuItems = folders.toMutableList()
+            .apply { add(0, FolderItem(id = "", name = defaultToolbarTitle)) }
+            .toList()
+
+        popupMenu.menu.clear()
+
+        menuItems.forEachIndexed { index, item ->
+            popupMenu.menu.add(Menu.NONE, index, index, item.name)
+        }
+
+        popupMenu.setOnMenuItemClickListener {
+            val selectedFolder = if (it.itemId == 0) null else menuItems[it.itemId]
+            lifecycleScope.launch {
+                vm.actionFlow.emit(GalleryAction.GetImagesAction(selectedFolder))
+            }
+            true
+        }
+    }
+
     companion object {
         val TAG: String = GalleryFragment::class.java.simpleName
-        private const val DELAY_IN_MILLISECONDS_FOR_SMOOTH_DIALOG_CLOSING_AFTER_PERMISSION_ERROR = 300L
+        private const val DELAY_IN_MILLISECONDS_FOR_SMOOTH_DIALOG_CLOSING_AFTER_PERMISSION_ERROR =
+            300L
 
         fun init(
             configurationDto: GalleryConfigurationDto,

@@ -1,8 +1,9 @@
-package com.samuelunknown.galleryImagePicker.domain
+package com.samuelunknown.galleryImagePicker.domain.useCase.getImagesUseCase
 
 import android.content.ContentResolver
 import android.net.Uri
 import android.provider.MediaStore
+import com.samuelunknown.galleryImagePicker.domain.model.FolderDto
 import com.samuelunknown.galleryImagePicker.domain.model.ImageDto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -11,7 +12,8 @@ internal class GetImagesUseCaseImpl(
     private val contentResolver: ContentResolver
 ) : GetImagesUseCase {
     override suspend fun execute(
-        mimeTypes: List<String>
+        mimeTypes: List<String>,
+        folder: FolderDto?
     ): List<ImageDto> = withContext(Dispatchers.IO) {
         val projection = arrayOf(
             MediaStore.Images.Media._ID,
@@ -20,13 +22,28 @@ internal class GetImagesUseCaseImpl(
             MediaStore.Images.Media.DATE_MODIFIED
         )
         val sortOrder = "${MediaStore.Images.Media.DATE_MODIFIED} DESC"
-        val selection = if (mimeTypes.isNotEmpty()) {
-            mimeTypes.joinToString(
-                prefix = "${MediaStore.Images.Media.MIME_TYPE} IN (",
-                postfix = ")"
-            ) { "?" }
-        } else null
-        val selectionArgs = mimeTypes.toTypedArray()
+
+        val mimeTypeSelection = mimeTypes.joinToString(
+            prefix = "${MediaStore.Images.Media.MIME_TYPE} IN (",
+            postfix = ")"
+        ) { "?" }
+        val folderIdSelection = "${MediaStore.Images.Media.BUCKET_ID} IN (?)"
+
+        val selection = when {
+            mimeTypes.isNotEmpty() && folder == null -> mimeTypeSelection
+            mimeTypes.isEmpty() && folder != null -> folderIdSelection
+            mimeTypes.isNotEmpty() && folder != null -> "$mimeTypeSelection AND $folderIdSelection"
+            else -> null
+        }
+
+        val selectionArgs = when {
+            mimeTypes.isNotEmpty() && folder == null -> mimeTypes.toTypedArray()
+            mimeTypes.isEmpty() && folder != null -> arrayOf(folder.id)
+            mimeTypes.isNotEmpty() && folder != null -> {
+                mimeTypes.toTypedArray() + arrayOf(folder.id)
+            }
+            else -> emptyArray()
+        }
 
         contentResolver.query(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
