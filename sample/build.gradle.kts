@@ -35,14 +35,22 @@ android {
     signingConfigs {
         create("release") {
             val keystorePropertiesFile = rootProject.file(Keystore.Files.Release.properties)
-            val keystoreFile = rootProject.file(Keystore.Files.Release.jks)
-            val keystoreProperties = Properties()
-            FileReader(keystorePropertiesFile).use { reader -> keystoreProperties.load(reader) }
+            if (keystorePropertiesFile.exists()) {
+                val keystoreProperties = Properties()
+                FileReader(keystorePropertiesFile).use { reader -> keystoreProperties.load(reader) }
+                storePassword = keystoreProperties.getProperty(Keystore.Properties.storePassword)
+                keyAlias = keystoreProperties.getProperty(Keystore.Properties.keyAlias)
+                keyPassword = keystoreProperties.getProperty(Keystore.Properties.keyPassword)
+            } else {
+                println("File $keystorePropertiesFile doesn't exist")
+            }
 
-            storeFile = keystoreFile
-            storePassword = keystoreProperties.getProperty(Keystore.Properties.storePassword)
-            keyAlias = keystoreProperties.getProperty(Keystore.Properties.keyAlias)
-            keyPassword = keystoreProperties.getProperty(Keystore.Properties.keyPassword)
+            val keystoreFile = rootProject.file(Keystore.Files.Release.jks)
+            if (keystoreFile.exists()) {
+                storeFile = keystoreFile
+            } else {
+                println("File $keystoreFile doesn't exist")
+            }
         }
     }
 

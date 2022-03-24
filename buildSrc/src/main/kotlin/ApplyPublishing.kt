@@ -12,6 +12,11 @@ fun Project.publishing(
     sourcesJar: Any
 ) = afterEvaluate {
     val propertiesFile = rootProject.file(Publishing.Properties.FileName)
+    if (propertiesFile.exists().not()) {
+        println("File $propertiesFile doesn't exist")
+        return@afterEvaluate
+    }
+
     val properties = Properties()
     FileReader(propertiesFile).use { reader -> properties.load(reader) }
 
