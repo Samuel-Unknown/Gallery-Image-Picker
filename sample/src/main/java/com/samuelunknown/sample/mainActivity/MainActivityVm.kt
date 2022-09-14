@@ -51,6 +51,7 @@ class MainActivityVm : ViewModel() {
                     is VmAction.ChangePeekHeightAction -> changePeekHeight(action)
                     is VmAction.ChangeIsCustomStyleEnabledAction -> changeIsCustomStyleEnabledAction(action)
                     is VmAction.ChangeIsDarkModeEnabledAction -> changeIsDarkModeEnabledAction(action)
+                    is VmAction.ChangeIsSingleSelectionAction -> changeIsSingleSelectionAction(action)
                 }
             }
         }
@@ -71,6 +72,7 @@ class MainActivityVm : ViewModel() {
             spacingSizeInPixels = spacingSizeInPixels,
             spanCount = spanCount,
             openLikeBottomSheet = _stateFlow.value.openLikeBottomSheet,
+            singleSelection = _stateFlow.value.isSingleSelectionEnabled,
             peekHeightInPercents = peekHeightInPercents,
             mimeTypes = _stateFlow.value.mimeTypes
         )
@@ -182,6 +184,11 @@ class MainActivityVm : ViewModel() {
 
     private suspend fun changeIsCustomStyleEnabledAction(action: VmAction.ChangeIsCustomStyleEnabledAction) {
         val newState = _stateFlow.value.copy(isCustomStyleEnabled = action.isEnabled)
+        _stateFlow.emit(newState)
+    }
+
+    private suspend fun changeIsSingleSelectionAction(action: VmAction.ChangeIsSingleSelectionAction) {
+        val newState = _stateFlow.value.copy(isSingleSelectionEnabled = action.isEnabled)
         _stateFlow.emit(newState)
     }
 }

@@ -12,6 +12,7 @@ data class GalleryConfigurationDto(
     @IntRange(from = 0) @Px val spacingSizeInPixels: Int,
     @IntRange(from = 1) val spanCount: Int,
     val openLikeBottomSheet: Boolean,
+    val singleSelection: Boolean,
     @IntRange(from = 0, to = 100) val peekHeightInPercents: Int,
     val mimeTypes: List<String>? = null,
     @StyleRes val themeResId: Int = R.style.GalleryImagePicker_Theme_Default

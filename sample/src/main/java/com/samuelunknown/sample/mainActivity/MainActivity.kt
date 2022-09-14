@@ -18,7 +18,6 @@ import com.samuelunknown.sample.extensions.setIsCheckedIfItDoesNotMatch
 import com.samuelunknown.sample.extensions.setTextIfItDoesNotMatch
 import com.samuelunknown.sample.mainActivity.MainActivityAction.ViewAction
 import com.samuelunknown.sample.mainActivity.MainActivityAction.VmAction
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -26,11 +25,12 @@ class MainActivity : AppCompatActivity() {
 
     private val vm: MainActivityVm by viewModels()
 
-    private val getImagesLauncher = registerForActivityResult(ImagesResultContract()) { result: ImagesResultDto ->
-        lifecycleScope.launch {
-            vm.emitAction(VmAction.ChangeResultAction(result))
+    private val getImagesLauncher =
+        registerForActivityResult(ImagesResultContract()) { result: ImagesResultDto ->
+            lifecycleScope.launch {
+                vm.emitAction(VmAction.ChangeResultAction(result))
+            }
         }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity() {
         initPeekHeightEditText()
         initIsDarkModeCheckbox()
         initIsCustomStyleCheckbox()
+        initIsSingleSelectionCheckBox()
 
         initStateSubscription()
         initViewActionSubscription()
@@ -124,6 +125,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun initIsSingleSelectionCheckBox() {
+        binding.singleSelection.setOnCheckedChangeListener { _, isChecked ->
+            lifecycleScope.launch {
+                vm.emitAction(VmAction.ChangeIsSingleSelectionAction(isChecked))
+            }
+        }
+    }
+
     private fun initStateSubscription() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -142,21 +151,27 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
 
-                    binding.span.setTextIfItDoesNotMatch(state.spanCount?.toString() ?: "")
-                    binding.spanWrapper.error = state.spanCountError
+                    with(binding) {
+                        span.setTextIfItDoesNotMatch(state.spanCount?.toString() ?: "")
+                        spanWrapper.error = state.spanCountError
 
-                    binding.spacing.setTextIfItDoesNotMatch(state.spacingSizeInPixels?.toString() ?: "")
-                    binding.spacingWrapper.error = state.spacingSizeInPixelsError
+                        spacing.setTextIfItDoesNotMatch(state.spacingSizeInPixels?.toString() ?: "")
+                        spacingWrapper.error = state.spacingSizeInPixelsError
 
-                    binding.openLikeBottomSheet.setIsCheckedIfItDoesNotMatch(state.openLikeBottomSheet)
-                    binding.peekHeight.setTextIfItDoesNotMatch(state.peekHeightInPercents?.toString() ?: "")
-                    binding.peekHeightWrapper.error = state.peekHeightError
-                    binding.peekHeightWrapper.isInvisible = state.openLikeBottomSheet.not()
+                        openLikeBottomSheet.setIsCheckedIfItDoesNotMatch(state.openLikeBottomSheet)
+                        peekHeight.setTextIfItDoesNotMatch(
+                            state.peekHeightInPercents?.toString() ?: ""
+                        )
+                        peekHeightWrapper.error = state.peekHeightError
+                        peekHeightWrapper.isInvisible = state.openLikeBottomSheet.not()
 
-                    binding.darkMode.setIsCheckedIfItDoesNotMatch(state.isDarkModeEnabled)
-                    binding.customStyle.setIsCheckedIfItDoesNotMatch(state.isCustomStyleEnabled)
+                        darkMode.setIsCheckedIfItDoesNotMatch(state.isDarkModeEnabled)
+                        customStyle.setIsCheckedIfItDoesNotMatch(state.isCustomStyleEnabled)
 
-                    binding.result.text = state.resultText
+                        singleSelection.setIsCheckedIfItDoesNotMatch(state.isSingleSelectionEnabled)
+
+                        result.text = state.resultText
+                    }
 
                     updateNightMode(state.isDarkModeEnabled)
                 }

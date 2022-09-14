@@ -98,6 +98,7 @@ dependencies {
                         spacingSizeInPixels = 30,
                         spanCount = 4,
                         openLikeBottomSheet = true,
+                        singleSelection = false,
                         peekHeightInPercents = 60
                     )
                 )
@@ -117,7 +118,8 @@ dependencies {
     `class GalleryConfigurationDto` uses for customizations. There are different arguments for that:
     - `@Px val spacingSizeInPixels: Int` - for spacing between cells.
     - `val spanCount: Int` - for setting cells count.
-    - `val openLikeBottomSheet: Boolean` - tells about opening, should be gallery opened  like BottomSheet or in full-screen mode.
+    - `val openLikeBottomSheet: Boolean` - should be gallery opened like BottomSheet or in full-screen mode.
+    - `val singleSelection: Boolean` - limits selection to one image,
     - `val peekHeightInPercents: Int` - for setting BottomSheet height.
     - `val mimeTypes: List<String>? = null` - filtering images by mimeTypes.
     - `@StyleRes val themeResId: Int` - for creating a custom theme.
@@ -134,6 +136,8 @@ dependencies {
 #### Version 1.3.*
 - [x] Directory choosing
 #### Version 1.4.*
+- [x] Single image selection
+#### Version 1.5.*
 - [ ] Camera integration (preview and capture) *{in progress}*
 - [ ] Performance improvements
 

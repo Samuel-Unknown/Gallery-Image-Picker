@@ -18,5 +18,6 @@ sealed class MainActivityAction {
         data class ChangePeekHeightAction(val peekHeightText: String) : VmAction()
         data class ChangeIsDarkModeEnabledAction(val  isEnabled: Boolean) : VmAction()
         data class ChangeIsCustomStyleEnabledAction(val isEnabled: Boolean) : VmAction()
+        data class ChangeIsSingleSelectionAction(val isEnabled: Boolean) : VmAction()
     }
 }

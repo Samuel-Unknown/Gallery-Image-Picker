@@ -11,6 +11,7 @@ data class MainActivityState(
     val peekHeightError: String? = null,
     val isDarkModeEnabled: Boolean = DEFAULT_IS_DARK_MODE_ENABLED,
     val isCustomStyleEnabled: Boolean = DEFAULT_IS_CUSTOM_STYLE_ENABLED,
+    val isSingleSelectionEnabled: Boolean = DEFAULT_IS_SINGLE_SELECTION_ENABLED,
     val resultText: String = EMPTY_TEXT
 ) {
     val mimeTypes: List<String>
@@ -25,6 +26,7 @@ data class MainActivityState(
         const val DEFAULT_PEEK_HEIGHT = 70
         const val DEFAULT_IS_DARK_MODE_ENABLED = false
         const val DEFAULT_IS_CUSTOM_STYLE_ENABLED = false
+        const val DEFAULT_IS_SINGLE_SELECTION_ENABLED = false
         const val EMPTY_TEXT = ""
         const val EMPTY_VALUE_ERROR = "Error"
         val DEFAULT_MIME_TYPE_FILTERS = listOf(
