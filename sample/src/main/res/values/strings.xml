@@ -13,6 +13,7 @@
     <string name="main_activity__peek_height_suffix">%</string>
     <string name="main_activity__dark_mode">Dark mode</string>
     <string name="main_activity__custom_style">Custom style</string>
+    <string name="main_activity__single_selection">Single selection</string>
     <string name="main_activity__result_info">Result:</string>
 
     <string name="gallery__pick_up_button">Pick up</string>

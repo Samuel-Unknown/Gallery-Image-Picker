@@ -127,7 +127,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:checked="true"
+                android:checked="false"
                 android:text="@string/main_activity__open_like_bottom_sheet"
                 app:layout_constraintBottom_toBottomOf="@+id/peek_height_wrapper"
                 app:layout_constraintEnd_toStartOf="@+id/peek_height_wrapper"
@@ -168,7 +168,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:checked="true"
+                android:checked="false"
                 android:text="@string/main_activity__dark_mode"
                 app:layout_constraintEnd_toStartOf="@+id/custom_style"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -183,13 +183,26 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:checked="true"
+                android:checked="false"
                 android:text="@string/main_activity__custom_style"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/dark_mode"
                 app:layout_constraintTop_toBottomOf="@+id/open_like_bottom_sheet"
                 />
+
+            <CheckBox
+                android:id="@+id/single_selection"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:checked="false"
+                android:text="@string/main_activity__single_selection"
+                app:layout_constraintEnd_toStartOf="@+id/custom_style"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dark_mode" />
 
             <View
                 android:id="@+id/divider"
@@ -199,7 +212,7 @@
                 android:background="#6A6A6A"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/dark_mode"
+                app:layout_constraintTop_toBottomOf="@+id/single_selection"
                 />
 
             <TextView

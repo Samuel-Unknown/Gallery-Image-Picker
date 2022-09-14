@@ -115,11 +115,20 @@ internal class GalleryFragmentVm(
             }
             newItems[indexOfItemToChange] = itemToChange.copy(counter = 0)
         } else {
-            val maxCounter = state.items.filterIsInstance<GalleryItem.Image>()
-                .map(GalleryItem.Image::counter)
-                .maxOrNull() ?: 0
+            if (configurationDto.singleSelection) {
+                newItems.forEachIndexed { index, galleryItem ->
+                    if (galleryItem is GalleryItem.Image && galleryItem.isSelected) {
+                        newItems[index] = galleryItem.copy(counter = 0)
+                    }
+                }
+                newItems[indexOfItemToChange] = itemToChange.copy(counter = 1)
+            } else {
+                val maxCounter = state.items.filterIsInstance<GalleryItem.Image>()
+                    .map(GalleryItem.Image::counter)
+                    .maxOrNull() ?: 0
 
-            newItems[indexOfItemToChange] = itemToChange.copy(counter = maxCounter + 1)
+                newItems[indexOfItemToChange] = itemToChange.copy(counter = maxCounter + 1)
+            }
         }
 
         viewModelScope.launch {
