@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.motion.widget.MotionLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_image_gallery"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    app:layoutDescription="@xml/scene_item_image_gallery"
     tools:layout_width="wrap_content"
     >
 
@@ -14,10 +12,6 @@
         android:id="@+id/image"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         tools:background="#C8C8C8"
         tools:ignore="ContentDescription"
         tools:layout_height="120dp"
@@ -28,14 +22,13 @@
         android:id="@+id/picker_ring"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_gravity="top|end"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
         android:background="@drawable/gallery_image_picker__bg_picker_ring"
-        app:layout_constraintEnd_toEndOf="@+id/image"
-        app:layout_constraintHeight_percent="0.3"
-        app:layout_constraintTop_toTopOf="@+id/image"
-        app:layout_constraintWidth_percent="0.3"
         tools:ignore="ContentDescription"
+        tools:layout_width="36dp"
+        tools:layout_height="36dp"
         />
 
     <TextView
@@ -45,11 +38,15 @@
         android:layout_height="0dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
-        app:layout_constraintEnd_toEndOf="@+id/image"
-        app:layout_constraintHeight_percent="0.3"
-        app:layout_constraintTop_toTopOf="@+id/image"
-        app:layout_constraintWidth_percent="0.3"
+        android:layout_gravity="top|end"
+        android:scaleX="0"
+        android:scaleY="0"
+        tools:gravity="center"
         tools:text="100"
+        tools:layout_width="36dp"
+        tools:layout_height="36dp"
+        tools:scaleX="1"
+        tools:scaleY="1"
         />
 
-</androidx.constraintlayout.motion.widget.MotionLayout>
+</FrameLayout>

@@ -12,7 +12,7 @@ object Versions {
 
     object Library {
         private val major = 1 // change when you make incompatible API changes
-        private val minor = 4 // change when you add functionality in a backwards-compatible manner
+        private val minor = 5 // change when you add functionality in a backwards-compatible manner
         private val build = 0 // change when you make backwards-compatible bug fixes
 
         val versionCode = major * 10000 + minor * 100 + build
@@ -31,7 +31,7 @@ object Versions {
     }
 
     object AndroidTools {
-        val gradle = "7.2.2" // Attention! Version also must be changed in buildSrd/build.gradle
+        val gradle = "7.3.0" // Attention! Version also must be changed in buildSrd/build.gradle
     }
 
     object AndroidX {

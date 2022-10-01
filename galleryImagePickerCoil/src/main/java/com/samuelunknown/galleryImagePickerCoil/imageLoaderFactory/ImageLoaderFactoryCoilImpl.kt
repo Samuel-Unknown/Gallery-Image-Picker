@@ -3,6 +3,7 @@ package com.samuelunknown.galleryImagePickerCoil.imageLoaderFactory
 import android.content.Context
 import android.net.Uri
 import android.widget.ImageView
+import androidx.annotation.Px
 import coil.dispose
 import coil.load
 import coil.size.Scale
@@ -18,9 +19,9 @@ class ImageLoaderFactoryCoilImpl(appContext: Context) : ImageLoaderFactory {
     private val transformation = RoundedCornersTransformation(radius)
 
     override fun create(): ImageLoader = object : ImageLoader {
-        override fun load(imageView: ImageView, uri: Uri) {
+        override fun load(imageView: ImageView, uri: Uri, @Px imageSizeInPixels: Int) {
             imageView.load(uri) {
-                size(imageView.width, imageView.height)
+                size(imageSizeInPixels, imageSizeInPixels)
                 placeholder(R.drawable.gallery_image_picker_coil__bg_placeholder)
                 scale(Scale.FILL)
                 transformations(transformation)

@@ -6,7 +6,6 @@ import android.content.res.Resources
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
-import com.samuelunknown.galleryImagePicker.R
 import com.samuelunknown.galleryImagePicker.databinding.ActivityGalleryBinding
 import com.samuelunknown.galleryImagePicker.domain.model.GalleryConfigurationDto
 import com.samuelunknown.galleryImagePicker.domain.model.ImagesResultDto

@@ -3,6 +3,7 @@ package com.samuelunknown.galleryImagePickerGlide.imageLoaderFactory
 import android.content.Context
 import android.net.Uri
 import android.widget.ImageView
+import androidx.annotation.Px
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -30,10 +31,10 @@ class ImageLoaderFactoryGlideImpl(private val appContext: Context) : ImageLoader
     )
 
     override fun create(): ImageLoader = object : ImageLoader {
-        override fun load(imageView: ImageView, uri: Uri) {
+        override fun load(imageView: ImageView, uri: Uri, @Px imageSizeInPixels: Int) {
             Glide.with(appContext)
                 .load(uri)
-                .apply(RequestOptions().override(imageView.width, imageView.height))
+                .apply(RequestOptions().override(imageSizeInPixels, imageSizeInPixels))
                 .transition(withCrossFade(drawableCrossFadeFactory))
                 .transform(transformation)
                 .placeholder(R.drawable.gallery_image_picker_glide__bg_placeholder)
