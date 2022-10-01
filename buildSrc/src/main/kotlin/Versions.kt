@@ -31,7 +31,7 @@ object Versions {
     }
 
     object AndroidTools {
-        val gradle = "7.2.2" // Attention! Version also must be changed in buildSrd/build.gradle
+        val gradle = "7.3.0" // Attention! Version also must be changed in buildSrd/build.gradle
     }
 
     object AndroidX {
