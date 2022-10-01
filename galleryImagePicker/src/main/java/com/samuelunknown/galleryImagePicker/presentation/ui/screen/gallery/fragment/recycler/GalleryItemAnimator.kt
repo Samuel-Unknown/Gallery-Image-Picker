@@ -1,7 +1,9 @@
 package com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.fragment.recycler
 
-import androidx.constraintlayout.motion.widget.MotionLayout
-import androidx.constraintlayout.motion.widget.TransitionAdapter
+import android.animation.*
+import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.OvershootInterpolator
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import com.samuelunknown.galleryImagePicker.presentation.model.GalleryItemPayload
@@ -9,7 +11,8 @@ import java.util.*
 
 internal class GalleryItemAnimator : DefaultItemAnimator() {
 
-    private val viewHoldersInProgress: WeakHashMap<RecyclerView.ViewHolder, UpdateAction> = WeakHashMap()
+    private val viewHoldersInProgress: WeakHashMap<RecyclerView.ViewHolder, AnimatorSet> =
+        WeakHashMap()
 
     override fun canReuseUpdatedViewHolder(
         viewHolder: RecyclerView.ViewHolder,
@@ -26,7 +29,7 @@ internal class GalleryItemAnimator : DefaultItemAnimator() {
             payloads.filterIsInstance<GalleryItemPayload.SelectionPayload>()
                 .firstOrNull()
                 ?.let { selectionPayload ->
-                    return DilemmaItemHolderInfo(
+                    return GalleryItemHolderInfo(
                         if (selectionPayload.item.isSelected)
                             UpdateAction.Select(counterText = selectionPayload.item.counterText)
                         else
@@ -44,7 +47,7 @@ internal class GalleryItemAnimator : DefaultItemAnimator() {
         preInfo: ItemHolderInfo,
         postInfo: ItemHolderInfo
     ): Boolean {
-        if (preInfo is DilemmaItemHolderInfo) {
+        if (preInfo is GalleryItemHolderInfo) {
             cancelCurrentAnimationIfExists(newHolder)
             viewHoldersInProgress.remove(newHolder)
 
@@ -74,57 +77,110 @@ internal class GalleryItemAnimator : DefaultItemAnimator() {
         }
     }
 
+    private fun createAnimators(
+        view: View,
+        updateAction: UpdateAction,
+        startValue: Float,
+        endValue: Float,
+        interpolator: TimeInterpolator
+    ): List<ObjectAnimator> {
+
+        return when (updateAction) {
+            is UpdateAction.Select -> {
+                if (view.scaleX == endValue) {
+                    emptyList()
+                } else {
+                    listOf(
+                        ObjectAnimator.ofFloat(view, "scaleX", startValue, endValue)
+                            .also { it.interpolator = interpolator },
+                        ObjectAnimator.ofFloat(view, "scaleY", startValue, endValue)
+                            .also { it.interpolator = interpolator }
+                    )
+                }
+            }
+            is UpdateAction.Deselect -> {
+                listOf(
+                    ObjectAnimator.ofFloat(view, "scaleX", endValue, startValue)
+                        .also { it.interpolator = interpolator },
+                    ObjectAnimator.ofFloat(view, "scaleY", endValue, startValue)
+                        .also { it.interpolator = interpolator }
+                )
+            }
+        }
+    }
+
     private fun animateHolder(
         holder: GalleryAdapter.GalleryItemViewHolder,
         updateAction: UpdateAction
     ) {
-        val transitionAdapter = object : TransitionAdapter() {
-            override fun onTransitionCompleted(motionLayout: MotionLayout, currentId: Int) {
+        val animatorListener = object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
                 viewHoldersInProgress.remove(holder)
                 dispatchAnimationFinished(holder)
             }
         }
 
-        viewHoldersInProgress[holder] = updateAction
         with(holder.binding) {
-            root.setTransitionListener(transitionAdapter)
-            when (updateAction) {
-                is UpdateAction.Select -> {
-                    counter.text = updateAction.counterText
-                    root.transitionToEnd()
-                }
-                is UpdateAction.Deselect -> {
-                    root.transitionToStart()
-                }
+            if (updateAction is UpdateAction.Select) {
+                counter.text = updateAction.counterText
             }
+
+            val animatorsCollection = listOf(
+                createAnimators(
+                    view = image,
+                    updateAction = updateAction,
+                    startValue = IMAGE_START_SCALE,
+                    endValue = IMAGE_END_SCALE,
+                    interpolator = IMAGE_INTERPOLATOR
+                ),
+                createAnimators(
+                    view = pickerRing,
+                    updateAction = updateAction,
+                    startValue = RING_START_SCALE,
+                    endValue = RING_END_SCALE,
+                    interpolator = DEFAULT_INTERPOLATOR
+                ),
+                createAnimators(
+                    view = counter,
+                    updateAction = updateAction,
+                    startValue = COUNTER_START_SCALE,
+                    endValue = COUNTER_END_SCALE,
+                    interpolator = DEFAULT_INTERPOLATOR
+                )
+            ).flatten()
+
+            val scaleAnimatorSet = AnimatorSet()
+                .apply {
+                    duration = ANIMATION_DURATION
+                    addListener(animatorListener)
+                    playTogether(animatorsCollection)
+                }
+
+            viewHoldersInProgress[holder] = scaleAnimatorSet
+            scaleAnimatorSet.start()
         }
     }
 
     private fun cancelCurrentAnimationIfExists(item: RecyclerView.ViewHolder) {
-        if (viewHoldersInProgress.containsKey(item)) {
-            val dilemmaItemViewHolder = viewHoldersInProgress.keys.firstOrNull { it == item }
-                    as? GalleryAdapter.GalleryItemViewHolder
-
-            dilemmaItemViewHolder?.let {
-                when (val action = viewHoldersInProgress[item]) {
-                    is UpdateAction.Select -> {
-                        it.binding.root.progress = 1f
-                        it.binding.counter.text = action.counterText
-                    }
-                    is UpdateAction.Deselect -> {
-                        it.binding.root.progress = 0f
-                        it.binding.counter.text = action.counterText
-                    }
-                    null -> {}
-                }
-            }
-        }
+        viewHoldersInProgress[item]?.cancel()
     }
 
-    private data class DilemmaItemHolderInfo(val updateAction: UpdateAction) : ItemHolderInfo()
+    private data class GalleryItemHolderInfo(val updateAction: UpdateAction) : ItemHolderInfo()
 
     private sealed class UpdateAction(open val counterText: String) {
         data class Select(override val counterText: String) : UpdateAction(counterText)
         data class Deselect(override val counterText: String) : UpdateAction(counterText)
+    }
+
+    companion object {
+        const val IMAGE_START_SCALE = 1f
+        const val IMAGE_END_SCALE = 0.8f
+        const val RING_START_SCALE = 1f
+        const val RING_END_SCALE = 0f
+        const val COUNTER_START_SCALE = 0f
+        const val COUNTER_END_SCALE = 1f
+        private const val ANIMATION_DURATION = 350L
+        private val DEFAULT_INTERPOLATOR = AccelerateDecelerateInterpolator()
+        private val IMAGE_INTERPOLATOR = OvershootInterpolator()
     }
 }

@@ -2,14 +2,11 @@ package com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.frag
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.IdRes
 import androidx.annotation.Px
-import androidx.core.view.doOnAttach
-import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.samuelunknown.galleryImagePicker.R
 import com.samuelunknown.galleryImagePicker.databinding.ItemImageGalleryBinding
 import com.samuelunknown.galleryImagePicker.extensions.updateHeight
 import com.samuelunknown.galleryImagePicker.extensions.updateWidth
@@ -26,34 +23,25 @@ internal class GalleryAdapter(
 ) : ListAdapter<GalleryItem, GalleryAdapter.GalleryItemViewHolder>(GalleryItemDiffItemCallback()) {
 
     private val layoutInflater = LayoutInflater.from(context)
-
-    @Deprecated("Use submitList", ReplaceWith("submitList(newItems)"))
-    fun updateItems(newItems: List<GalleryItem>) {
-        submitList(newItems)
-    }
+    private var imageSizeInPixels = 0
+    private var ringSizeInPixels = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GalleryItemViewHolder {
         val binding = ItemImageGalleryBinding.inflate(layoutInflater, parent, false)
-
-        fun setImageSize(@IdRes constraintSetId: Int) {
+        if (imageSizeInPixels == 0) {
             val space = (spanCount + 1) * spacingSize
-            val size = (parent.width - space) / spanCount
-
-            with(binding) {
-                root.getConstraintSet(constraintSetId)
-                    .getConstraint(R.id.image)
-                    .apply {
-                        layout.mWidth = size
-                        layout.mHeight = size
-                    }
-
-                image.updateWidth(size)
-                image.updateHeight(size)
-            }
+            imageSizeInPixels = (parent.width - space) / spanCount
+            ringSizeInPixels = (imageSizeInPixels * RING_SIZE_RATIO).toInt()
         }
 
-        setImageSize(R.id.start)
-        setImageSize(R.id.end)
+        with(binding) {
+            image.updateWidth(imageSizeInPixels)
+            image.updateHeight(imageSizeInPixels)
+            pickerRing.updateWidth(ringSizeInPixels)
+            pickerRing.updateHeight(ringSizeInPixels)
+            counter.updateWidth(ringSizeInPixels)
+            counter.updateHeight(ringSizeInPixels)
+        }
 
         return GalleryItemViewHolder(binding)
     }
@@ -95,19 +83,33 @@ internal class GalleryAdapter(
                         changeSelectionAction(clickedItem)
                         true
                     }
+                }
 
-                    doOnAttach {
-                        root.progress = if (imageItem.isSelected) 1f else 0f
+                fun View.applyScale(startScale: Float, endScale: Float) = apply {
+                    if (imageItem.isSelected) {
+                        scaleX = endScale
+                        scaleY = endScale
+                    } else {
+                        scaleX = startScale
+                        scaleY = startScale
                     }
                 }
 
-                image.doOnLayout {
-                    // load in doOnLayout is better because imageView have
-                    // the exact size and we can use it for optimizations
-                    imageLoader.load(imageView = image, uri = imageItem.uri)
-                }
+                counter.applyScale(
+                    startScale = GalleryItemAnimator.COUNTER_START_SCALE,
+                    endScale = GalleryItemAnimator.COUNTER_END_SCALE
+                )
+                pickerRing.applyScale(
+                    startScale = GalleryItemAnimator.RING_START_SCALE,
+                    endScale = GalleryItemAnimator.RING_END_SCALE
+                )
+                image.applyScale(
+                    startScale = GalleryItemAnimator.IMAGE_START_SCALE,
+                    endScale = GalleryItemAnimator.IMAGE_END_SCALE
+                )
 
                 counter.text = imageItem.counterText
+                imageLoader.load(imageView = image, uri = imageItem.uri, imageSizeInPixels)
             }
         }
 
@@ -118,5 +120,9 @@ internal class GalleryAdapter(
                 root.setOnLongClickListener(null)
             }
         }
+    }
+
+    private companion object {
+        const val RING_SIZE_RATIO = 0.3
     }
 }

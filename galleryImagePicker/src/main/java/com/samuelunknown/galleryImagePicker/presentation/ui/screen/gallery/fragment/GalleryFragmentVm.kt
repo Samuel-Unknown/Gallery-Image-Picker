@@ -14,7 +14,9 @@ import com.samuelunknown.galleryImagePicker.presentation.model.toFolderDto
 import com.samuelunknown.galleryImagePicker.presentation.model.toFolderItem
 import com.samuelunknown.galleryImagePicker.presentation.model.toGalleryItemImage
 import com.samuelunknown.galleryImagePicker.presentation.model.toImageDto
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -56,6 +58,7 @@ internal class GalleryFragmentVm(
 
         viewModelScope.launch {
             try {
+                clearSelection()
                 _stateFlow.emit(
                     GalleryState.Loaded(
                         items = getGalleryItems(selectedFolder?.toFolderDto()),
@@ -71,6 +74,29 @@ internal class GalleryFragmentVm(
         }
     }
 
+    private suspend fun clearSelection() {
+        val state = _stateFlow.value
+        check(state is GalleryState.Loaded)
+
+        val newItems = List(state.items.size) { i ->
+            val item = state.items[i]
+            if (item is GalleryItem.Image) {
+                item.copy(counter = 0)
+            } else {
+                item
+            }
+        }
+
+        _stateFlow.emit(
+            GalleryState.Loaded(
+                items = newItems,
+                folders = state.folders,
+                selectedFolder = state.selectedFolder
+            )
+        )
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     private fun handleGetImagesAndFoldersAction() {
         if (_stateFlow.value is GalleryState.Loaded) {
             return
@@ -82,11 +108,13 @@ internal class GalleryFragmentVm(
         }
 
         viewModelScope.launch {
+            listOf(itemsDeferred, foldersDeferred).awaitAll()
+
             try {
                 _stateFlow.emit(
                     GalleryState.Loaded(
-                        items = itemsDeferred.await(),
-                        folders = foldersDeferred.await(),
+                        items = itemsDeferred.getCompleted(),
+                        folders = foldersDeferred.getCompleted(),
                         selectedFolder = null
                     )
                 )
@@ -160,9 +188,5 @@ internal class GalleryFragmentVm(
                 folder = folder
             )
             .map { it.toGalleryItemImage() }
-    }
-
-    companion object {
-        private val TAG = GalleryFragmentVm::class.java.simpleName
     }
 }

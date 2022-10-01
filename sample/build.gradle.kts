@@ -66,13 +66,28 @@ android {
             )
         }
     }
+
+    val glideFlavor = "Glide"
+    val coil = "Coil"
+    val imageLibraryDimension = "image_library_implementation"
+    flavorDimensions += imageLibraryDimension
+    productFlavors {
+        create(glideFlavor) {
+            dimension = imageLibraryDimension
+            applicationIdSuffix = ".$glideFlavor"
+        }
+        create(coil) {
+            dimension = imageLibraryDimension
+            applicationIdSuffix = ".$coil"
+        }
+    }
 }
 
 dependencies {
     // Gallery Image Picker
     implementation(project(ProjectModules.galleryImagePicker))
     implementation(project(ProjectModules.galleryImagePickerGlide))
-    //implementation(project(ProjectModules.galleryImagePickerCoil))
+    implementation(project(ProjectModules.galleryImagePickerCoil))
 
     // Kotlin
     implementation(Libraries.Kotlin.stdLib)
