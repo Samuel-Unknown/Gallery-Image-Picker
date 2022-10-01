@@ -11,9 +11,9 @@ import com.samuelunknown.galleryImagePicker.domain.model.ImagesResultDto
 import com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.GalleryActivity
 
 class ImagesResultContract : ActivityResultContract<GalleryConfigurationDto, ImagesResultDto>() {
-    override fun createIntent(context: Context, galleryConfigurationDto: GalleryConfigurationDto) =
+    override fun createIntent(context: Context, input: GalleryConfigurationDto) =
         Intent(context, GalleryActivity::class.java)
-            .putGalleryConfigurationDto(galleryConfigurationDto)
+            .putGalleryConfigurationDto(input)
 
     override fun parseResult(resultCode: Int, intent: Intent?): ImagesResultDto {
         if (resultCode != Activity.RESULT_OK) {

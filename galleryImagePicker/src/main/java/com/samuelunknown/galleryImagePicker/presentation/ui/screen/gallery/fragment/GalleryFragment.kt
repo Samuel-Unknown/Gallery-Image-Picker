@@ -133,12 +133,9 @@ internal class GalleryFragment private constructor(
 
         // NB: since vm must be initialized (for collecting actionFlow actions) before views send any actions
         vm.run {
-            requireActivity().calculateScreenHeightWithoutSystemBars { height ->
-                screenHeight = height
-                peekHeight = screenHeight * configurationDto.peekHeightInPercents / 100
-
-                initRootView()
-                initBottomSheetDialog()
+            requireActivity().calculateScreenHeightWithoutSystemBars { height, width ->
+                initRootView(screenHeight = height)
+                initBottomSheetDialog(screenHeight = height, screenWidth = width)
                 initToolbar()
                 initRecycler()
                 initPickupButton()
@@ -168,13 +165,17 @@ internal class GalleryFragment private constructor(
     // endregion Lifecycle
 
     // region Initializations
-    private fun initRootView() {
+    private fun initRootView(screenHeight: Int) {
+        this.screenHeight = screenHeight
         binding.root.updateHeight(screenHeight)
     }
 
-    private fun initBottomSheetDialog() {
+    private fun initBottomSheetDialog(screenHeight: Int, screenWidth: Int) {
+        peekHeight = screenHeight * configurationDto.peekHeightInPercents / 100
+
         with(bottomSheet) {
             behavior.apply {
+                maxWidth = screenWidth
                 if (configurationDto.openLikeBottomSheet) {
                     val bottomSheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
                         override fun onStateChanged(view: View, state: Int) {
