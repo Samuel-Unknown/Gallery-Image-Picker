@@ -26,18 +26,18 @@ allprojects {
 Add the following dependency in app build.gradle:
 ```
 dependencies {
-    implementation 'io.github.samuel-unknown:gallery-image-picker:1.4.0'
+    implementation 'io.github.samuel-unknown:gallery-image-picker:1.5.0'
     
     // if you want to use default Glide implementation for ImageLoaderFactory
-    implementation 'io.github.samuel-unknown:gallery-image-picker-glide:1.4.0'
+    implementation 'io.github.samuel-unknown:gallery-image-picker-glide:1.5.0'
     
     // if you want to use default Coil implementation for ImageLoaderFactory
-    implementation 'io.github.samuel-unknown:gallery-image-picker-coil:1.4.0'
+    implementation 'io.github.samuel-unknown:gallery-image-picker-coil:1.5.0'
 }
 ```
 
 ## Usage
-1. Create custom `ImageLoaderFactory` implementation or use default implementation (Glide or Coil) by adding dependency as said above
+1. Create custom `ImageLoaderFactory` implementation or use default implementation (Glide or Coil) by adding dependency as said above. Glide implementation works faster.
 
 2. Initialize library with `ImageLoaderFactory` implementation
     <details>
@@ -138,8 +138,9 @@ dependencies {
 #### Version 1.4.*
 - [x] Single image selection
 #### Version 1.5.*
+- [x] Performance improvements
+#### Version 1.6.*
 - [ ] Camera integration (preview and capture) *{in progress}*
-- [ ] Performance improvements
 
 ## License
 ```
