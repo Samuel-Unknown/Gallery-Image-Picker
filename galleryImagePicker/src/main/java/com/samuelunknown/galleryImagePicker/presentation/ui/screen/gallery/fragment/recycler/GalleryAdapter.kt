@@ -4,6 +4,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.FloatRange
+import androidx.annotation.IntRange
 import androidx.annotation.Px
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -19,7 +21,9 @@ internal class GalleryAdapter(
     private val spanCount: Int,
     @Px private val spacingSize: Int,
     private val imageLoaderFactory: ImageLoaderFactory,
-    private val changeSelectionAction: (GalleryItem.Image) -> Unit
+    private val changeSelectionAction: (GalleryItem.Image) -> Unit,
+    private val selectorSizeRatio: Float,
+    private val selectedImageScale: Float
 ) : ListAdapter<GalleryItem, GalleryAdapter.GalleryItemViewHolder>(GalleryItemDiffItemCallback()) {
 
     private val layoutInflater = LayoutInflater.from(context)
@@ -31,7 +35,7 @@ internal class GalleryAdapter(
         if (imageSizeInPixels == 0) {
             val space = (spanCount + 1) * spacingSize
             imageSizeInPixels = (parent.width - space) / spanCount
-            ringSizeInPixels = (imageSizeInPixels * RING_SIZE_RATIO).toInt()
+            ringSizeInPixels = (imageSizeInPixels * selectorSizeRatio).toInt()
         }
 
         with(binding) {
@@ -105,7 +109,7 @@ internal class GalleryAdapter(
                 )
                 image.applyScale(
                     startScale = GalleryItemAnimator.IMAGE_START_SCALE,
-                    endScale = GalleryItemAnimator.IMAGE_END_SCALE
+                    endScale = selectedImageScale
                 )
 
                 counter.text = imageItem.counterText
@@ -120,9 +124,5 @@ internal class GalleryAdapter(
                 root.setOnLongClickListener(null)
             }
         }
-    }
-
-    private companion object {
-        const val RING_SIZE_RATIO = 0.3
     }
 }
