@@ -14,7 +14,9 @@
         <item name="android:layout_marginTop">24dp</item>
         <item name="android:layout_marginEnd">24dp</item>
         <item name="android:layout_gravity">bottom|end</item>
-        <item name="android:backgroundTint">@color/color_main</item>
+        <item name="android:background">@drawable/bg_button</item>
+        <item name="android:backgroundTint">@null</item>
+        <item name="backgroundTint">@null</item>
         <item name="android:paddingLeft">24dp</item>
         <item name="android:paddingTop">12dp</item>
         <item name="android:paddingRight">24dp</item>

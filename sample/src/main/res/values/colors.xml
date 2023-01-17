@@ -2,6 +2,7 @@
 <resources>
     <color name="color_status_bar">#400C98</color>
     <color name="color_main">#673AB7</color>
+    <color name="color_main_variant">#8B3AB7</color>
     <color name="color_main_contrast">#FFFFFF</color>
     <color name="color_accent">#673AB7</color>
     <color name="color_accent_contrast">#FFFFFF</color>
