@@ -26,13 +26,13 @@ allprojects {
 Add the following dependency in app build.gradle:
 ```
 dependencies {
-    implementation 'io.github.samuel-unknown:gallery-image-picker:1.5.0'
+    implementation 'io.github.samuel-unknown:gallery-image-picker:1.6.0'
     
     // if you want to use default Glide implementation for ImageLoaderFactory
-    implementation 'io.github.samuel-unknown:gallery-image-picker-glide:1.5.0'
+    implementation 'io.github.samuel-unknown:gallery-image-picker-glide:1.6.0'
     
     // if you want to use default Coil implementation for ImageLoaderFactory
-    implementation 'io.github.samuel-unknown:gallery-image-picker-coil:1.5.0'
+    implementation 'io.github.samuel-unknown:gallery-image-picker-coil:1.6.0'
 }
 ```
 
@@ -123,7 +123,10 @@ dependencies {
     - `val peekHeightInPercents: Int` - for setting BottomSheet height.
     - `val mimeTypes: List<String>? = null` - filtering images by mimeTypes.
     - `@StyleRes val themeResId: Int` - for creating a custom theme.
-    
+    - `val selectorSizeRatio: Float` - determines the size of selector (ring and counter).
+    - `val selectedImageScale: Float` - scale for selected images.
+    - `selectionAnimationDurationInMillis: Long` - how fast selection animation plays.
+
         You can find an example of using here [here](https://github.com/Samuel-Unknown/Gallery-Image-Picker/tree/master/sample)
     </details>
 ## Development roadmap
@@ -140,6 +143,8 @@ dependencies {
 #### Version 1.5.*
 - [x] Performance improvements
 #### Version 1.6.*
+- [x] New parameters for customization
+#### Version 1.7.*
 - [ ] Camera integration (preview and capture) *{in progress}*
 
 ## License

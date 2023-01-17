@@ -9,7 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.samuelunknown.galleryImagePicker.presentation.model.GalleryItemPayload
 import java.util.*
 
-internal class GalleryItemAnimator : DefaultItemAnimator() {
+internal class GalleryItemAnimator(
+    private val selectedImageScale: Float,
+    private val selectionAnimationDurationInMillis: Long
+) : DefaultItemAnimator() {
 
     private val viewHoldersInProgress: WeakHashMap<RecyclerView.ViewHolder, AnimatorSet> =
         WeakHashMap()
@@ -130,7 +133,7 @@ internal class GalleryItemAnimator : DefaultItemAnimator() {
                     view = image,
                     updateAction = updateAction,
                     startValue = IMAGE_START_SCALE,
-                    endValue = IMAGE_END_SCALE,
+                    endValue = selectedImageScale,
                     interpolator = IMAGE_INTERPOLATOR
                 ),
                 createAnimators(
@@ -151,7 +154,7 @@ internal class GalleryItemAnimator : DefaultItemAnimator() {
 
             val scaleAnimatorSet = AnimatorSet()
                 .apply {
-                    duration = ANIMATION_DURATION
+                    duration = selectionAnimationDurationInMillis
                     addListener(animatorListener)
                     playTogether(animatorsCollection)
                 }
@@ -174,12 +177,10 @@ internal class GalleryItemAnimator : DefaultItemAnimator() {
 
     companion object {
         const val IMAGE_START_SCALE = 1f
-        const val IMAGE_END_SCALE = 0.8f
         const val RING_START_SCALE = 1f
         const val RING_END_SCALE = 0f
         const val COUNTER_START_SCALE = 0f
         const val COUNTER_END_SCALE = 1f
-        private const val ANIMATION_DURATION = 350L
         private val DEFAULT_INTERPOLATOR = AccelerateDecelerateInterpolator()
         private val IMAGE_INTERPOLATOR = OvershootInterpolator()
     }

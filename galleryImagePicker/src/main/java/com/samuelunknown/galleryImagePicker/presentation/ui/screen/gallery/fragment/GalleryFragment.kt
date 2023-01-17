@@ -108,7 +108,9 @@ internal class GalleryFragment private constructor(
                 lifecycleScope.launch {
                     vm.actionFlow.emit(GalleryAction.ChangeSelectionAction(item))
                 }
-            }
+            },
+            selectorSizeRatio = configurationDto.selectorSizeRatio,
+            selectedImageScale = configurationDto.selectedImageScale,
         )
     }
 
@@ -123,7 +125,11 @@ internal class GalleryFragment private constructor(
     // endregion
 
     // region Lifecycle
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentGalleryBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -226,7 +232,10 @@ internal class GalleryFragment private constructor(
     private fun initRecycler() {
         binding.recycler.apply {
             adapter = galleryAdapter
-            itemAnimator = GalleryItemAnimator()
+            itemAnimator = GalleryItemAnimator(
+                selectedImageScale = configurationDto.selectedImageScale,
+                selectionAnimationDurationInMillis = configurationDto.selectionAnimationDurationInMillis
+            )
             setHasFixedSize(true)
             addItemDecoration(
                 GridSpacingItemDecoration(
