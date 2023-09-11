@@ -2,6 +2,7 @@ package com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.frag
 
 import android.Manifest
 import android.content.DialogInterface
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -63,7 +64,7 @@ internal class GalleryFragment private constructor(
 
     private val permissionLauncher = PermissionLauncher.init(
         fragment = this,
-        permission = Manifest.permission.READ_EXTERNAL_STORAGE,
+        permission = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) Manifest.permission.READ_EXTERNAL_STORAGE else Manifest.permission.READ_MEDIA_IMAGES,
         resultAction = { result ->
             when (result) {
                 is PermissionResult.Granted -> {
