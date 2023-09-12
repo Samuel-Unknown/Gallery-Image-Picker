@@ -8,6 +8,7 @@ plugins {
 
 android {
     applyConfig(isViewBindingEnabled = true)
+    namespace = "com.samuelunknown.galleryImagePicker"
 }
 
 dependencies {

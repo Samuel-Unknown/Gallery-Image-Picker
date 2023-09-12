@@ -8,6 +8,7 @@ plugins {
 
 android {
     applyConfig(isViewBindingEnabled = false)
+    namespace = "com.samuelunknown.galleryImagePickerGlide"
 }
 
 dependencies {
