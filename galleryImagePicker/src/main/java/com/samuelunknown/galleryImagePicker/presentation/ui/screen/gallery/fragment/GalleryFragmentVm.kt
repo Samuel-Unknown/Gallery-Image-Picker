@@ -17,6 +17,7 @@ import com.samuelunknown.galleryImagePicker.presentation.model.toImageDto
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -54,11 +55,21 @@ internal class GalleryFragmentVm(
     private fun handleGetImagesAction(action: GalleryAction.GetImagesAction) {
         val state = _stateFlow.value
         check(state is GalleryState.Loaded)
+
         val selectedFolder = action.folder
+        if (state.selectedFolder == selectedFolder) {
+            return
+        }
 
         viewModelScope.launch {
             try {
                 clearSelection()
+
+                // When we clear the selection we should wait to finish all animations.
+                // Maybe it's better to animate movements at the same time with deselection
+                // but I think it will be too much work to fix GalleryItemAnimator
+                delay(configurationDto.selectionAnimationDurationInMillis)
+
                 _stateFlow.emit(
                     GalleryState.Loaded(
                         items = getGalleryItems(selectedFolder?.toFolderDto()),
