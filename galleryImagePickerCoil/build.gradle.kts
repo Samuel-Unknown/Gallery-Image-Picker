@@ -15,12 +15,6 @@ dependencies {
     implementation(libs.coil)
 }
 
-val jarSources by tasks.registering(Jar::class) {
-    archiveClassifier.set("sources")
-    from(android.sourceSets.getByName("main").java.srcDirs)
-}
-
 configure<PublishConventionPluginExtension> {
     artifactId.set(Publishing.ArtifactIds.galleryImagePickerCoil)
-    jar.set(jarSources)
 }

@@ -17,12 +17,6 @@ dependencies {
     ksp(libs.glide.ksp)
 }
 
-val jarSources by tasks.registering(Jar::class) {
-    archiveClassifier.set("sources")
-    from(android.sourceSets.getByName("main").java.srcDirs)
-}
-
 configure<PublishConventionPluginExtension> {
     artifactId.set(Publishing.ArtifactIds.galleryImagePickerGlide)
-    jar.set(jarSources)
 }

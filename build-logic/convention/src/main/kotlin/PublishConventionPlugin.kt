@@ -13,14 +13,9 @@ import java.util.Properties
 
 interface PublishConventionPluginExtension {
     /**
-     * Artifact name
+     * Artifact id
      */
     val artifactId: Property<String>
-
-    /**
-     * Sources
-     */
-    val jar: Property<Any>
 }
 
 class PublishConventionPlugin : Plugin<Project> {
@@ -34,7 +29,6 @@ class PublishConventionPlugin : Plugin<Project> {
 
             val extension = extensions.create<PublishConventionPluginExtension>("PublishConventionPluginExtension")
             extension.artifactId.convention("")
-            extension.jar.convention("")
 
             val propertiesFile = rootProject.file(Publishing.Properties.FileName)
             if (propertiesFile.exists().not()) {
@@ -54,9 +48,6 @@ class PublishConventionPlugin : Plugin<Project> {
                             this.version = Publishing.version
 
                             from(components.getByName("release"))
-
-                            // NB: this is what makes the source code jar available in the published package
-                            extension.jar.orNull?.let { artifact(it) }
 
                             pom {
                                 name.set(Publishing.POM.name)
