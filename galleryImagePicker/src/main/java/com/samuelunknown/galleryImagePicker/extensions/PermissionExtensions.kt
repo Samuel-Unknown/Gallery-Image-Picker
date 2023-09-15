@@ -13,7 +13,7 @@ private fun getSharedPreferencesPermissionKey(permission: String): String =
     "$PREF_KEY__WAS_PERMISSION_REQUESTED_RATIONALE $permission"
 
 internal sealed class PermissionResult {
-    object Granted : PermissionResult()
+    data object Granted : PermissionResult()
     data class NotGranted(
         val permission: String,
         val isGrantingPermissionInSettingsRequired: Boolean

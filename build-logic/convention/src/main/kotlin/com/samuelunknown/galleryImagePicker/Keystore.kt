@@ -1,4 +1,5 @@
 @file:Suppress("MayBeConstant")
+package com.samuelunknown.galleryImagePicker
 
 object Keystore {
     object Properties {

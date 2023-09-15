@@ -1,40 +1,38 @@
+import com.samuelunknown.galleryImagePicker.Publishing
+
 plugins {
-    id(ANDROID_LIBRARY_PLUGIN)
-    id(KOTLIN_ANDROID_PLUGIN)
-    id(KOTLIN_PARCELIZE_PLUGIN)
-    id(MAVEN_PUBLISH_PLUGIN)
-    id(SIGNING_PLUGIN)
+    alias(libs.plugins.galleryImagePicker.library)
+    alias(libs.plugins.galleryImagePicker.publish)
+    alias(libs.plugins.kotlin.parcelize)
 }
 
 android {
-    applyConfig(isViewBindingEnabled = true)
     namespace = "com.samuelunknown.galleryImagePicker"
+    buildFeatures.viewBinding = true
 }
 
 dependencies {
-    // Kotlin
-    implementation(Libraries.Kotlin.stdLib)
-    implementation(Libraries.Kotlin.coroutines)
+    implementation(libs.kotlin.stdlib)
 
-    // Android X
-    implementation(Libraries.AndroidX.appcompat)
-    implementation(Libraries.AndroidX.coreKtx)
-    implementation(Libraries.AndroidX.constraintLayout)
-    implementation(Libraries.AndroidX.fragmentKtx)
-    implementation(Libraries.AndroidX.preference)
-    implementation(Libraries.AndroidX.window)
-    implementation(Libraries.AndroidX.Lifecycle.runtimeKtx)
+    implementation(libs.kotlinx.coroutines.android)
 
-    // Material
-    implementation(Libraries.Google.Android.material)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.core)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.fragment)
+    implementation(libs.androidx.preference)
+    implementation(libs.androidx.window)
+    implementation(libs.androidx.lifecycle.runtime)
+
+    implementation(libs.google.android.material)
 }
 
-val sourcesJar by tasks.registering(Jar::class) {
+val jarSources by tasks.registering(Jar::class) {
     archiveClassifier.set("sources")
     from(android.sourceSets.getByName("main").java.srcDirs)
 }
 
-publishing(
-    artifactId = Publishing.ArtifactIds.galleryImagePicker,
-    sourcesJar = sourcesJar
-)
+configure<PublishConventionPluginExtension> {
+    artifactId.set(Publishing.ArtifactIds.galleryImagePicker)
+    jar.set(jarSources)
+}

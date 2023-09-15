@@ -3,7 +3,7 @@ package com.samuelunknown.galleryImagePicker.presentation.model
 import com.samuelunknown.galleryImagePicker.domain.model.ImagesResultDto
 
 internal sealed class GalleryState {
-    object Init : GalleryState()
+    data object Init : GalleryState()
     data class Loaded(
         val items: List<GalleryItem>,
         val folders: List<FolderItem>,

@@ -1,9 +1,10 @@
 @file:Suppress("MayBeConstant")
+package com.samuelunknown.galleryImagePicker
 
 object Publishing {
     val groupId = "io.github.samuel-unknown"
     val artifactId = "gallery-image-picker"
-    val version = Versions.Library.versionName
+    val version = LibraryVersion.versionName
 
     object ArtifactIds {
         val galleryImagePicker = "gallery-image-picker"

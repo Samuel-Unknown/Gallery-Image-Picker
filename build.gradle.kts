@@ -1,26 +1,16 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath(Libraries.AndroidTools.gradle)
-        classpath(kotlin("gradle-plugin", version = Versions.Kotlin.stdLib))
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-    }
-}
-
-allprojects {
-    // Enable to use Experimental APIs
-    project.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {
-        kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_17.toString()
-        }
-    }
+plugins {
+    alias(libs.plugins.galleryImagePicker.gradle.plugin)
+    alias(libs.plugins.galleryImagePicker.application) apply false
+    alias(libs.plugins.galleryImagePicker.library) apply false
+    alias(libs.plugins.galleryImagePicker.publish) apply false
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.google.ksp) apply false
+    alias(libs.plugins.kotlin.parcelize) apply false
 }
 
 tasks.register("clean", Delete::class) {
-    delete(rootProject.buildDir)
+    delete(rootProject.layout.buildDirectory)
 }

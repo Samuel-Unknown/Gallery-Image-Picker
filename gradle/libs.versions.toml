@@ -1,0 +1,40 @@
+[versions]
+androidGradlePlugin = "8.1.1"
+kotlin = "1.9.0"
+glide = "4.16.0"
+
+[libraries]
+android-desugarJdkLibs = "com.android.tools:desugar_jdk_libs:2.0.3"
+androidx-appcompat = "androidx.appcompat:appcompat:1.6.1"
+androidx-core = "androidx.core:core-ktx:1.12.0"
+androidx-constraintlayout = "androidx.constraintlayout:constraintlayout:2.1.4"
+androidx-fragment = "androidx.fragment:fragment-ktx:1.6.1"
+androidx-preference = "androidx.preference:preference-ktx:1.2.1"
+androidx-lifecycle-runtime = "androidx.lifecycle:lifecycle-runtime-ktx:2.6.2"
+androidx-window = "androidx.window:window:1.1.0"
+google-android-material = "com.google.android.material:material:1.9.0"
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
+kotlinx-coroutines-android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+glide-ksp = { module = "com.github.bumptech.glide:ksp", version.ref = "glide" }
+coil = "io.coil-kt:coil:2.4.0"
+
+# Dependencies of the included build-logic
+android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePlugin" }
+kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+
+[plugins]
+# android plugins
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+# google plugins
+google-ksp = "com.google.devtools.ksp:1.9.0-1.0.13"
+# kotlin plugins
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+# galleryImagePicker plugins
+galleryImagePicker-gradle-plugin = "galleryimagepicker.gradle.plugin:1.0.0"
+galleryImagePicker-application = "galleryimagepicker.android.application:1.0.0"
+galleryImagePicker-library = "galleryimagepicker.android.library:1.0.0"
+galleryImagePicker-publish = "galleryimagepicker.publish:1.0.0"
