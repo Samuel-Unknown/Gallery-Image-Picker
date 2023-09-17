@@ -1,34 +1,26 @@
 import java.util.Properties
 import java.io.FileReader
 
+import com.samuelunknown.galleryImagePicker.Keystore
+import com.samuelunknown.galleryImagePicker.LibraryVersion
+
 plugins {
-    id(ANDROID_APPLICATION_PLUGIN)
-    id(KOTLIN_ANDROID_PLUGIN)
-    id(KOTLIN_KAPT_PLUGIN)
+    alias(libs.plugins.galleryImagePicker.application)
 }
 
 android {
-    compileSdk = Versions.Sdk.compileSdk
+    namespace = "com.samuelunknown.sample"
 
     defaultConfig {
-        applicationId = APPLICATION_ID
-        testInstrumentationRunner = ANDROID_TEST_INSTRUMENTATION_RUNNER
+        applicationId = "com.samuelunknown.gallery_image_picker_sample"
 
-        minSdk = Versions.Sdk.minSdk
-        targetSdk = Versions.Sdk.targetSdk
-
-        versionCode = Versions.Library.versionCode
-        versionName = Versions.Library.versionName
+        versionCode = LibraryVersion.versionCode
+        versionName = LibraryVersion.versionName
 
         vectorDrawables.useSupportLibrary = true
-
         buildFeatures {
             viewBinding = true
-        }
-
-        compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_11
-            targetCompatibility = JavaVersion.VERSION_11
+            buildConfig = true
         }
     }
 
@@ -84,22 +76,19 @@ android {
 }
 
 dependencies {
-    // Gallery Image Picker
-    implementation(project(ProjectModules.galleryImagePicker))
-    implementation(project(ProjectModules.galleryImagePickerGlide))
-    implementation(project(ProjectModules.galleryImagePickerCoil))
+    implementation(projects.galleryImagePicker)
+    implementation(projects.galleryImagePickerGlide)
+    implementation(projects.galleryImagePickerCoil)
 
-    // Kotlin
-    implementation(Libraries.Kotlin.stdLib)
-    implementation(Libraries.Kotlin.coroutines)
+    implementation(libs.kotlin.stdlib)
 
-    // Android X
-    implementation(Libraries.AndroidX.appcompat)
-    implementation(Libraries.AndroidX.coreKtx)
-    implementation(Libraries.AndroidX.constraintLayout)
-    implementation(Libraries.AndroidX.fragmentKtx)
-    implementation(Libraries.AndroidX.Lifecycle.runtimeKtx)
+    implementation(libs.kotlinx.coroutines.android)
 
-    // Material
-    implementation(Libraries.Google.Android.material)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.core)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.fragment)
+    implementation(libs.androidx.lifecycle.runtime)
+
+    implementation(libs.google.android.material)
 }

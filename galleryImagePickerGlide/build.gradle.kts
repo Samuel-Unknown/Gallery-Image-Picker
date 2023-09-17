@@ -1,30 +1,22 @@
+import com.samuelunknown.galleryImagePicker.Publishing
+
 plugins {
-    id(ANDROID_LIBRARY_PLUGIN)
-    id(KOTLIN_ANDROID_PLUGIN)
-    id(KOTLIN_KAPT_PLUGIN)
-    id(MAVEN_PUBLISH_PLUGIN)
-    id(SIGNING_PLUGIN)
+    alias(libs.plugins.galleryImagePicker.library)
+    alias(libs.plugins.galleryImagePicker.publish)
+    alias(libs.plugins.google.ksp)
 }
 
 android {
-    applyConfig(isViewBindingEnabled = false)
+    namespace = "com.samuelunknown.galleryImagePickerGlide"
 }
 
 dependencies {
-    // Gallery Image Picker
-    implementation(project(ProjectModules.galleryImagePicker))
+    implementation(projects.galleryImagePicker)
 
-    // Glide
-    implementation(Libraries.Glide.glide)
-    kapt(Libraries.Glide.compiler)
+    implementation(libs.glide)
+    ksp(libs.glide.ksp)
 }
 
-val sourcesJar by tasks.registering(Jar::class) {
-    archiveClassifier.set("sources")
-    from(android.sourceSets.getByName("main").java.srcDirs)
+configure<PublishConventionPluginExtension> {
+    artifactId.set(Publishing.ArtifactIds.galleryImagePickerGlide)
 }
-
-publishing(
-    artifactId = Publishing.ArtifactIds.galleryImagePickerGlide,
-    sourcesJar = sourcesJar
-)

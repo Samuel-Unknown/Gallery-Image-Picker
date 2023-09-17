@@ -1,4 +1,7 @@
 @file:Suppress("UnstableApiUsage")
+
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -6,10 +9,22 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
+
+pluginManagement {
+    includeBuild("build-logic")
+
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+rootProject.name = "GalleryImagePicker"
+
 include(
     ":galleryImagePicker",
     ":galleryImagePickerGlide",
     ":galleryImagePickerCoil",
     ":sample"
 )
-rootProject.name = "Gallery Image Picker"
