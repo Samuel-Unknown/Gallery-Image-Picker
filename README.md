@@ -119,7 +119,7 @@ dependencies {
     - `@Px val spacingSizeInPixels: Int` - for spacing between cells.
     - `val spanCount: Int` - for setting cells count.
     - `val openLikeBottomSheet: Boolean` - should be gallery opened like BottomSheet or in full-screen mode.
-    - `val singleSelection: Boolean` - limits selection to one image,
+    - `val singleSelection: Boolean` - limits selection to one image.
     - `val peekHeightInPercents: Int` - for setting BottomSheet height.
     - `val mimeTypes: List<String>? = null` - filtering images by mimeTypes.
     - `@StyleRes val themeResId: Int` - for creating a custom theme.
