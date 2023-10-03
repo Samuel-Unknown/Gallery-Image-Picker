@@ -31,8 +31,12 @@ internal class GetFoldersUseCaseImpl(
                 cursor.moveToNext()
                 val folderId = cursor.getString(idColumn)
                 val folderName = cursor.getString(bucketDisplayNameColumn)
-                FolderDto(id = folderId, name = folderName)
-            }.distinct()
+                if (folderId.isNullOrEmpty() || folderName.isNullOrEmpty()) {
+                    null
+                } else {
+                    FolderDto(id = folderId, name = folderName)
+                }
+            }.distinct().filterNotNull()
 
         } ?: emptyList()
     }
