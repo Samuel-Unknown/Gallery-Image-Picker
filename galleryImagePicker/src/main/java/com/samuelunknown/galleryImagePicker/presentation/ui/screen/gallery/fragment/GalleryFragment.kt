@@ -64,16 +64,20 @@ internal class GalleryFragment private constructor(
 
     private val permissionLauncher = PermissionLauncher.init(
         fragment = this,
-        permission = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) Manifest.permission.READ_EXTERNAL_STORAGE else Manifest.permission.READ_MEDIA_IMAGES,
+        permission = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        } else {
+            Manifest.permission.READ_MEDIA_IMAGES
+        },
+        coroutineScope = lifecycleScope,
         resultAction = { result ->
             when (result) {
                 is PermissionResult.Granted -> {
-                    lifecycleScope.launch {
-                        vm.actionFlow.emit(GalleryAction.GetImagesAndFoldersAction)
-                    }
+                    vm.actionFlow.tryEmit(GalleryAction.GetImagesAndFoldersAction)
                 }
+
                 is PermissionResult.NotGranted -> {
-                    lifecycleScope.launch {
+                    viewLifecycleOwner.lifecycleScope.launch {
                         delay(DELAY_IN_MILLISECONDS_FOR_SMOOTH_DIALOG_CLOSING_AFTER_PERMISSION_ERROR)
                         finishWithResult(
                             ImagesResultDto.Error.PermissionError(
@@ -106,9 +110,7 @@ internal class GalleryFragment private constructor(
             spacingSize = configurationDto.spacingSizeInPixels,
             imageLoaderFactory = ImageLoaderFactoryHolder.imageLoaderFactory,
             changeSelectionAction = { item ->
-                lifecycleScope.launch {
-                    vm.actionFlow.emit(GalleryAction.ChangeSelectionAction(item))
-                }
+                vm.actionFlow.tryEmit(GalleryAction.ChangeSelectionAction(item))
             },
             selectorSizeRatio = configurationDto.selectorSizeRatio,
             selectedImageScale = configurationDto.selectedImageScale,
@@ -148,7 +150,9 @@ internal class GalleryFragment private constructor(
                 initPickupButton()
                 initSubscriptions()
 
-                permissionLauncher.request()
+                viewLifecycleOwner.lifecycleScope.launch {
+                    permissionLauncher.request()
+                }
             }
         }
     }
@@ -250,9 +254,7 @@ internal class GalleryFragment private constructor(
 
     private fun initPickupButton() {
         binding.pickupButton.setOnClickListener {
-            lifecycleScope.launch {
-                vm.actionFlow.emit(GalleryAction.PickupAction)
-            }
+            vm.actionFlow.tryEmit(GalleryAction.PickupAction)
         }
     }
 
@@ -264,6 +266,7 @@ internal class GalleryFragment private constructor(
                         is GalleryState.Init -> {
                             binding.pickupButton.isVisible = false
                         }
+
                         is GalleryState.Loaded -> {
                             binding.pickupButton.isVisible = true
                             binding.toolbarTitle.text =
@@ -272,9 +275,11 @@ internal class GalleryFragment private constructor(
                             galleryAdapter.submitList(state.items)
                             setPopupMenuFoldersFolders(state.folders)
                         }
+
                         is GalleryState.Picked -> {
                             finishWithResult(state.result)
                         }
+
                         is GalleryState.Error -> {
                             finishWithResult(state.error)
                         }
@@ -322,9 +327,7 @@ internal class GalleryFragment private constructor(
 
         popupMenu.setOnMenuItemClickListener {
             val selectedFolder = if (it.itemId == 0) null else menuItems[it.itemId]
-            lifecycleScope.launch {
-                vm.actionFlow.emit(GalleryAction.GetImagesAction(selectedFolder))
-            }
+            vm.actionFlow.tryEmit(GalleryAction.GetImagesAction(selectedFolder))
             true
         }
     }
