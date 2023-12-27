@@ -1,11 +1,19 @@
 package com.samuelunknown.galleryImagePicker.extensions
 
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 private const val PREF_KEY__WAS_PERMISSION_REQUESTED_RATIONALE = "PREF_KEY__WAS_PERMISSION_REQUESTED_RATIONALE"
 
@@ -20,18 +28,34 @@ internal sealed class PermissionResult {
     ) : PermissionResult()
 }
 
-internal fun Fragment.getWasPermissionRequestedRationale(permission: String): Boolean {
-    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
-    val key = getSharedPreferencesPermissionKey(permission)
-    return sharedPreferences.getBoolean(key, false)
+internal object SharedPreferencesCommitOperationException :
+    Exception("SharedPreferences commit operation failed")
+
+private suspend fun SharedPreferences.edit(
+    operation: (SharedPreferences.Editor) -> Unit
+) = suspendCoroutine { cont ->
+    val editor = this.edit()
+    operation(editor)
+    if (editor.commit()) {
+        cont.resume(Unit)
+    } else {
+        cont.resumeWithException(SharedPreferencesCommitOperationException)
+    }
 }
 
-internal fun Fragment.setWasPermissionRequestedRationale(permission: String) {
+internal suspend fun Fragment.getWasPermissionRequestedRationale(
+    permission: String
+): Boolean = withContext(Dispatchers.IO) {
     val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
     val key = getSharedPreferencesPermissionKey(permission)
-    sharedPreferences.edit().apply {
-        putBoolean(key, true)
-        apply()
+    return@withContext sharedPreferences.getBoolean(key, false)
+}
+
+internal suspend fun Fragment.setWasPermissionRequestedRationale(permission: String) = withContext(Dispatchers.IO) {
+    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+    val key = getSharedPreferencesPermissionKey(permission)
+    sharedPreferences.edit {
+        it.putBoolean(key, true)
     }
 }
 
@@ -47,7 +71,7 @@ internal class PermissionLauncher private constructor(
     private val requestPermissionLauncher: ActivityResultLauncher<String>
 ) {
 
-    fun request() {
+    suspend fun request() {
         if (fragment.isPermissionGranted(permission)) {
             resultAction(PermissionResult.Granted)
             return
@@ -74,6 +98,7 @@ internal class PermissionLauncher private constructor(
         fun init(
             fragment: Fragment,
             permission: String,
+            coroutineScope: CoroutineScope,
             resultAction: (result: PermissionResult) -> Unit
         ): PermissionLauncher {
 
@@ -83,15 +108,17 @@ internal class PermissionLauncher private constructor(
                 if (isGranted) {
                     resultAction(PermissionResult.Granted)
                 } else {
-                    val isGrantingPermissionInSettingsRequired = fragment
-                        .getWasPermissionRequestedRationale(permission)
+                    coroutineScope.launch {
+                        val isGrantingPermissionInSettingsRequired = fragment
+                            .getWasPermissionRequestedRationale(permission)
 
-                    resultAction(
-                        PermissionResult.NotGranted(
-                            permission = permission,
-                            isGrantingPermissionInSettingsRequired = isGrantingPermissionInSettingsRequired
+                        resultAction(
+                            PermissionResult.NotGranted(
+                                permission = permission,
+                                isGrantingPermissionInSettingsRequired = isGrantingPermissionInSettingsRequired
+                            )
                         )
-                    )
+                    }
                 }
             }
 

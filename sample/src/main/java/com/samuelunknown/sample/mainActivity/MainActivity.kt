@@ -27,9 +27,7 @@ class MainActivity : AppCompatActivity() {
 
     private val getImagesLauncher =
         registerForActivityResult(ImagesResultContract()) { result: ImagesResultDto ->
-            lifecycleScope.launch {
-                vm.emitAction(VmAction.ChangeResultAction(result))
-            }
+            vm.emitAction(VmAction.ChangeResultAction(result))
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,83 +51,61 @@ class MainActivity : AppCompatActivity() {
 
     private fun initMimeTypeFilterCheckboxes() {
         binding.mimeJpg.setOnCheckedChangeListener { _, isChecked ->
-            lifecycleScope.launch {
-                vm.emitAction(VmAction.ChangeMimeTypeFilterAction(MimeTypeFilter.Jpg(isChecked)))
-            }
+            vm.emitAction(VmAction.ChangeMimeTypeFilterAction(MimeTypeFilter.Jpg(isChecked)))
         }
         binding.mimePng.setOnCheckedChangeListener { _, isChecked ->
-            lifecycleScope.launch {
-                vm.emitAction(VmAction.ChangeMimeTypeFilterAction(MimeTypeFilter.Png(isChecked)))
-            }
+            vm.emitAction(VmAction.ChangeMimeTypeFilterAction(MimeTypeFilter.Png(isChecked)))
         }
         binding.mimeGif.setOnCheckedChangeListener { _, isChecked ->
-            lifecycleScope.launch {
-                vm.emitAction(VmAction.ChangeMimeTypeFilterAction(MimeTypeFilter.Gif(isChecked)))
-            }
+            vm.emitAction(VmAction.ChangeMimeTypeFilterAction(MimeTypeFilter.Gif(isChecked)))
         }
     }
 
     private fun initGetImagesButton() {
         binding.getImages.setOnClickListener {
-            lifecycleScope.launch {
-                vm.emitAction(VmAction.PrepareToOpenGalleryAction)
-            }
+            vm.emitAction(VmAction.PrepareToOpenGalleryAction)
         }
     }
 
     private fun initSpanCountEditText() {
         binding.span.doAfterTextChanged { editable ->
-            lifecycleScope.launch {
-                vm.emitAction(VmAction.ChangeSpanCountAction(editable.toString()))
-            }
+            vm.emitAction(VmAction.ChangeSpanCountAction(editable.toString()))
         }
     }
 
     private fun initSpacingSizeEditText() {
         binding.spacing.doAfterTextChanged { editable ->
-            lifecycleScope.launch {
-                vm.emitAction(VmAction.ChangeSpacingSizeAction(editable.toString()))
-            }
+            vm.emitAction(VmAction.ChangeSpacingSizeAction(editable.toString()))
         }
     }
 
     private fun initOpenLikeBottomSheetCheckbox() {
         binding.openLikeBottomSheet.setOnCheckedChangeListener { _, isChecked ->
-            lifecycleScope.launch {
-                vm.emitAction(VmAction.ChangeOpenLikeBottomSheetAction(isChecked))
-            }
+            vm.emitAction(VmAction.ChangeOpenLikeBottomSheetAction(isChecked))
         }
     }
 
     private fun initPeekHeightEditText() {
         binding.peekHeight.doAfterTextChanged { editable ->
-            lifecycleScope.launch {
-                vm.emitAction(VmAction.ChangePeekHeightAction(editable.toString()))
-            }
+            vm.emitAction(VmAction.ChangePeekHeightAction(editable.toString()))
         }
     }
 
     private fun initIsDarkModeCheckbox() {
         binding.darkMode.setOnCheckedChangeListener { _, isChecked ->
-            lifecycleScope.launch {
-                vm.emitAction(VmAction.ChangeIsDarkModeEnabledAction(isChecked))
-            }
+            vm.emitAction(VmAction.ChangeIsDarkModeEnabledAction(isChecked))
         }
     }
 
     private fun initIsCustomStyleCheckbox() {
         binding.customStyle.setOnCheckedChangeListener { _, isChecked ->
-            lifecycleScope.launch {
-                vm.emitAction(VmAction.ChangeIsCustomStyleEnabledAction(isChecked))
-            }
+            vm.emitAction(VmAction.ChangeIsCustomStyleEnabledAction(isChecked))
         }
     }
 
     private fun initIsSingleSelectionCheckBox() {
         binding.singleSelection.setOnCheckedChangeListener { _, isChecked ->
-            lifecycleScope.launch {
-                vm.emitAction(VmAction.ChangeIsSingleSelectionAction(isChecked))
-            }
+            vm.emitAction(VmAction.ChangeIsSingleSelectionAction(isChecked))
         }
     }
 

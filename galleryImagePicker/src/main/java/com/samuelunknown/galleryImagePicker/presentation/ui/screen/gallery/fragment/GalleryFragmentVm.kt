@@ -17,6 +17,7 @@ import com.samuelunknown.galleryImagePicker.presentation.model.toImageDto
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,7 +34,10 @@ internal class GalleryFragmentVm(
     private val _stateFlow = MutableStateFlow<GalleryState>(GalleryState.Init)
     val stateFlow: StateFlow<GalleryState> = _stateFlow.asStateFlow()
 
-    val actionFlow = MutableSharedFlow<GalleryAction>()
+    val actionFlow = MutableSharedFlow<GalleryAction>(
+        extraBufferCapacity = Int.MAX_VALUE,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
 
     init {
         initSubscriptions()
@@ -70,7 +74,7 @@ internal class GalleryFragmentVm(
                 // but I think it will be too much work to fix GalleryItemAnimator
                 delay(configurationDto.selectionAnimationDurationInMillis)
 
-                _stateFlow.emit(
+                _stateFlow.tryEmit(
                     GalleryState.Loaded(
                         items = getGalleryItems(selectedFolder?.toFolderDto()),
                         folders = state.folders,
@@ -78,14 +82,14 @@ internal class GalleryFragmentVm(
                     )
                 )
             } catch (ex: Exception) {
-                _stateFlow.emit(
+                _stateFlow.tryEmit(
                     GalleryState.Error(error = ImagesResultDto.Error.Unknown(ex.localizedMessage))
                 )
             }
         }
     }
 
-    private suspend fun clearSelection() {
+    private fun clearSelection() {
         val state = _stateFlow.value
         check(state is GalleryState.Loaded)
 
@@ -98,7 +102,7 @@ internal class GalleryFragmentVm(
             }
         }
 
-        _stateFlow.emit(
+        _stateFlow.tryEmit(
             GalleryState.Loaded(
                 items = newItems,
                 folders = state.folders,
@@ -122,7 +126,7 @@ internal class GalleryFragmentVm(
             listOf(itemsDeferred, foldersDeferred).awaitAll()
 
             try {
-                _stateFlow.emit(
+                _stateFlow.tryEmit(
                     GalleryState.Loaded(
                         items = itemsDeferred.getCompleted(),
                         folders = foldersDeferred.getCompleted(),
@@ -130,7 +134,7 @@ internal class GalleryFragmentVm(
                     )
                 )
             } catch (ex: Exception) {
-                _stateFlow.emit(
+                _stateFlow.tryEmit(
                     GalleryState.Error(error = ImagesResultDto.Error.Unknown(ex.localizedMessage))
                 )
             }
@@ -170,9 +174,7 @@ internal class GalleryFragmentVm(
             }
         }
 
-        viewModelScope.launch {
-            _stateFlow.emit(GalleryState.Loaded(newItems, state.folders, state.selectedFolder))
-        }
+        _stateFlow.tryEmit(GalleryState.Loaded(newItems, state.folders, state.selectedFolder))
     }
 
     private fun handlePickupAction() {
@@ -186,10 +188,7 @@ internal class GalleryFragmentVm(
             .map { it.toImageDto() }
 
         val result = ImagesResultDto.Success(selectedSortedImages)
-
-        viewModelScope.launch {
-            _stateFlow.emit(GalleryState.Picked(result))
-        }
+        _stateFlow.tryEmit(GalleryState.Picked(result))
     }
 
     private suspend fun getGalleryItems(folder: FolderDto? = null): List<GalleryItem.Image> {
