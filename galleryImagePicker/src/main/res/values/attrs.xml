@@ -6,6 +6,7 @@
         <attr name="gallery_image_picker__style_toolbar" format="reference" />
         <attr name="gallery_image_picker__style_button" format="reference" />
         <attr name="gallery_image_picker__style_counter" format="reference" />
+        <attr name="gallery_image_picker__style_popup_menu" format="reference" />
         <attr name="gallery_image_picker__color_underlay" format="color|reference" />
         <attr name="gallery_image_picker__color_top_line" format="color|reference" />
     </declare-styleable>
