@@ -5,7 +5,6 @@
     <style name="GalleryImagePicker.Widget.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">?attr/actionBarSize</item>
-        <item name="popupTheme">@style/GalleryImagePicker.ThemeOverlay.Popup</item>
         <item name="titleTextColor">@color/gallery_image_picker__color_toolbar_text</item>
         <item name="title">@string/gallery_image_picker__toolbar</item>
         <item name="navigationIconTint">@color/gallery_image_picker__color_toolbar_icon</item>
@@ -45,4 +44,6 @@
         <item name="autoSizeTextType">uniform</item>
         <item name="autoSizeMinTextSize">8sp</item>
     </style>
+
+    <style name="GalleryImagePicker.Widget.PopupMenu" parent="Widget.MaterialComponents.PopupMenu" />
 </resources>

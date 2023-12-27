@@ -9,6 +9,8 @@ import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import androidx.appcompat.view.ContextThemeWrapper
+import androidx.core.content.withStyledAttributes
 import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
 import androidx.core.view.marginBottom
@@ -44,6 +46,7 @@ import com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.fragm
 import com.samuelunknown.galleryImagePicker.presentation.ui.screen.gallery.fragment.recycler.GridSpacingItemDecoration
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.samuelunknown.galleryImagePicker.R
 
 internal class GalleryFragment private constructor(
     private val configurationDto: GalleryConfigurationDto,
@@ -99,10 +102,6 @@ internal class GalleryFragment private constructor(
         binding.pickupButton.marginBottom
     }
 
-    private val popupMenu: PopupMenu by lazy(LazyThreadSafetyMode.NONE) {
-        PopupMenu(requireContext(), binding.toolbarTitle)
-    }
-
     private val galleryAdapter: GalleryAdapter by lazy(LazyThreadSafetyMode.NONE) {
         GalleryAdapter(
             context = requireContext(),
@@ -116,6 +115,8 @@ internal class GalleryFragment private constructor(
             selectedImageScale = configurationDto.selectedImageScale,
         )
     }
+
+    private var popupMenu: PopupMenu? = null
 
     private val vm: GalleryFragmentVm by savedStateViewModel {
         val contentResolver = requireContext().contentResolver
@@ -143,6 +144,7 @@ internal class GalleryFragment private constructor(
         // NB: since vm must be initialized (for collecting actionFlow actions) before views send any actions
         vm.run {
             requireActivity().calculateScreenHeightWithoutSystemBars { height, width ->
+                initPopupMenu()
                 initRootView(screenHeight = height)
                 initBottomSheetDialog(screenHeight = height, screenWidth = width)
                 initToolbar()
@@ -159,6 +161,7 @@ internal class GalleryFragment private constructor(
 
     override fun onDestroyView() {
         super.onDestroyView()
+        popupMenu = null
         binding.recycler.adapter = null
         _binding = null
     }
@@ -219,6 +222,18 @@ internal class GalleryFragment private constructor(
         }
     }
 
+    private fun initPopupMenu() {
+        requireContext().withStyledAttributes(configurationDto.themeResId, R.styleable.GalleryImagePickerAttributes) {
+            val popupMenuStyleResId = getResourceId(
+                R.styleable.GalleryImagePickerAttributes_gallery_image_picker__style_popup_menu,
+                R.style.GalleryImagePicker_Widget_PopupMenu
+            )
+
+            val contextWrapper = ContextThemeWrapper(requireContext(), popupMenuStyleResId)
+            popupMenu = PopupMenu(contextWrapper, binding.toolbarTitle)
+        }
+    }
+
     private fun initToolbar() {
         initActionBar(
             toolbar = binding.toolbar,
@@ -228,7 +243,7 @@ internal class GalleryFragment private constructor(
 
         binding.toolbarTitle.apply {
             text = defaultToolbarTitle
-            setOnClickListener { popupMenu.show() }
+            setOnClickListener { popupMenu?.show() }
         }
 
         binding.toolbar.title = ""
@@ -319,13 +334,13 @@ internal class GalleryFragment private constructor(
             .apply { add(0, FolderItem(id = "", name = defaultToolbarTitle)) }
             .toList()
 
-        popupMenu.menu.clear()
+        popupMenu?.menu?.clear()
 
         menuItems.forEachIndexed { index, item ->
-            popupMenu.menu.add(Menu.NONE, index, index, item.name)
+            popupMenu?.menu?.add(Menu.NONE, index, index, item.name)
         }
 
-        popupMenu.setOnMenuItemClickListener {
+        popupMenu?.setOnMenuItemClickListener {
             val selectedFolder = if (it.itemId == 0) null else menuItems[it.itemId]
             vm.actionFlow.tryEmit(GalleryAction.GetImagesAction(selectedFolder))
             true
