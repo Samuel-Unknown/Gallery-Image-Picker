@@ -20,7 +20,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = "GalleryImagePicker"
+rootProject.name = "ProjectGalleryImagePicker"
 
 include(
     ":galleryImagePicker",
