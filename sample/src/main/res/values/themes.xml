@@ -11,6 +11,7 @@
         <item name="gallery_image_picker__theme_app_bar">@style/ThemeOverlay.AppBar</item>
         <item name="gallery_image_picker__theme_bottom_sheet_dialog">@style/ThemeOverlay.BottomSheetDialog</item>
         <item name="gallery_image_picker__style_toolbar">@style/Widget.Toolbar</item>
+        <item name="gallery_image_picker__style_popup_menu">@style/Widget.PopupMenu</item>
         <item name="gallery_image_picker__style_button">@style/Widget.PickupButton</item>
         <item name="gallery_image_picker__style_counter">@style/Widget.Counter</item>
         <item name="gallery_image_picker__color_underlay">@color/gallery_image_picker__color_underlay</item>

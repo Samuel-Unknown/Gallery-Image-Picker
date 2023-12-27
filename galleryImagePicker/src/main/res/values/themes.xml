@@ -18,6 +18,7 @@
         <item name="gallery_image_picker__theme_app_bar">@style/GalleryImagePicker.ThemeOverlay.AppBar</item>
         <item name="gallery_image_picker__theme_bottom_sheet_dialog">@style/GalleryImagePicker.ThemeOverlay.BottomSheetDialog</item>
         <item name="gallery_image_picker__style_toolbar">@style/GalleryImagePicker.Widget.Toolbar</item>
+        <item name="gallery_image_picker__style_popup_menu">@style/GalleryImagePicker.Widget.PopupMenu</item>
         <item name="gallery_image_picker__style_button">@style/GalleryImagePicker.Widget.PickupButton</item>
         <item name="gallery_image_picker__style_counter">@style/GalleryImagePicker.Widget.Counter</item>
         <item name="gallery_image_picker__color_underlay">@color/gallery_image_picker__color_underlay</item>
