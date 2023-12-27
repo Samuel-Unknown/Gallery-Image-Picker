@@ -26,13 +26,13 @@ allprojects {
 Add the following dependency in app build.gradle:
 ```
 dependencies {
-    implementation 'io.github.samuel-unknown:gallery-image-picker:1.6.3'
+    implementation 'io.github.samuel-unknown:gallery-image-picker:1.7.0'
     
     // if you want to use default Glide implementation for ImageLoaderFactory
-    implementation 'io.github.samuel-unknown:gallery-image-picker-glide:1.6.3'
+    implementation 'io.github.samuel-unknown:gallery-image-picker-glide:1.7.0'
     
     // if you want to use default Coil implementation for ImageLoaderFactory
-    implementation 'io.github.samuel-unknown:gallery-image-picker-coil:1.6.3'
+    implementation 'io.github.samuel-unknown:gallery-image-picker-coil:1.7.0'
 }
 ```
 
@@ -145,7 +145,7 @@ dependencies {
 #### Version 1.6.*
 - [x] New parameters for customization
 #### Version 1.7.*
-- [ ] Camera integration (preview and capture)
+- [x] Popup menu customization
 
 ## License
 ```
