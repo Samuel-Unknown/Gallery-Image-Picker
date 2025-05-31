@@ -1,7 +1,7 @@
 package com.samuelunknown.galleryImagePicker.extensions
 
 import android.content.Intent
-import android.os.Build
+import androidx.core.os.BundleCompat
 import com.samuelunknown.galleryImagePicker.domain.model.GalleryConfigurationDto
 import com.samuelunknown.galleryImagePicker.domain.model.ImagesResultDto
 import java.lang.Exception
@@ -27,10 +27,5 @@ internal fun Intent.putGalleryConfigurationDto(activityResultDto: GalleryConfigu
 }
 
 internal inline fun <reified T> Intent.getParcelableItem(key: String): T? {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        getParcelableExtra(key, T::class.java)
-    } else {
-        @Suppress("DEPRECATION")
-        getParcelableExtra(key)
-    }
+    return extras?.let { BundleCompat.getParcelable(it, key, T::class.java) }
 }
