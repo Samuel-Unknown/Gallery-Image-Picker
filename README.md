@@ -26,13 +26,13 @@ allprojects {
 Add the following dependency in app build.gradle:
 ```
 dependencies {
-    implementation 'io.github.samuel-unknown:gallery-image-picker:1.7.0'
+    implementation 'io.github.samuel-unknown:gallery-image-picker:1.7.1'
     
     // if you want to use default Glide implementation for ImageLoaderFactory
-    implementation 'io.github.samuel-unknown:gallery-image-picker-glide:1.7.0'
+    implementation 'io.github.samuel-unknown:gallery-image-picker-glide:1.7.1'
     
     // if you want to use default Coil implementation for ImageLoaderFactory
-    implementation 'io.github.samuel-unknown:gallery-image-picker-coil:1.7.0'
+    implementation 'io.github.samuel-unknown:gallery-image-picker-coil:1.7.1'
 }
 ```
 
